@@ -8,5 +8,6 @@ namespace OctaneTFSPlugin
 {
     public class Class1
     {
+
     }
 }
