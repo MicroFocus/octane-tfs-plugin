@@ -5,6 +5,12 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctaneTFSPlugin", "OctaneTFSPlugin\OctaneTFSPlugin.csproj", "{DFFD273E-73EC-436D-8FD5-2786114A9762}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctaneManager", "OctaneManager\OctaneManager.csproj", "{9D6FDA4F-F77B-44DB-9895-8B020690EF12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctaneTFSPluginTests", "OctaneTFSPluginTests\OctaneTFSPluginTests.csproj", "{EE928305-336C-48E1-8FA0-3E4257BF39FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hpe.Nga.Api.Core", "..\..\..\HPSoftware\alm-octane-csharp-rest-sdk\Hpe.Nga.Api.Core\Hpe.Nga.Api.Core.csproj", "{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{DFFD273E-73EC-436D-8FD5-2786114A9762}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFFD273E-73EC-436D-8FD5-2786114A9762}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFFD273E-73EC-436D-8FD5-2786114A9762}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D6FDA4F-F77B-44DB-9895-8B020690EF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D6FDA4F-F77B-44DB-9895-8B020690EF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D6FDA4F-F77B-44DB-9895-8B020690EF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D6FDA4F-F77B-44DB-9895-8B020690EF12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE928305-336C-48E1-8FA0-3E4257BF39FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE928305-336C-48E1-8FA0-3E4257BF39FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE928305-336C-48E1-8FA0-3E4257BF39FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE928305-336C-48E1-8FA0-3E4257BF39FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

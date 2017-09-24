@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctaneTFSPlugin
+namespace MicroFocus.Ci.Tfs.Core
 {
     public class Class1
     {

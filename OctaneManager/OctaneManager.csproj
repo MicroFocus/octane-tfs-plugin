@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DFFD273E-73EC-436D-8FD5-2786114A9762}</ProjectGuid>
+    <ProjectGuid>{9D6FDA4F-F77B-44DB-9895-8B020690EF12}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MicroFocus.Ci.Tfs.Core</RootNamespace>
-    <AssemblyName>OctaneTFSPlugin</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>MicroFocus.Ci.Tfs.Octane</RootNamespace>
+    <AssemblyName>OctaneManager</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -31,8 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,8 +45,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Configuration\ConnectionDetails.cs" />
+    <Compile Include="Configuration\ConfigurationManager.cs" />
+    <Compile Include="Configuration\InstanceDetails.cs" />
+    <Compile Include="dto\parameters\CIParameter.cs" />
+    <Compile Include="dto\pipelines\Pipeline.cs" />
+    <Compile Include="OctaneManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskProcessor.cs" />
+    <Compile Include="Tools\UriResolver.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\HPSoftware\alm-octane-csharp-rest-sdk\Hpe.Nga.Api.Core\Hpe.Nga.Api.Core.csproj">
+      <Project>{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}</Project>
+      <Name>Hpe.Nga.Api.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
