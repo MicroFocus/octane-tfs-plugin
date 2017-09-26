@@ -48,6 +48,8 @@
     <Compile Include="Configuration\ConnectionDetails.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Configuration\InstanceDetails.cs" />
+    <Compile Include="Dto\Connectivity\OctaneTask.cs" />
+    <Compile Include="Dto\Connectivity\OctaneTaskBase.cs" />
     <Compile Include="Dto\Connectivity\OctaneTaskResult.cs" />
     <Compile Include="Dto\General\CIJobList.cs" />
     <Compile Include="Dto\IDtoBase.cs" />

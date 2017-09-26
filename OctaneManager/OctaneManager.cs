@@ -128,15 +128,15 @@ namespace MicroFocus.Ci.Tfs.Octane
                         Trace.WriteLine($"Get data : {res?.Data}");
                         try
                         {
-                            var octaneTask = JsonConvert.DeserializeObject<OctaneTaskResult>(res?.Data.Substring(1,res.Data.Length-2).Replace("GET","Get"));
-                            var response = _taskProcessor.ProcessTask(octaneTask?.ResultUrl);
+                            var octaneTask = JsonConvert.DeserializeObject<OctaneTask>(res?.Data.Substring(1,res.Data.Length-2).Replace("GET","Get"));
+                            var response = new OctaneTaskResult(200,octaneTask.Id,_taskProcessor.ProcessTask(octaneTask?.ResultUrl));
 
                             if (octaneTask == null)
                             {
                                 Trace.TraceError("Octane task was not json parsed , Nothing to send....");
                             }
                             else {
-                                if (!SendTaskResultToOctane(octaneTask.Id, response))
+                                if (!SendTaskResultToOctane(octaneTask.Id, response.ToString()))
                                 {
                                     Trace.WriteLine("Error sending results!");
                                 }
