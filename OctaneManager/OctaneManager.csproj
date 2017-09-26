@@ -48,11 +48,16 @@
     <Compile Include="Configuration\ConnectionDetails.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Configuration\InstanceDetails.cs" />
-    <Compile Include="dto\parameters\CIParameter.cs" />
-    <Compile Include="dto\pipelines\Pipeline.cs" />
+    <Compile Include="Dto\Connectivity\OctaneTaskResult.cs" />
+    <Compile Include="Dto\General\CIJobList.cs" />
+    <Compile Include="Dto\IDtoBase.cs" />
+    <Compile Include="Dto\Parameters\CIParameter.cs" />
+    <Compile Include="Dto\Pipelines\PipelineNode.cs" />
+    <Compile Include="Dto\Pipelines\PipelinePhase.cs" />
     <Compile Include="OctaneManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskProcessor.cs" />
+    <Compile Include="TfsManager.cs" />
     <Compile Include="Tools\UriResolver.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,5 +71,6 @@
       <Name>Hpe.Nga.Api.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

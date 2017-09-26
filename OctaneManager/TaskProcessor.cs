@@ -9,11 +9,13 @@ using System.Web;
 using Hpe.Nga.Api.Core.Connector;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Tools;
+using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
     internal class TaskProcessor
     {
+        private readonly TfsManager _tfsManager = new TfsManager();
         private enum TaskType
         {
             GetJobsList,
@@ -25,27 +27,32 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         }
 
-        public string ProcessTask(string task)
+        public string ProcessTask(Uri taskUrl)
         {
-            switch (ParseUriPath(task))
+            switch (ParseUriPath(taskUrl))
             {
                 case TaskType.GetJobsList:
+                    return JsonConvert.SerializeObject(_tfsManager.GetJobsList());
 
+                case TaskType.Undefined:
+                    return null;
+                default:
+                    return null;
 
-            }
+            }            
         }
 
-        private TaskType ParseUriPath(string uriPath)
+        private static TaskType ParseUriPath(Uri uriPath)
         {
-            var uri = new Uri(uriPath);
+            var uri = uriPath;
 
             var param = uri.Segments[uri.Segments.Length - 1];
-            if (param == "jobs" && HttpUtility.ParseQueryString(uri.Query)["parameters"] == "false")
+            if (param == "jobs" && HttpUtility.ParseQueryString(uri.Query)["parameters"] == "true")
             {
                 return TaskType.GetJobsList;
             }
 
-            Trace.WriteLine($"Found undefined task type `{param}` in uri: {uriPath}");
+            Trace.WriteLine($"Found undefined taskUrl type `{param}` in uri: {uriPath}");
 
             return TaskType.Undefined;
 

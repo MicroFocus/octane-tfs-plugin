@@ -8,15 +8,21 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Hpe.Nga.Api.Core.Connector;
 using Hpe.Nga.Api.Core.Connector.Exceptions;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Ci.Tfs.Octane.dto;
+using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.Tools;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace MicroFocus.Ci.Tfs.Octane
@@ -37,12 +43,13 @@ namespace MicroFocus.Ci.Tfs.Octane
         private readonly int _pollingGetTimeout;
         private readonly UriResolver _uriResolver;
         private Task _taskPollingThread;
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private CancellationToken _polingCancelationToken;
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        //private CancellationToken _polingCancelationToken;
+        private TaskProcessor _taskProcessor = new TaskProcessor();
 
 
-        public OctaneManager(int servicePort,int pollingTimeout= DEFAULT_POLLING_GET_TIMEOUT)
-        {
+        public OctaneManager(int servicePort, int pollingTimeout= DEFAULT_POLLING_GET_TIMEOUT)
+        {            
             _pollingGetTimeout = pollingTimeout;
             var hostName = Dns.GetHostName();
             var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
@@ -119,7 +126,27 @@ namespace MicroFocus.Ci.Tfs.Octane
                         Trace.WriteLine("Recieved Task:");
                         Trace.WriteLine($"Get status : {res?.StatusCode}");
                         Trace.WriteLine($"Get data : {res?.Data}");
+                        try
+                        {
+                            var octaneTask = JsonConvert.DeserializeObject<OctaneTaskResult>(res?.Data.Substring(1,res.Data.Length-2).Replace("GET","Get"));
+                            var response = _taskProcessor.ProcessTask(octaneTask?.ResultUrl);
 
+                            if (octaneTask == null)
+                            {
+                                Trace.TraceError("Octane task was not json parsed , Nothing to send....");
+                            }
+                            else {
+                                if (!SendTaskResultToOctane(octaneTask.Id, response))
+                                {
+                                    Trace.WriteLine("Error sending results!");
+                                }
+                            }                            
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Trace.TraceError("Error deserializing Octane message!",ex);
+                        }
                     }
                     
                     
@@ -128,17 +155,28 @@ namespace MicroFocus.Ci.Tfs.Octane
             } while (!token.IsCancellationRequested);            
         }
 
-        private bool SendTaskResultToOctane(string resultId,string resultObj)
+        private bool SendTaskResultToOctane(Guid resultId,string resultObj)
         {
-            var res = _restConnector.ExecutePost(_uriResolver.PostTaskResultUri(resultId), null, resultObj);
-
-            if (res.StatusCode == HttpStatusCode.OK)
+            Trace.WriteLine("Sending result to octane");                      
+            Trace.WriteLine(JToken.Parse(resultObj).ToString());
+            try
             {
-                return true;
-            }
+                var res = _restConnector.ExecutePut(_uriResolver.PostTaskResultUri(resultId.ToString()), null,
+                    resultObj);
 
-            Trace.WriteLine($"Error sending result {resultId} with object {resultObj} to server");
-            Trace.WriteLine($"Error desc: {res?.StatusCode}, {res?.Data}");
+                if (res.StatusCode == HttpStatusCode.OK)
+                {
+                    return true;
+                }
+
+                Trace.WriteLine($"Error sending result {resultId} with object {resultObj} to server");
+                Trace.WriteLine($"Error desc: {res?.StatusCode}, {res?.Data}");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error sending result {resultId} with object {resultObj} to server");
+                Trace.WriteLine($"Error desc: {ex.Message}");
+            }
 
             return false;
         }

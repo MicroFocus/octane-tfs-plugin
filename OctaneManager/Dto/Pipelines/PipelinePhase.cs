@@ -6,12 +6,7 @@ using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane.dto.pipelines
 {
-    internal class Pipeline
+    internal class PipelinePhase
     {
-        public string JobCiId { get; set; }
-
-        public string Name { get; set; }
-
-
     }
 }

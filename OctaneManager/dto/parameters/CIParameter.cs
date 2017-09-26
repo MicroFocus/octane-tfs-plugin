@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane.dto.parameters
 {
-    class CIParameter
+    internal class CiParameter
     {
         public string ParameterType { get; set; }
         public string Name { get; set; }
