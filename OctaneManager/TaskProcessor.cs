@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Hpe.Nga.Api.Core.Connector;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 
