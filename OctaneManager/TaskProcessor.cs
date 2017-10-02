@@ -20,6 +20,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         private enum TaskType
         {
             GetJobsList,
+            GetJobDetail,
             Undefined
 
         }
@@ -34,8 +35,11 @@ namespace MicroFocus.Ci.Tfs.Octane
             {
                 case TaskType.GetJobsList:
                     return JsonConvert.SerializeObject(_tfsManager.GetJobsList());
-
+                case TaskType.GetJobDetail:
+                    var jobId = taskUrl.Segments[taskUrl.Segments.Length - 1];
+                    return JsonConvert.SerializeObject(_tfsManager.GetJobDetail(jobId));
                 case TaskType.Undefined:
+                    Trace.WriteLine($"Undefined task : {taskUrl}");
                     return null;
                 default:
                     return null;
@@ -46,11 +50,29 @@ namespace MicroFocus.Ci.Tfs.Octane
         private static TaskType ParseUriPath(Uri uriPath)
         {
             var uri = uriPath;
-
-            var param = uri.Segments[uri.Segments.Length - 1];
-            if (param == "jobs" && HttpUtility.ParseQueryString(uri.Query)["parameters"] == "true")
+            var uriPathList = uriPath.Segments.ToList();
+            for (var i = 0; i < uriPathList.Count; i++)
             {
-                return TaskType.GetJobsList;
+                uriPathList[i] = uriPathList[i].Replace("/", "");
+            }
+
+            var octaneParams = uriPathList.GetRange(uriPathList.IndexOf("v1")+1,
+                uriPathList.Count - uriPathList.IndexOf("v1") - 1);
+
+            var param = octaneParams[0];
+            if (param == "jobs")
+            {
+                if (octaneParams.Count == 1)
+                {
+                    if (HttpUtility.ParseQueryString(uri.Query)["parameters"] == "true")
+                    {
+                        return TaskType.GetJobsList;
+                    }
+                }
+                else if (octaneParams.Count == 2)
+                {
+                    return TaskType.GetJobDetail;
+                }
             }
 
             Trace.WriteLine($"Found undefined taskUrl type `{param}` in uri: {uriPath}");

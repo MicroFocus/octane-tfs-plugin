@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.dto.pipelines
 {
-    internal class PipelineNode
+    internal class PipelineNode : IDtoBase
     {
         [JsonProperty("jobCiId")]
         public string JobCiId { get; set; }

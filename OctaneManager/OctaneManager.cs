@@ -44,6 +44,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         private readonly UriResolver _uriResolver;
         private Task _taskPollingThread;
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
         //private CancellationToken _polingCancelationToken;
         private TaskProcessor _taskProcessor = new TaskProcessor();
 
@@ -56,9 +57,8 @@ namespace MicroFocus.Ci.Tfs.Octane
             _connectionConf = ConfigurationManager.Read();
             var instanceDetails = new InstanceDetails(_connectionConf.InstanceId,$"http://{hostName}:{servicePort}");
 
-            _uriResolver = new UriResolver(_connectionConf.SharedSpace,instanceDetails);
-
-        }
+            _uriResolver = new UriResolver(_connectionConf.SharedSpace,instanceDetails);           
+    }
 
         public void Init()
         {   
@@ -68,7 +68,9 @@ namespace MicroFocus.Ci.Tfs.Octane
             if (!connected)
             {
                throw new Exception("Could not connect to octane webapp"); 
-            }            
+            }
+
+            IsInitialized = true;
 
             InitTaskPolling();
         }
@@ -89,6 +91,8 @@ namespace MicroFocus.Ci.Tfs.Octane
             _taskPollingThread = Task.Factory.StartNew(()=>PollOctaneTasks(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);            
         }
 
+        public bool IsInitialized { get; protected set; } = false;
+
         private void PollOctaneTasks(CancellationToken token)
         {
             do
@@ -102,16 +106,23 @@ namespace MicroFocus.Ci.Tfs.Octane
                 }
                 catch (Exception ex)
                 {
-                    var innerEx = (WebException) ex.InnerException;
-                    var mqmEx = ex as MqmRestException;
-                    if (innerEx?.Status == WebExceptionStatus.Timeout)
+                    if (ex is WebException)
                     {
-                        Trace.WriteLine("Timeout");
-                        Trace.WriteLine($"Exception Info {mqmEx?.Description}");
+                        var innerEx = (WebException) ex.InnerException;
+                        var mqmEx = ex as MqmRestException;
+                        if (innerEx?.Status == WebExceptionStatus.Timeout)
+                        {
+                            Trace.WriteLine("Timeout");
+                            Trace.WriteLine($"Exception Info {mqmEx?.Description}");
+                        }
+                        else
+                        {
+                            Trace.WriteLine("Error getting status from octane : " + ex.Message);
+                        }
                     }
                     else
                     {
-                        Trace.WriteLine("Error getting status from octane : " + ex.Message);
+                        Trace.TraceError($"Known excetion  {ex}");
                     }
                 }
                 finally
