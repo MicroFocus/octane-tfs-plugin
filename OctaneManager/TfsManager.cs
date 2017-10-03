@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MicroFocus.Ci.Tfs.Octane.dto;
 using MicroFocus.Ci.Tfs.Octane.dto.general;
 using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.Framework.Client;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
