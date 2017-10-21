@@ -25,10 +25,7 @@ namespace MicroFocus.Ci.Tfs.Core
         private static readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         public OctaneTfsPlugin()
-        {
-            ListProjectsInCollection();
-
-            return;
+        {          
             if (_octaneInitializationThread == null)
             {
                 _octaneInitializationThread =
@@ -42,6 +39,8 @@ namespace MicroFocus.Ci.Tfs.Core
         {
             while (!IsOctaneInitialized())
             {
+                ListProjectsInCollection();
+
                 if (token.IsCancellationRequested)
                 {
                     TeamFoundationApplicationCore.Log("Octane initialization thread was requested to quit!", 1, EventLogEntryType.Information);
