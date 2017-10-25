@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane.dto
 {
-    internal interface IDtoBase
+    public interface IDtoBase
     {
     }
 }

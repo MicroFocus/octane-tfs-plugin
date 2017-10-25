@@ -6,19 +6,13 @@
 // See the License for the specific language governing permissions and limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Hpe.Nga.Api.Core.Connector;
 using Hpe.Nga.Api.Core.Connector.Exceptions;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
-using MicroFocus.Ci.Tfs.Octane.dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
@@ -190,6 +184,14 @@ namespace MicroFocus.Ci.Tfs.Octane
             }
 
             return false;
+        }
+
+        public void JustATest()
+        {
+            TfsManager m = new TfsManager();
+            m.ListProjectsInCollection();;
+            m.GetJobsList();
+
         }
     }
 }
