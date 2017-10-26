@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using MicroFocus.Ci.Tfs.Octane.dto;
+﻿using MicroFocus.Ci.Tfs.Octane.dto;
 using MicroFocus.Ci.Tfs.Octane.dto.general;
 using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
 using MicroFocus.Ci.Tfs.Octane.Tfs;
-using Microsoft.TeamFoundation.Build.Client;
-using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.Framework.Client;
-using Microsoft.TeamFoundation.Framework.Common;
-using Microsoft.TeamFoundation.Build.WebApi;
-using Microsoft.VisualStudio.Services.Client;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -40,7 +30,7 @@ namespace MicroFocus.Ci.Tfs.Octane
                     var buildDefenitions = GetBuildDefenitions(collection, project);
                     foreach (var buildDefenition in buildDefenitions)
                     {
-                        result.Jobs.Add(new PipelineNode($"{collection.Id}/{project.Id}/{buildDefenition.Id}",buildDefenition.Name));
+                        result.Jobs.Add(new PipelineNode($"{collection.Id}.{project.Id}.{buildDefenition.Id}",buildDefenition.Name));
                     }
                 }
             }

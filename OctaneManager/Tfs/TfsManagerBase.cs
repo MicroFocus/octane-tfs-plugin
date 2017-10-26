@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Flurl;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Core.WebApi;
-using Microsoft.TeamFoundation.Framework.Client;
-using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.VisualStudio.Services.Client;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -23,6 +17,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
     {
         private readonly TfsConfigurationServer _configurationServer;
         private const string TfsUrl = "http://localhost:8080/tfs";
+        private const string Pat = "67al5474rghasgysxdfgxwm3yilb325uxzwhtan5y4lvabrzu3ca";
         private readonly Uri _tfsUri;
 
         protected TfsManagerBase()
@@ -35,8 +30,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
         protected List<TfsCollectionItem> GetCollections()
-        {
-            var visualStudioServicesConnection = new VssConnection(_tfsUri, new VssCredentials());
+        {           
+
+            var visualStudioServicesConnection = new VssConnection(_tfsUri, new PatCredentials(string.Empty, "fmvzjljppzjofy55bj5zcy7w7snua4kssnvq55wpjnccnngwqwqq"));
 
             // get ahold of the Project Collection client
             var projectCollectionHttpClient = visualStudioServicesConnection.GetClient<ProjectCollectionHttpClient>();
@@ -90,9 +86,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
         protected List<TfsProjectItem> GetProjects(string collectionName)
-        {
+        {            
             var collectionUri = new Uri(Url.Combine(_tfsUri.ToString(), collectionName));
-            VssConnection collectionVssConnection = new VssConnection(collectionUri, new VssCredentials());
+            VssConnection collectionVssConnection = new VssConnection(collectionUri, new PatCredentials(string.Empty, "fmvzjljppzjofy55bj5zcy7w7snua4kssnvq55wpjnccnngwqwqq"));
             var projectHttpClient = collectionVssConnection.GetClient<ProjectHttpClient>();
 
             var result = new List<TfsProjectItem>();
@@ -119,7 +115,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         protected List<TfsBuildDefenitionItem> GetBuildDefenitions(string collectionName, string projectName)
         {            
             var uri = _tfsUri.Append(collectionName);        
-            var buildClient = new BuildHttpClient(uri, new VssAadCredential());
+            var buildClient = new BuildHttpClient(uri, new PatCredentials(string.Empty, "fmvzjljppzjofy55bj5zcy7w7snua4kssnvq55wpjnccnngwqwqq"));
             var definitions = buildClient.GetDefinitionsAsync(project: projectName);
             var result = new List<TfsBuildDefenitionItem>();
             foreach (var buildDefenition in definitions.Result)

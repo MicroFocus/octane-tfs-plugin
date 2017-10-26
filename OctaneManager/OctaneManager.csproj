@@ -215,6 +215,7 @@
     <Compile Include="Tfs\TfsManagerBase.cs" />
     <Compile Include="Tools\UriHelper.cs" />
     <Compile Include="Tools\UriResolver.cs" />
+    <Compile Include="Tools\PatCredentials.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
