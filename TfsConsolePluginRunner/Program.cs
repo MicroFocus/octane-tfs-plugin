@@ -13,7 +13,7 @@ namespace TfsConsolePluginRunner
         public static void GetJobsList()
         {
             //_tfsManager.ListProjectsInCollection();
-            _tfsManager.ListProjectsInCollection();
+            _tfsManager.GetJobsList();
         }
         static void Main(string[] args)
         {

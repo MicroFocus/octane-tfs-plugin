@@ -14,9 +14,8 @@ namespace MicroFocus.Ci.Tfs.Tests
         private readonly TfsManager _tfsManager = new TfsManager();
         [TestMethod]
         public void GetJobsList()
-        {
-            //_tfsManager.ListProjectsInCollection();
-            _tfsManager.ListProjectsInCollection();
+        {            
+            _tfsManager.GetJobsList();
         }
     }
 }

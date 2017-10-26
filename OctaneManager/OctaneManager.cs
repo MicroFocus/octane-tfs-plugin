@@ -184,14 +184,6 @@ namespace MicroFocus.Ci.Tfs.Octane
             }
 
             return false;
-        }
-
-        public void JustATest()
-        {
-            TfsManager m = new TfsManager();
-            m.ListProjectsInCollection();;
-            m.GetJobsList();
-
-        }
+        }        
     }
 }
