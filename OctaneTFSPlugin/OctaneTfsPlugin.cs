@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MicroFocus.Ci.Tfs.Octane;
 using Microsoft.TeamFoundation.Build.Server;
+using Microsoft.TeamFoundation.Build.WebApi.Events;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
@@ -38,9 +39,7 @@ namespace MicroFocus.Ci.Tfs.Core
         private void InitializeOctaneManager(CancellationToken token)
         {
             while (!IsOctaneInitialized())
-            {
-                ListProjectsInCollection();
-
+            {                 
                 if (token.IsCancellationRequested)
                 {
                     TeamFoundationApplicationCore.Log("Octane initialization thread was requested to quit!", 1, EventLogEntryType.Information);
@@ -48,7 +47,7 @@ namespace MicroFocus.Ci.Tfs.Core
                 }
                 try
                 {
-                    _octaneManager = new OctaneManager(8080);
+                    _octaneManager = new OctaneManager(9999);
                     _octaneManager.Init();
                     
                 }
@@ -73,7 +72,8 @@ namespace MicroFocus.Ci.Tfs.Core
         {
             var subscribedEventsList = new List<Type>()
             {
-                typeof(BuildCompletionEvent)                
+                typeof(BuildCompletionEvent),
+                typeof(BuildStartedEvent)
             };
 
             return subscribedEventsList.ToArray();
@@ -89,40 +89,40 @@ namespace MicroFocus.Ci.Tfs.Core
             throw new NotImplementedException();
         }
 
-        private void ListProjectsInCollection()
-        {
-            Uri tfsUri = new Uri("http://localhost:8080/tfs");
-
-            TfsConfigurationServer configurationServer =
-                TfsConfigurationServerFactory.GetConfigurationServer(tfsUri);
-
-            // Get the catalog of team project collections
-            ReadOnlyCollection<CatalogNode> collectionNodes = configurationServer.CatalogNode.QueryChildren(
-                new[] { CatalogResourceTypes.ProjectCollection },
-                false, CatalogQueryOptions.None);
-
-            // List the team project collections
-            foreach (CatalogNode collectionNode in collectionNodes)
-            {
-                // Use the InstanceId property to get the team project collection
-                Guid collectionId = new Guid(collectionNode.Resource.Properties["InstanceId"]);
-                TfsTeamProjectCollection teamProjectCollection = configurationServer.GetTeamProjectCollection(collectionId);
-
-                // Print the name of the team project collection
-                Console.WriteLine("Collection: " + teamProjectCollection.Name);
-
-                // Get a catalog of team projects for the collection
-                ReadOnlyCollection<CatalogNode> projectNodes = collectionNode.QueryChildren(
-                    new[] { CatalogResourceTypes.TeamProject },
-                    false, CatalogQueryOptions.None);
-
-                // List the team projects in the collection
-                foreach (CatalogNode projectNode in projectNodes)
-                {
-                    Console.WriteLine(" Team Project: " + projectNode.Resource.DisplayName);
-                }
-            }
-        }
+//        private void ListProjectsInCollection()
+//        {
+//            Uri tfsUri = new Uri("http://localhost:8080/tfs");
+//
+//            TfsConfigurationServer configurationServer =
+//                TfsConfigurationServerFactory.GetConfigurationServer(tfsUri);
+//
+//            // Get the catalog of team project collections
+//            ReadOnlyCollection<CatalogNode> collectionNodes = configurationServer.CatalogNode.QueryChildren(
+//                new[] { CatalogResourceTypes.ProjectCollection },
+//                false, CatalogQueryOptions.None);
+//
+//            // List the team project collections
+//            foreach (CatalogNode collectionNode in collectionNodes)
+//            {
+//                // Use the InstanceId property to get the team project collection
+//                Guid collectionId = new Guid(collectionNode.Resource.Properties["InstanceId"]);
+//                TfsTeamProjectCollection teamProjectCollection = configurationServer.GetTeamProjectCollection(collectionId);
+//
+//                // Print the name of the team project collection
+//                Console.WriteLine("Collection: " + teamProjectCollection.Name);
+//
+//                // Get a catalog of team projects for the collection
+//                ReadOnlyCollection<CatalogNode> projectNodes = collectionNode.QueryChildren(
+//                    new[] { CatalogResourceTypes.TeamProject },
+//                    false, CatalogQueryOptions.None);
+//
+//                // List the team projects in the collection
+//                foreach (CatalogNode projectNode in projectNodes)
+//                {
+//                    Console.WriteLine(" Team Project: " + projectNode.Resource.DisplayName);
+//                }
+//            }
+//        }
     
     }
 }

@@ -10,14 +10,26 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 {
     internal static class ConfigurationManager
     {
-        public static string ConfigurationFile => "octane.conf.json";
+        public static string ConfigurationFile => @"c:\temp\octane.conf.json";
         public static ConnectionDetails Read()
         {
+            string currentDir = Environment.CurrentDirectory;
+            DirectoryInfo directory = new DirectoryInfo(currentDir);
+            FileInfo file = new FileInfo(ConfigurationFile);
+
+            string fullDirectory = directory.FullName;
+            string fullFile = file.FullName;
+
+            StreamReader sr = new StreamReader(fullFile);
+
             ConnectionDetails res = null;
-            using (var reader = new StreamReader(ConfigurationFile))
+            using (var reader = sr)
             {
                 res = JsonConvert.DeserializeObject<ConnectionDetails>(reader.ReadToEnd());
+                reader.Close();
             }
+
+            
 
             return res;
         }                
