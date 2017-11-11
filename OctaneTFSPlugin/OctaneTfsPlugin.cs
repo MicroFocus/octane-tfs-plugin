@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MicroFocus.Ci.Tfs.Octane;
 using Microsoft.TeamFoundation.Build.Server;
+using Microsoft.TeamFoundation.Build.WebApi.Events;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
@@ -71,7 +72,8 @@ namespace MicroFocus.Ci.Tfs.Core
         {
             var subscribedEventsList = new List<Type>()
             {
-                typeof(BuildCompletionEvent)                
+                typeof(BuildCompletionEvent),
+                typeof(BuildStartedEvent)
             };
 
             return subscribedEventsList.ToArray();
