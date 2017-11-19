@@ -31,7 +31,7 @@ namespace MicroFocus.Ci.Tfs.Tests
                 writer.Close();
             }     
             
-            octaneManager = new OctaneManager(8080,devTimeout);
+            octaneManager = new OctaneManager(9999,devTimeout);
         }
     }
 }

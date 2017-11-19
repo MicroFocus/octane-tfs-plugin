@@ -9,15 +9,18 @@ namespace TfsConsolePluginRunner
 {
     class Program
     {
-        private static readonly TfsManager _tfsManager = new TfsManager();
-        public static void GetJobsList()
-        {
-            //_tfsManager.ListProjectsInCollection();
-            _tfsManager.GetJobsList();
-        }
+        //private static readonly TfsManager _tfsManager = new TfsManager();
+        private static OctaneManager _octaneManager;
+
         static void Main(string[] args)
         {
-            GetJobsList();
+            _octaneManager = new OctaneManager(9999);
+            _octaneManager.Init();
+
+            Console.WriteLine("TFS plugin is running , press any key to exit...");
+            Console.ReadLine();
+            _octaneManager.ShutDown();
+            _octaneManager.WaitShutdown();
         }
     }
 }

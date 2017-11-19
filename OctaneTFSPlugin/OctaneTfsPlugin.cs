@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MicroFocus.Ci.Tfs.Octane;
 using Microsoft.TeamFoundation.Build.Server;
+using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Build.WebApi.Events;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
@@ -72,8 +73,8 @@ namespace MicroFocus.Ci.Tfs.Core
         {
             var subscribedEventsList = new List<Type>()
             {
-                typeof(BuildCompletionEvent),
-                typeof(BuildStartedEvent)
+                typeof(BuildCompletionNotificationEvent),
+                typeof(BuildStartedNotificationEvent)                
             };
 
             return subscribedEventsList.ToArray();
@@ -86,7 +87,29 @@ namespace MicroFocus.Ci.Tfs.Core
             object notificationEventArgs, out int statusCode, out string statusMessage,
             out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
         {
-            throw new NotImplementedException();
+            statusCode = 0;
+            properties = null;
+            statusMessage = String.Empty;
+            try
+            {
+                if (notificationType == NotificationType.Notification && notificationEventArgs is BuildCompletionNotificationEvent)
+                {
+                  
+                  
+                  Trace.WriteLine($"Processing notification of type \"{notificationType}\"");                    
+                }
+
+            }
+            catch (Exception e)
+            {
+                
+                
+                Trace.TraceError($"An error \"{e.Message}\" occured during processing of notification.", e);
+                
+                TeamFoundationApplicationCore.Log(requestContext, "HPE ALI : Process Server Event",
+                    $"The error occured during processing notification: {e}", 123, EventLogEntryType.Error);
+            }
+            return EventNotificationStatus.ActionPermitted;
         }
 
 //        private void ListProjectsInCollection()
