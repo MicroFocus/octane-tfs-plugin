@@ -14,6 +14,7 @@ using Hpe.Nga.Api.Core.Connector;
 using Hpe.Nga.Api.Core.Connector.Exceptions;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
+using MicroFocus.Ci.Tfs.Octane.RestServer;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,7 +39,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         private readonly UriResolver _uriResolver;
         private Task _taskPollingThread;
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-
+        private readonly Server _server = new Server();
         //private CancellationToken _polingCancelationToken;
         private TaskProcessor _taskProcessor = new TaskProcessor();
 
@@ -55,8 +56,8 @@ namespace MicroFocus.Ci.Tfs.Octane
     }
 
         public void Init()
-        {   
-            
+        {
+            //_server.Start();
             var connected = _restConnector.Connect(_connectionConf.Host,
                 new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
             if (!connected)
@@ -66,7 +67,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
             IsInitialized = true;
 
-            InitTaskPolling();
+            InitTaskPolling();            
         }
 
         public void ShutDown()
