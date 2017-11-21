@@ -23,6 +23,8 @@ namespace MicroFocus.Ci.Tfs.Tests
         {
             octaneManager.Init();
 
+
+
             octaneManager.WaitShutdown();
 
             
