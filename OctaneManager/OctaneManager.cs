@@ -8,10 +8,13 @@
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Hpe.Nga.Api.Core.Connector;
 using Hpe.Nga.Api.Core.Connector.Exceptions;
+using log4net;
+using log4net.Config;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
@@ -31,7 +34,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         #endregion
 
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         private static readonly RestConnector _restConnector = new RestConnector();
+        private readonly TfsManager _tfsManager;
         private static ConnectionDetails _connectionConf;
         
         private readonly TimeSpan _pollingInterval = TimeSpan.FromSeconds(DEFAULT_POLLING_INTERVAL);
@@ -41,19 +47,22 @@ namespace MicroFocus.Ci.Tfs.Octane
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly Server _server = new Server();
         //private CancellationToken _polingCancelationToken;
-        private TaskProcessor _taskProcessor = new TaskProcessor();
+        private TaskProcessor _taskProcessor;
 
 
         public OctaneManager(int servicePort, int pollingTimeout= DEFAULT_POLLING_GET_TIMEOUT)
-        {            
+        {                        
             _pollingGetTimeout = pollingTimeout;
             var hostName = Dns.GetHostName();
             var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
             _connectionConf = ConfigurationManager.Read();
             var instanceDetails = new InstanceDetails(_connectionConf.InstanceId,$"http://{hostName}:{servicePort}");
 
-            _uriResolver = new UriResolver(_connectionConf.SharedSpace,instanceDetails);           
-    }
+            _uriResolver = new UriResolver(_connectionConf.SharedSpace,instanceDetails);
+            _tfsManager = new TfsManager(_connectionConf.Pat);
+            _taskProcessor = new TaskProcessor(_tfsManager);
+            Log.Debug("Octane manager created...");
+        }
 
         public void Init()
         {
@@ -70,6 +79,11 @@ namespace MicroFocus.Ci.Tfs.Octane
             InitTaskPolling();            
         }
 
+        public void SendTestResults()
+        {
+          
+        }
+
         public void ShutDown()
         {            
             _cancellationTokenSource.Cancel();
@@ -83,6 +97,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         private void InitTaskPolling()
         {
+            Log.Debug("Start init of polling thread");
             _taskPollingThread = Task.Factory.StartNew(()=>PollOctaneTasks(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);            
         }
 
@@ -95,6 +110,7 @@ namespace MicroFocus.Ci.Tfs.Octane
                 ResponseWrapper res = null;
                 try
                 {
+                    Log.Debug("Waiting for task...");
                     res =
                         _restConnector.ExecuteGet(_uriResolver.GetTasksUri(), _uriResolver.GetTaskQueryParams(),
                             _pollingGetTimeout);                    
@@ -107,17 +123,17 @@ namespace MicroFocus.Ci.Tfs.Octane
                         var mqmEx = ex as MqmRestException;
                         if (innerEx?.Status == WebExceptionStatus.Timeout)
                         {
-                            Trace.WriteLine("Timeout");
-                            Trace.WriteLine($"Exception Info {mqmEx?.Description}");
+                            Log.Debug("Timeout");
+                            Log.Debug($"Exception Info {mqmEx?.Description}");
                         }
                         else
                         {
-                            Trace.WriteLine("Error getting status from octane : " + ex.Message);
+                            Log.Error("Error getting status from octane : " + ex.Message);
                         }
                     }
                     else
                     {
-                        Trace.TraceError($"Known excetion  {ex}");
+                        Log.Debug($"not a web exception  {ex.GetType()}");
                     }
                 }
                 finally
@@ -125,13 +141,13 @@ namespace MicroFocus.Ci.Tfs.Octane
                     Trace.WriteLine($"Time: {DateTime.Now.ToLongTimeString()}");
                     if (res == null)
                     {
-                        Trace.WriteLine("No tasks");
+                        Log.Debug("No tasks");
                     }
                     else
                     {
-                        Trace.WriteLine("Recieved Task:");
-                        Trace.WriteLine($"Get status : {res?.StatusCode}");
-                        Trace.WriteLine($"Get data : {res?.Data}");
+                        Log.Debug("Recieved Task:");
+                        Log.Debug($"Get status : {res?.StatusCode}");
+                        Log.Debug($"Get data : {res?.Data}");
                         try
                         {
                             var octaneTask = JsonConvert.DeserializeObject<OctaneTask>(res?.Data.Substring(1,res.Data.Length-2).Replace("GET","Get"));
@@ -144,14 +160,14 @@ namespace MicroFocus.Ci.Tfs.Octane
                             else {
                                 if (!SendTaskResultToOctane(octaneTask.Id, response.ToString()))
                                 {
-                                    Trace.WriteLine("Error sending results!");
+                                    Log.Error("Error sending results!");
                                 }
                             }                            
 
                         }
                         catch (Exception ex)
                         {
-                            Trace.TraceError("Error deserializing Octane message!",ex);
+                            Log.Error("Error deserializing Octane message!",ex);
                         }
                     }
                     

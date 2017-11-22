@@ -10,8 +10,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 {
     [TestClass]
     public class TfsManagerTest : OctaneManagerBaseTest
-    {    
-        private readonly TfsManager _tfsManager = new TfsManager();
+    {            
         [TestMethod]
         public void GetJobsList()
         {            

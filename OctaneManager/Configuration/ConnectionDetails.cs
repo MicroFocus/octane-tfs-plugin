@@ -34,6 +34,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
 
+        public string Pat { get; set; }
+
         public ConnectionDetails()
         {
         }
@@ -47,5 +49,6 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
         }
 
         public Guid InstanceId { get; set; } = Guid.NewGuid();
+
     }
 }
