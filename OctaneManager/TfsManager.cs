@@ -9,11 +9,9 @@ namespace MicroFocus.Ci.Tfs.Octane
     {
         private static readonly CiJobList MockJobList = new CiJobList();
         private  CiJobList _cachedJobList = new CiJobList();
-        public TfsManager()
+        public TfsManager(string pat) : base(pat)
         {
-            MockJobList.Jobs.Add(new PipelineNode("e7c63454-f81d-4786-8a33-cc1e7c9fa5ce", "Tfs Test Job"));
-            MockJobList.Jobs.Add(new PipelineNode("f9e21042-a286-44bf-808a-8c9462cb3666", "Tfs Test Job 2"));
-            MockJobList.Jobs.Add(new PipelineNode("d45f798c-ccf7-48dc-970d-3b320d63c75c", "Tfs Test Job 3"));        
+            
         }
 
         public IDtoBase GetJobsList()

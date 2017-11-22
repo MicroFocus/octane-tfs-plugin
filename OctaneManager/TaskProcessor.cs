@@ -16,7 +16,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
     internal class TaskProcessor
     {
-        private readonly TfsManager _tfsManager = new TfsManager();
+        private readonly TfsManager _tfsManager;
         private enum TaskType
         {
             GetJobsList,
@@ -24,9 +24,9 @@ namespace MicroFocus.Ci.Tfs.Octane
             Undefined
 
         }
-        public TaskProcessor()
+        public TaskProcessor(TfsManager tfsManager)
         {
-
+            _tfsManager = tfsManager;
         }
 
         public string ProcessTask(Uri taskUrl)

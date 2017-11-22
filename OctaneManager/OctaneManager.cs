@@ -37,6 +37,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static readonly RestConnector _restConnector = new RestConnector();
+        private readonly TfsManager _tfsManager;
         private static ConnectionDetails _connectionConf;
         
         private readonly TimeSpan _pollingInterval = TimeSpan.FromSeconds(DEFAULT_POLLING_INTERVAL);
@@ -46,7 +47,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly Server _server = new Server();
         //private CancellationToken _polingCancelationToken;
-        private TaskProcessor _taskProcessor = new TaskProcessor();
+        private TaskProcessor _taskProcessor;
 
 
         public OctaneManager(int servicePort, int pollingTimeout= DEFAULT_POLLING_GET_TIMEOUT)
@@ -58,6 +59,8 @@ namespace MicroFocus.Ci.Tfs.Octane
             var instanceDetails = new InstanceDetails(_connectionConf.InstanceId,$"http://{hostName}:{servicePort}");
 
             _uriResolver = new UriResolver(_connectionConf.SharedSpace,instanceDetails);
+            _tfsManager = new TfsManager(_connectionConf.Pat);
+            _taskProcessor = new TaskProcessor(_tfsManager);
             Log.Debug("Octane manager created...");
         }
 

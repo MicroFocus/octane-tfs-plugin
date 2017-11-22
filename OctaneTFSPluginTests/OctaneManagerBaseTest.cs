@@ -12,6 +12,7 @@ namespace MicroFocus.Ci.Tfs.Tests
     public class OctaneManagerBaseTest
     {
         protected static OctaneManager octaneManager;
+        protected static TfsManager _tfsManager;
         [AssemblyInitialize]
         public static void InitializeConfigs(TestContext context)
         {
@@ -32,6 +33,7 @@ namespace MicroFocus.Ci.Tfs.Tests
             }     
             
             octaneManager = new OctaneManager(9999,devTimeout);
+            _tfsManager = new TfsManager(connectionDetails.Pat);
         }
     }
 }
