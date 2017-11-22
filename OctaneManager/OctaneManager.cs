@@ -66,7 +66,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         public void Init()
         {
-            //_server.Start();
+            _server.Start();
             var connected = _restConnector.Connect(_connectionConf.Host,
                 new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
             if (!connected)

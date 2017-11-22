@@ -223,6 +223,8 @@
     <Compile Include="Tfs\Beans\TfsItemBase.cs" />
     <Compile Include="Tfs\Beans\TfsProjectItem.cs" />
     <Compile Include="Tfs\Beans\TfsCollectionItem.cs" />
+    <Compile Include="Tfs\SubscriptionManager.cs" />
+    <Compile Include="Tfs\TfsConfiguration.cs" />
     <Compile Include="Tfs\TfsManagerBase.cs" />
     <Compile Include="Tools\UriHelper.cs" />
     <Compile Include="Tools\UriResolver.cs" />

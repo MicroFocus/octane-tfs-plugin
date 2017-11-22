@@ -10,10 +10,8 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
     public class RestBase : NancyModule
     {
         public RestBase()
-        {
-            Post["/"] = _ => "Received POST request";
-            Get["/"] = _ => "Hello 2";
-            Get["/products/{id}"] = _ =>
+        {            
+            Get["/build-event/"] = _ =>
             {
                 return "Hello";
             };

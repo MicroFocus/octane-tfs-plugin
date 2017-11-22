@@ -15,24 +15,23 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 {
     public abstract class TfsManagerBase
     {
+        private readonly TfsConfiguration _tfsConf;
         private readonly TfsConfigurationServer _configurationServer;
         private const string TfsUrl = "http://localhost:8080/tfs";
-        private readonly string _pat;
-        private readonly Uri _tfsUri;
 
         protected TfsManagerBase(string pat)
         {
-            _tfsUri = new Uri(TfsUrl);
-            _pat = pat;
+            _tfsConf = new TfsConfiguration(new Uri(TfsUrl),pat);
+            
 
             _configurationServer =
-                TfsConfigurationServerFactory.GetConfigurationServer(_tfsUri);
+                TfsConfigurationServerFactory.GetConfigurationServer(_tfsConf.Uri);
         }
 
         protected List<TfsCollectionItem> GetCollections()
         {           
 
-            var visualStudioServicesConnection = new VssConnection(_tfsUri, new PatCredentials(string.Empty, _pat));
+            var visualStudioServicesConnection = new VssConnection(_tfsConf.Uri, new PatCredentials(string.Empty, _tfsConf.Pat));
 
             // get ahold of the Project Collection client
             var projectCollectionHttpClient = visualStudioServicesConnection.GetClient<ProjectCollectionHttpClient>();
@@ -87,8 +86,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 
         protected List<TfsProjectItem> GetProjects(string collectionName)
         {            
-            var collectionUri = new Uri(Url.Combine(_tfsUri.ToString(), collectionName));
-            VssConnection collectionVssConnection = new VssConnection(collectionUri, new PatCredentials(string.Empty, _pat));
+            var collectionUri = new Uri(Url.Combine(_tfsConf.Uri.ToString(), collectionName));
+            VssConnection collectionVssConnection = new VssConnection(collectionUri, new PatCredentials(string.Empty, _tfsConf.Pat));
             var projectHttpClient = collectionVssConnection.GetClient<ProjectHttpClient>();
 
             var result = new List<TfsProjectItem>();
@@ -114,8 +113,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 
         protected List<TfsBuildDefenitionItem> GetBuildDefenitions(string collectionName, string projectName)
         {            
-            var uri = _tfsUri.Append(collectionName);        
-            var buildClient = new BuildHttpClient(uri, new PatCredentials(string.Empty, _pat));
+            var uri = _tfsConf.Uri.Append(collectionName);        
+            var buildClient = new BuildHttpClient(uri, new PatCredentials(string.Empty, _tfsConf.Pat));
             var definitions = buildClient.GetDefinitionsAsync(project: projectName);
             var result = new List<TfsBuildDefenitionItem>();
             foreach (var buildDefenition in definitions.Result)
