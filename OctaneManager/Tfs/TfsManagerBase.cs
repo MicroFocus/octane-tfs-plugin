@@ -7,16 +7,18 @@ using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Core.WebApi;
-using Microsoft.VisualStudio.Services.Client;
-using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Nancy.Json;
+using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs
 {
     public abstract class TfsManagerBase
     {
         private readonly TfsConfigurationServer _configurationServer;
-        private const string TfsUrl = "http://localhost:8080/tfs";
+        private const string TfsUrl = "http://localhost:8080/tfs/";
         private readonly string _pat;
         private readonly Uri _tfsUri;
 
@@ -128,6 +130,47 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 
             return result;
 
+        }
+
+        public void getTestResults(string collectionName, string projectName, int runId)
+        {
+            //encode your personal access token                   
+            string credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _pat)));
+
+
+            //use the httpclient
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = _tfsUri;
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+
+                //connect to the REST endpoint                            
+                string prefix = String.Format("{0}/{1}/_apis/test/runs/{2}/results?api-version=3.0", collectionName, projectName, runId);
+                HttpResponseMessage response = client.GetAsync(prefix, HttpCompletionOption.ResponseContentRead).Result;
+
+                //check to see if we have a succesfull respond
+                if (response.IsSuccessStatusCode)
+                {
+                    //set the viewmodel from the content in the response
+                    //viewModel = response.Content.ReadAsAsync<ListofProjectsResponse.Projects>().Result;
+
+
+                    string content = response.Content.ReadAsStringAsync().Result;
+
+                    TfsTestResults results = JsonConvert.DeserializeObject<TfsTestResults>(content);
+                    foreach(TfsTestResult  result in results.Results)
+                    {
+                        if (result.ErrorMessage != null)
+                        {
+                            -int ff = 4;
+                        }
+                    }
+
+                    int t = 5;
+                }
+            }
         }
     }
 }

@@ -16,5 +16,14 @@ namespace MicroFocus.Ci.Tfs.Tests
         {            
             _tfsManager.GetJobsList();
         }
+
+        [TestMethod]
+        public void GetTestResultsTest()
+        {
+            _tfsManager.getTestResults("DefaultCollection", "Test2", 4);
+
+
+
+        }
     }
 }
