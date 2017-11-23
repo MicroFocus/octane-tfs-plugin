@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto
 {
-    class CiEvent : IDtoBase
+    public class CiEvent : IDtoBase
     {
         [JsonProperty("projectDisplayName")]
         public string ProjectDisplayName { get; set; }
@@ -52,11 +52,6 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
         {
             get;
             set;
-        }
-
-
-             
-
-
+        }             
     }
 }

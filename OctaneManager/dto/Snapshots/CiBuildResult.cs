@@ -8,7 +8,7 @@ using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Snapshots
 {
-    internal class CiBuildResult : IDtoBase
+    public class CiBuildResult : IDtoBase
     {
         private readonly string _value;
         private CiBuildResult(string type)

@@ -66,24 +66,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         public void Init()
         {
-            _server.Start();
-            var connected = _restConnector.Connect(_connectionConf.Host,
-                new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
-            if (!connected)
-            {
-               throw new Exception("Could not connect to octane webapp"); 
-            }
+            InitializeRestServer();
+            InitializeConnectionToOctane();           
+            InitTaskPolling();
 
             IsInitialized = true;
-
-            InitTaskPolling();            
         }
-
-        public void SendTestResults()
-        {
-          
-        }
-
+    
         public void ShutDown()
         {            
             _cancellationTokenSource.Cancel();
@@ -201,6 +190,27 @@ namespace MicroFocus.Ci.Tfs.Octane
             }
 
             return false;
-        }        
+        }
+
+        private void InitializeRestServer()
+        {
+            _server.Start();
+            RestBase.BuildEvent += RestBase_BuildEvent;
+        }
+
+        private void InitializeConnectionToOctane()
+        {
+            var connected = _restConnector.Connect(_connectionConf.Host,
+                new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
+            if (!connected)
+            {
+                throw new Exception("Could not connect to octane webapp");
+            }
+        }
+
+        private void RestBase_BuildEvent(object sender, Dto.CiEvent e)
+        {
+            
+        }
     }
 }

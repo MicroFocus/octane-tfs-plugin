@@ -7,7 +7,7 @@ using MicroFocus.Ci.Tfs.Octane.dto;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Scm
 {
-    class ScmCommit : IDtoBase
+    public  class ScmCommit : IDtoBase
     {
         //TODO: implement
     }

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.dto.parameters
 {
-    internal class CiParameter
+    public class CiParameter
     {
         [JsonProperty("type")]
         public string ParameterType { get; set; }

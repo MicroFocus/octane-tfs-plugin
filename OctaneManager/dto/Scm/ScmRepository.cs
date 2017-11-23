@@ -7,7 +7,7 @@ using MicroFocus.Ci.Tfs.Octane.dto;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Scm
 {
-    class ScmRepository : IDtoBase
+    public class ScmRepository : IDtoBase
     {
         //TODO : implement
     }

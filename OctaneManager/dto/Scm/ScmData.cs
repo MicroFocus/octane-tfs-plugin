@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Scm
 {
-    internal class ScmData : IDtoBase
+    public class ScmData : IDtoBase
     {
         [JsonProperty("repository")]
         public ScmRepository Repository { get; set; }

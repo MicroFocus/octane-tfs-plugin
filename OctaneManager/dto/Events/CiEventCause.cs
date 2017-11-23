@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
 {
-    internal class CiEventCause : IDtoBase
+    public class CiEventCause : IDtoBase
     {
         [JsonProperty("type")]
         public CiEventCauseType CauseType { get; set; }

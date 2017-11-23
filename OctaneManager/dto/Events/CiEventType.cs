@@ -8,7 +8,7 @@ using MicroFocus.Ci.Tfs.Octane.dto;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
 {
-    class CiEventType : IDtoBase
+    public class CiEventType : IDtoBase
     {
         private string _value;
         private CiEventType(string type)

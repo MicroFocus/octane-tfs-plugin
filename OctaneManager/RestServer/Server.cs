@@ -30,7 +30,7 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 
             host.Start();
             Log.Info($"Running on {serverUri}");
-            _server = host;
+            _server = host;            
         }
 
         public void Stop()
