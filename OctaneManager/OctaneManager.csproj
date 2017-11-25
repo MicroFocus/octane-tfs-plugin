@@ -211,9 +211,11 @@
     <Compile Include="Dto\Connectivity\OctaneTaskResult.cs" />
     <Compile Include="Dto\Events\CiEventCause.cs" />
     <Compile Include="Dto\Events\CiEventCauseType.cs" />
+    <Compile Include="Dto\Events\CiEventsList.cs" />
     <Compile Include="Dto\Events\CiEventType.cs" />
     <Compile Include="Dto\Events\PhaseType.cs" />
     <Compile Include="Dto\General\CIJobList.cs" />
+    <Compile Include="Dto\General\CiServerInfo.cs" />
     <Compile Include="Dto\IDtoBase.cs" />
     <Compile Include="Dto\Parameters\CIParameter.cs" />
     <Compile Include="Dto\Pipelines\PipelineNode.cs" />

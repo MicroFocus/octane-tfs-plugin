@@ -41,13 +41,13 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
             {
                 var buildEvent = JsonConvert.DeserializeObject<TfsBuildEvent>(body);
 
-                //CiEvent ciEvent = buildEvent.Resource
+                var ciEvent = buildEvent.ToCiEvent();
 
-                BuildEvent?.Invoke(this, new CiEvent());
+                BuildEvent?.Invoke(this, ciEvent);
             }
             catch (Exception ex)
             {
-                Log.Error("Error parsing build event body");
+                Log.Error($"Error parsing build event body",ex);
             }
         }
     }

@@ -30,10 +30,11 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
         public string Number { get; set; }
 
         [JsonProperty("causes")]
-        public List<CiEventCause> Causes { get; set; }
+        public List<CiEventCause> Causes => new List<CiEventCause>();
 
         [JsonProperty("parameters")]
-        public List<CiParameter> Parameters { get; set; }
+
+        public List<CiParameter> Parameters => new List<CiParameter>();
 
         [JsonProperty("result")]
         public CiBuildResult BuildResult { get; set; }
@@ -52,6 +53,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
         {
             get;
             set;
-        }             
+        }
+
+        [JsonProperty("phaseType")]
+        public string PhaseType { get; set; }
     }
 }

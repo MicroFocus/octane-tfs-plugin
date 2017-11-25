@@ -17,6 +17,8 @@ using log4net;
 using log4net.Config;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
+using MicroFocus.Ci.Tfs.Octane.Dto.Events;
+using MicroFocus.Ci.Tfs.Octane.Dto.General;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
@@ -49,14 +51,15 @@ namespace MicroFocus.Ci.Tfs.Octane
         //private CancellationToken _polingCancelationToken;
         private TaskProcessor _taskProcessor;
 
-
+        private Uri _tfsServerURi;
         public OctaneManager(int servicePort, int pollingTimeout= DEFAULT_POLLING_GET_TIMEOUT)
         {                        
             _pollingGetTimeout = pollingTimeout;
             var hostName = Dns.GetHostName();
             var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
             _connectionConf = ConfigurationManager.Read();
-            var instanceDetails = new InstanceDetails(_connectionConf.InstanceId,$"http://{hostName}:{servicePort}");
+            _tfsServerURi = new Uri($"http://{hostName}:{servicePort}");
+            var instanceDetails = new InstanceDetails(_connectionConf.InstanceId,_tfsServerURi.ToString());
 
             _uriResolver = new UriResolver(_connectionConf.SharedSpace,instanceDetails);
             _tfsManager = new TfsManager(_connectionConf.Pat);
@@ -210,7 +213,28 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         private void RestBase_BuildEvent(object sender, Dto.CiEvent e)
         {
-            
+            var list = new CiEventsList();
+            list.Events.Add(e);
+            list.Server = new CiServerInfo
+                {
+                    Url = _tfsServerURi,
+                    InstanceId = _connectionConf.InstanceId,
+                    SendingTime = DateTime.Now.Ticks,
+                    InstanceIdFrom = DateTime.Now.Ticks
+            };
+
+            var body = JsonConvert.SerializeObject(list);
+            var res = _restConnector.ExecutePut(_uriResolver.GetEventsUri(), null, body);
+
+            if (res.StatusCode == HttpStatusCode.OK)
+            {
+                Log.Info("Event succesfully sent");
+            }
+            else
+            {
+                Log.Error("Event was not sent succesfully");
+            }
+                
         }
     }
 }
