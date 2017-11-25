@@ -32,7 +32,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 
         public string GetEventsUri()
         {
-            var result = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_CI_EVENTS}/tasks";
+            var result = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_CI_EVENTS}";
             return result;
         }
 
