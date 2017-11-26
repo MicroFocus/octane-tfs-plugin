@@ -22,8 +22,6 @@ namespace MicroFocus.Ci.Tfs.Tests
         {
             _tfsManager.GetTestResults("DefaultCollection", "Test2", 9);
 
-
-
         }
     }
 }
