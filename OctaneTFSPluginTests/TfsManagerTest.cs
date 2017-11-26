@@ -20,7 +20,7 @@ namespace MicroFocus.Ci.Tfs.Tests
         [TestMethod]
         public void GetTestResultsTest()
         {
-            _tfsManager.getTestResults("DefaultCollection", "Test2", 4);
+            _tfsManager.getTestResults("DefaultCollection", "Test2", 9);
 
 
 

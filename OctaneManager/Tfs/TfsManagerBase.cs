@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Nancy.Json;
 using Newtonsoft.Json;
+using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs
 {
@@ -32,7 +33,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
         protected List<TfsCollectionItem> GetCollections()
-        {           
+        {
 
             var visualStudioServicesConnection = new VssConnection(_tfsUri, new PatCredentials(string.Empty, _pat));
 
@@ -54,7 +55,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
                     Trace.WriteLine(
                         $"Project Collection '{projectCollection.Name}' (Id: {projectCollection.Id}) at Web Url: '{webUrlForProjectCollection.Href}' & API Url: '{projectCollection.Url}'");
 
-                result.Add(new TfsCollectionItem(projectCollection.Id,projectCollection.Name));
+                result.Add(new TfsCollectionItem(projectCollection.Id, projectCollection.Name));
 
             }
 
@@ -88,7 +89,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
         protected List<TfsProjectItem> GetProjects(string collectionName)
-        {            
+        {
             var collectionUri = new Uri(Url.Combine(_tfsUri.ToString(), collectionName));
             VssConnection collectionVssConnection = new VssConnection(collectionUri, new PatCredentials(string.Empty, _pat));
             var projectHttpClient = collectionVssConnection.GetClient<ProjectHttpClient>();
@@ -98,7 +99,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
             {
                 // and then get ahold of the actual project
                 var teamProject = projectHttpClient.GetProject(projectReference.Id.ToString()).Result;
-                var urlForTeamProject = ((ReferenceLink) teamProject.Links.Links["web"]).Href;
+                var urlForTeamProject = ((ReferenceLink)teamProject.Links.Links["web"]).Href;
 
                 Trace.WriteLine(
                     $"Team Project '{teamProject.Name}' (Id: {teamProject.Id}) at Web Url: '{urlForTeamProject}' & API Url: '{teamProject.Url}'");
@@ -115,8 +116,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
         protected List<TfsBuildDefenitionItem> GetBuildDefenitions(string collectionName, string projectName)
-        {            
-            var uri = _tfsUri.Append(collectionName);        
+        {
+            var uri = _tfsUri.Append(collectionName);
             var buildClient = new BuildHttpClient(uri, new PatCredentials(string.Empty, _pat));
             var definitions = buildClient.GetDefinitionsAsync(project: projectName);
             var result = new List<TfsBuildDefenitionItem>();
@@ -132,7 +133,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 
         }
 
-        public void getTestResults(string collectionName, string projectName, int runId)
+
+        private T GetResult<T>(String urlSuffix)
         {
             //encode your personal access token                   
             string credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _pat)));
@@ -145,32 +147,46 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
-
-                //connect to the REST endpoint                            
-                string prefix = String.Format("{0}/{1}/_apis/test/runs/{2}/results?api-version=3.0", collectionName, projectName, runId);
-                HttpResponseMessage response = client.GetAsync(prefix, HttpCompletionOption.ResponseContentRead).Result;
+                HttpResponseMessage response = client.GetAsync(urlSuffix, HttpCompletionOption.ResponseContentRead).Result;
 
                 //check to see if we have a succesfull respond
+                string content = response.Content.ReadAsStringAsync().Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    //set the viewmodel from the content in the response
-                    //viewModel = response.Content.ReadAsAsync<ListofProjectsResponse.Projects>().Result;
+                    T result = JsonConvert.DeserializeObject<T>(content);
+                    return result;
+                }
+                else
+                {
+                    String msg = $"Failed to get result {urlSuffix} : {content})";
+                    Trace.WriteLine(msg);
+                    throw new Exception(msg);
 
-
-                    string content = response.Content.ReadAsStringAsync().Result;
-
-                    TfsTestResults results = JsonConvert.DeserializeObject<TfsTestResults>(content);
-                    foreach(TfsTestResult  result in results.Results)
-                    {
-                        if (result.ErrorMessage != null)
-                        {
-                            -int ff = 4;
-                        }
-                    }
-
-                    int t = 5;
                 }
             }
+        }
+
+        private TfsBuild GetBuild(string collectionName, string projectName, long buildId)
+        {
+            string uriSuffix = ($"{collectionName}/{projectName}/_apis/build/builds/{buildId}?api-version=1.0");
+            TfsBuild build = GetResult<TfsBuild>(uriSuffix);
+            return build;
+        }
+
+        private TfsRun GetRunByBuildUri(string collectionName, string projectName, string buildUri)
+        {
+            string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs?api-version=1.0&buildUri={buildUri}");
+            TfsRuns runs = GetResult<TfsRuns>(uriSuffix);
+            return runs.Results.Count > 0 ? runs.Results[0] : null;
+        }
+
+        public TfsTestResults getTestResults(string collectionName, string projectName, int buildId)
+        {
+            TfsBuild build = GetBuild(collectionName, projectName, buildId);
+            TfsRun run = GetRunByBuildUri(collectionName, projectName, build.Uri);
+            string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}?api-version=1.0");
+            TfsTestResults results = GetResult<TfsTestResults>(uriSuffix);
+            return results;
         }
     }
 }

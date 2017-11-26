@@ -11,7 +11,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
     {
         public long Id { get; set; }
 
-        public String Outcome { get; set; }
+        public string Outcome { get; set; }
 
         public DateTime StartedDate { get; set; }
 
@@ -19,17 +19,19 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
 
         public double DurationInMs { get; set; }
 
-        public String ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; }
 
-        public String TestCaseTitle { get; set; }
+        public string TestCaseTitle { get; set; }
 
-        public String StackTrace { get; set; }
+        public string StackTrace { get; set; }
 
-        public String AutomatedTestName { get; set; }
+        public string AutomatedTestName { get; set; }
 
-        
-            
-            
-            
+        public string AutomatedTestType { get; set; }
+
+
+
+
+
     }
 }

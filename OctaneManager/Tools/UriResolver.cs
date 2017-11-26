@@ -45,5 +45,12 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 
             return result;
         }
+
+        public string GetTestResultRelevant(string jobName)
+        {
+            var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_CI_SERVERS}{_instDetails.InstanceId}/jobs/{jobName}/tests-result-preflight";
+            return baseUri;
+
+        }
     }
 }

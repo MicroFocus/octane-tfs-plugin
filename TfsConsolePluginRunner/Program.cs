@@ -22,7 +22,7 @@ namespace TfsConsolePluginRunner
         {            
             Log.Info("Starting proccess...");
 
-            _octaneManager = new OctaneManager(9999);
+            _octaneManager = new OctaneManager(8080);
             _octaneManager.Init();
 
             Console.WriteLine("TFS plugin is running , press any key to exit...");

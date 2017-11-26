@@ -66,28 +66,58 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         public void Init()
         {
-            //_server.Start();
-            var connected = _restConnector.Connect(_connectionConf.Host,
-                new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
-            if (!connected)
+            if (!IsInitialized)
             {
-               throw new Exception("Could not connect to octane webapp"); 
+                //_server.Start();
+                var connected = _restConnector.Connect(_connectionConf.Host,
+                    new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
+                if (!connected)
+                {
+                    throw new Exception("Could not connect to octane webapp");
+                }
+
+                IsInitialized = true;
+
+                InitTaskPolling();
             }
 
-            IsInitialized = true;
-
-            InitTaskPolling();            
+                 
         }
 
         public void SendTestResults()
         {
-          
+            bool isTestResultRelevant = GetTestResultRelevant("bubu");
+        }
+
+        private bool GetTestResultRelevant(String jobName)
+        {
+            Log.Debug("Sending IsTestResultRelevant");
+            try
+            {
+                ResponseWrapper res = _restConnector.ExecuteGet(_uriResolver.GetTestResultRelevant(jobName), null);
+
+                if (res.StatusCode == HttpStatusCode.OK)
+                {
+                    bool result = Boolean.Parse(res.Data);
+                    return true;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error sending GetTestResultRelevant with jobname {jobName} to server");
+                Log.Error($"Error desc: {ex.Message}");
+            }
+
+            return false;
         }
 
         public void ShutDown()
         {            
             _cancellationTokenSource.Cancel();
             _restConnector.Disconnect();
+            IsInitialized = false;
         }
 
         public void WaitShutdown()
@@ -179,8 +209,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         private bool SendTaskResultToOctane(Guid resultId,string resultObj)
         {
-            Trace.WriteLine("Sending result to octane");                      
-            Trace.WriteLine(JToken.Parse(resultObj).ToString());
+            Log.Debug("Sending result to octane");
+            Log.Debug(JToken.Parse(resultObj).ToString());
             try
             {
                 var res = _restConnector.ExecutePut(_uriResolver.PostTaskResultUri(resultId.ToString()), null,
@@ -191,13 +221,13 @@ namespace MicroFocus.Ci.Tfs.Octane
                     return true;
                 }
 
-                Trace.WriteLine($"Error sending result {resultId} with object {resultObj} to server");
-                Trace.WriteLine($"Error desc: {res?.StatusCode}, {res?.Data}");
+                Log.Debug($"Error sending result {resultId} with object {resultObj} to server");
+                Log.Debug($"Error desc: {res?.StatusCode}, {res?.Data}");
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"Error sending result {resultId} with object {resultObj} to server");
-                Trace.WriteLine($"Error desc: {ex.Message}");
+                Log.Error($"Error sending result {resultId} with object {resultObj} to server");
+                Log.Error($"Error desc: {ex.Message}");
             }
 
             return false;
