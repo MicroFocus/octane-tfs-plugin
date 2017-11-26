@@ -180,11 +180,11 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
             return runs.Results.Count > 0 ? runs.Results[0] : null;
         }
 
-        public TfsTestResults getTestResults(string collectionName, string projectName, int buildId)
+        public TfsTestResults GetTestResults(string collectionName, string projectName, int buildId)
         {
             TfsBuild build = GetBuild(collectionName, projectName, buildId);
             TfsRun run = GetRunByBuildUri(collectionName, projectName, build.Uri);
-            string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}?api-version=1.0");
+            string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}/results?api-version=1.0");
             TfsTestResults results = GetResult<TfsTestResults>(uriSuffix);
             return results;
         }
