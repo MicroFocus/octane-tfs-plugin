@@ -16,6 +16,7 @@ using Hpe.Nga.Api.Core.Connector.Exceptions;
 using log4net;
 using log4net.Config;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using MicroFocus.Ci.Tfs.Octane.Dto.General;
@@ -214,6 +215,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         private void RestBase_BuildEvent(object sender, Dto.CiEvent e)
         {
             var list = new CiEventsList();
+            list.Events.Add(CreateStartEvent(e));
             list.Events.Add(e);
             list.Server = new CiServerInfo
                 {
@@ -235,6 +237,14 @@ namespace MicroFocus.Ci.Tfs.Octane
                 Log.Error("Event was not sent succesfully");
             }
                 
+        }
+
+        private CiEvent CreateStartEvent(CiEvent finishEvent)
+        {
+            var startEvent = new CiEvent(finishEvent) {EventType = CiEventType.Started};
+
+            return startEvent;
+
         }
     }
 }

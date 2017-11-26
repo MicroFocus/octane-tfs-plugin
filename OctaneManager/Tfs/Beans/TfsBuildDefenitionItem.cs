@@ -12,6 +12,6 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
         public TfsBuildDefenitionItem(string id, string name) : base(id, name)
         {
             
-        }
+        }        
     }
 }

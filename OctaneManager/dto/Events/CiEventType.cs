@@ -11,7 +11,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
     public class CiEventType : IDtoBase
     {
         private string _value;
-        private CiEventType(string type)
+        public CiEventType(string type)
         {
             _value = type;
         }
@@ -25,6 +25,6 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
         public override string ToString()
         {
             return _value;
-        }
+        }        
     }
 }

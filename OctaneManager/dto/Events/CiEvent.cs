@@ -8,6 +8,7 @@ using MicroFocus.Ci.Tfs.Octane.dto.parameters;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using MicroFocus.Ci.Tfs.Octane.Dto.Scm;
 using MicroFocus.Ci.Tfs.Octane.Dto.Snapshots;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto
@@ -18,6 +19,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
         public string ProjectDisplayName { get; set; }
 
         [JsonProperty("eventType")]
+        [JsonConverter(typeof(ToStringJsonConverter))]
         public CiEventType EventType { get; set; }
 
         [JsonProperty("buildCiId")]
@@ -57,5 +59,21 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
 
         [JsonProperty("phaseType")]
         public string PhaseType { get; set; }
+
+        public CiEvent() {  }
+        public CiEvent(CiEvent other)
+        {
+            ProjectDisplayName = other.ProjectDisplayName;
+            EventType = new CiEventType(other.EventType.ToString());
+            BuildCiId = other.BuildCiId;
+            Project = other.Project;
+            Number = other.Number;
+            BuildResult = other.BuildResult;
+            StartTime = other.StartTime;
+            EstimatedDuration = other.EstimatedDuration;
+            Duration = other.Duration;
+            ScmInfo = other.ScmInfo; //TODO: [URGENT] Refactor with copy constructor!!!
+            PhaseType = other.PhaseType;
+        }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using Flurl;
+using log4net;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Build.WebApi;
@@ -15,10 +17,11 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 {
     public abstract class TfsManagerBase
     {
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly TfsConfiguration _tfsConf;
         private readonly TfsConfigurationServer _configurationServer;
         private const string TfsUrl = "http://localhost:8080/tfs";
-
+        
         protected TfsManagerBase(string pat)
         {
             _tfsConf = new TfsConfiguration(new Uri(TfsUrl),pat);
@@ -48,7 +51,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
                 var webUrlForProjectCollection = projectCollection.Links.Links["web"] as ReferenceLink;
 
                 if (webUrlForProjectCollection != null)
-                    Trace.WriteLine(
+                    Log.Debug(
                         $"Project Collection '{projectCollection.Name}' (Id: {projectCollection.Id}) at Web Url: '{webUrlForProjectCollection.Href}' & API Url: '{projectCollection.Url}'");
 
                 result.Add(new TfsCollectionItem(projectCollection.Id,projectCollection.Name));
