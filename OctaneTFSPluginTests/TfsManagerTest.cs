@@ -21,7 +21,7 @@ namespace MicroFocus.Ci.Tfs.Tests
         {
             TfsBuild build = _tfsManager.GetBuild("DefaultCollection", "Test2", 11);
             TfsTestResults testResults = _tfsManager.GetTestResultsByBuildUri("DefaultCollection", "Test2", build.Uri);
-            OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(testResults, build);
+            OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult("asd", testResults, build);
             String xml = TestResultUtils.SerializeToXml(octaneTestResult);
         }
     }

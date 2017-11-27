@@ -22,6 +22,9 @@ using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
+using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
+using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -39,7 +42,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         private static readonly RestConnector _restConnector = new RestConnector();
         private readonly TfsManager _tfsManager;
         private static ConnectionDetails _connectionConf;
-        
+
         private readonly TimeSpan _pollingInterval = TimeSpan.FromSeconds(DEFAULT_POLLING_INTERVAL);
         private readonly int _pollingGetTimeout;
         private readonly UriResolver _uriResolver;
@@ -50,15 +53,15 @@ namespace MicroFocus.Ci.Tfs.Octane
         private TaskProcessor _taskProcessor;
 
 
-        public OctaneManager(int servicePort, int pollingTimeout= DEFAULT_POLLING_GET_TIMEOUT)
-        {                        
+        public OctaneManager(int servicePort, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
+        {
             _pollingGetTimeout = pollingTimeout;
             var hostName = Dns.GetHostName();
             var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
             _connectionConf = ConfigurationManager.Read();
-            var instanceDetails = new InstanceDetails(_connectionConf.InstanceId,$"http://{hostName}:{servicePort}");
+            var instanceDetails = new InstanceDetails(_connectionConf.InstanceId, $"http://{hostName}:{servicePort}");
 
-            _uriResolver = new UriResolver(_connectionConf.SharedSpace,instanceDetails);
+            _uriResolver = new UriResolver(_connectionConf.SharedSpace, instanceDetails);
             _tfsManager = new TfsManager(_connectionConf.Pat);
             _taskProcessor = new TaskProcessor(_tfsManager);
             Log.Debug("Octane manager created...");
@@ -80,13 +83,32 @@ namespace MicroFocus.Ci.Tfs.Octane
 
                 InitTaskPolling();
             }
-
-                 
         }
 
         public void SendTestResults()
         {
-            bool isTestResultRelevant = GetTestResultRelevant("bubu");
+            TfsBuild build = _tfsManager.GetBuild("DefaultCollection", "Test2", 11);
+            TfsTestResults testResults = _tfsManager.GetTestResultsByBuildUri("DefaultCollection", "Test2", build.Uri);
+            OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), testResults, build);
+            String xml = TestResultUtils.SerializeToXml(octaneTestResult);
+
+
+            try
+            {
+                ResponseWrapper res = _restConnector.ExecutePost(_uriResolver.GetTestResults(), null, xml);
+
+                if (res.StatusCode == HttpStatusCode.OK)
+                {
+                    int t = 5;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error sending SendTestResults to server");
+                Log.Error($"Error desc: {ex.Message}");
+            }
         }
 
         private bool GetTestResultRelevant(String jobName)
@@ -114,7 +136,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         }
 
         public void ShutDown()
-        {            
+        {
             _cancellationTokenSource.Cancel();
             _restConnector.Disconnect();
             IsInitialized = false;
@@ -128,7 +150,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         private void InitTaskPolling()
         {
             Log.Debug("Start init of polling thread");
-            _taskPollingThread = Task.Factory.StartNew(()=>PollOctaneTasks(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);            
+            _taskPollingThread = Task.Factory.StartNew(() => PollOctaneTasks(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
         }
 
         public bool IsInitialized { get; protected set; } = false;
@@ -143,13 +165,13 @@ namespace MicroFocus.Ci.Tfs.Octane
                     Log.Debug("Waiting for task...");
                     res =
                         _restConnector.ExecuteGet(_uriResolver.GetTasksUri(), _uriResolver.GetTaskQueryParams(),
-                            _pollingGetTimeout);                    
+                            RequestAdditionalData.Create().SetTimeout(_pollingGetTimeout));
                 }
                 catch (Exception ex)
                 {
                     if (ex is WebException)
                     {
-                        var innerEx = (WebException) ex.InnerException;
+                        var innerEx = (WebException)ex.InnerException;
                         var mqmEx = ex as MqmRestException;
                         if (innerEx?.Status == WebExceptionStatus.Timeout)
                         {
@@ -180,34 +202,35 @@ namespace MicroFocus.Ci.Tfs.Octane
                         Log.Debug($"Get data : {res?.Data}");
                         try
                         {
-                            var octaneTask = JsonConvert.DeserializeObject<OctaneTask>(res?.Data.Substring(1,res.Data.Length-2).Replace("GET","Get"));
-                            var response = new OctaneTaskResult(200,octaneTask.Id,_taskProcessor.ProcessTask(octaneTask?.ResultUrl));
+                            var octaneTask = JsonConvert.DeserializeObject<OctaneTask>(res?.Data.Substring(1, res.Data.Length - 2).Replace("GET", "Get"));
+                            var response = new OctaneTaskResult(200, octaneTask.Id, _taskProcessor.ProcessTask(octaneTask?.ResultUrl));
 
                             if (octaneTask == null)
                             {
                                 Trace.TraceError("Octane task was not json parsed , Nothing to send....");
                             }
-                            else {
+                            else
+                            {
                                 if (!SendTaskResultToOctane(octaneTask.Id, response.ToString()))
                                 {
                                     Log.Error("Error sending results!");
                                 }
-                            }                            
+                            }
 
                         }
                         catch (Exception ex)
                         {
-                            Log.Error("Error deserializing Octane message!",ex);
+                            Log.Error("Error deserializing Octane message!", ex);
                         }
                     }
-                    
-                    
+
+
                 }
                 Thread.Sleep(_pollingInterval);
-            } while (!token.IsCancellationRequested);            
+            } while (!token.IsCancellationRequested);
         }
 
-        private bool SendTaskResultToOctane(Guid resultId,string resultObj)
+        private bool SendTaskResultToOctane(Guid resultId, string resultObj)
         {
             Log.Debug("Sending result to octane");
             Log.Debug(JToken.Parse(resultObj).ToString());
@@ -231,6 +254,6 @@ namespace MicroFocus.Ci.Tfs.Octane
             }
 
             return false;
-        }        
+        }
     }
 }

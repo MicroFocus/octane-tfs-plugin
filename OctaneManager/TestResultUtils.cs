@@ -26,11 +26,11 @@ namespace MicroFocus.Ci.Tfs.Octane
             }
         }
 
-        public static OctaneTestResult ConvertToOctaneTestResult(TfsTestResults testResults, TfsBuild build)
+        public static OctaneTestResult ConvertToOctaneTestResult(string serverId, TfsTestResults testResults, TfsBuild build)
         {
             //Serialization prepare
             OctaneTestResult octaneTestResult = new OctaneTestResult();
-            octaneTestResult.Build = OctaneTestResultBuild.Create(build.Id, build.Name);
+            octaneTestResult.Build = OctaneTestResultBuild.Create(serverId, build.Id, build.Name);
             octaneTestResult.TestFields = new List<OctaneTestResultTestField>(new[] { OctaneTestResultTestField.Create("TestLevel", "UnitTest") });
             octaneTestResult.TestRuns = new List<OctaneTestResultTestRun>();
             foreach (TfsTestResult testResult in testResults.Results)
