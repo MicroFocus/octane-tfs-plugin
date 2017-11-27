@@ -29,8 +29,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
 
         public string AutomatedTestType { get; set; }
 
-
-
+        public string AutomatedTestStorage { get; set; }
 
 
     }

@@ -9,7 +9,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems
 {
     public class TfsBuild
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         [JsonProperty("buildNumber")]
         public string Name { get; set; }
         public string Uri { get; set; }

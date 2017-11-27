@@ -166,7 +166,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
             }
         }
 
-        private TfsBuild GetBuild(string collectionName, string projectName, long buildId)
+        public TfsBuild GetBuild(string collectionName, string projectName, long buildId)
         {
             string uriSuffix = ($"{collectionName}/{projectName}/_apis/build/builds/{buildId}?api-version=1.0");
             TfsBuild build = GetResult<TfsBuild>(uriSuffix);
@@ -180,10 +180,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
             return runs.Results.Count > 0 ? runs.Results[0] : null;
         }
 
-        public TfsTestResults GetTestResults(string collectionName, string projectName, int buildId)
+        public TfsTestResults GetTestResultsByBuildUri(string collectionName, string projectName, String buildUri)
         {
-            TfsBuild build = GetBuild(collectionName, projectName, buildId);
-            TfsRun run = GetRunByBuildUri(collectionName, projectName, build.Uri);
+            TfsRun run = GetRunByBuildUri(collectionName, projectName, buildUri);
             string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}/results?api-version=1.0");
             TfsTestResults results = GetResult<TfsTestResults>(uriSuffix);
             return results;

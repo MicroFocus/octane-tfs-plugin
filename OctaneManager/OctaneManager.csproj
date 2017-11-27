@@ -213,11 +213,17 @@
     <Compile Include="Dto\Parameters\CIParameter.cs" />
     <Compile Include="Dto\Pipelines\PipelineNode.cs" />
     <Compile Include="Dto\Pipelines\PipelinePhase.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResultError.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResultTestField.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResultBuild.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResult.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResultTestRun.cs" />
     <Compile Include="OctaneManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestServer\RestBase.cs" />
     <Compile Include="RestServer\Server.cs" />
     <Compile Include="TaskProcessor.cs" />
+    <Compile Include="TestResultUtils.cs" />
     <Compile Include="TfsManager.cs" />
     <Compile Include="Tfs\Beans\v1\TfsRuns.cs" />
     <Compile Include="Tfs\Beans\v1\TfsRun.cs" />
