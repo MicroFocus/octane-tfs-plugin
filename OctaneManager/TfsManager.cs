@@ -1,4 +1,6 @@
-﻿using MicroFocus.Ci.Tfs.Octane.dto;
+﻿using System.Reflection;
+using log4net;
+using MicroFocus.Ci.Tfs.Octane.dto;
 using MicroFocus.Ci.Tfs.Octane.dto.general;
 using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
 using MicroFocus.Ci.Tfs.Octane.Tfs;
@@ -7,6 +9,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
     public class TfsManager : TfsManagerBase
     {
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly CiJobList MockJobList = new CiJobList();
         private  CiJobList _cachedJobList = new CiJobList();
         public TfsManager(string pat) : base(pat)
@@ -27,8 +30,10 @@ namespace MicroFocus.Ci.Tfs.Octane
                 {
                     var buildDefenitions = GetBuildDefenitions(collection, project);
                     foreach (var buildDefenition in buildDefenitions)
-                    {
-                        result.Jobs.Add(new PipelineNode($"{collection.Id}.{project.Id}.{buildDefenition.Id}",buildDefenition.Name));
+                    {                        
+                        var id = PipelineNode.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefenition.Id);
+                        Log.Debug($"New job added to list with id: {id}");
+                        result.Jobs.Add(new PipelineNode(id,buildDefenition.Name));
                     }
                 }
             }

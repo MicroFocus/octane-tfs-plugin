@@ -29,6 +29,15 @@ namespace MicroFocus.Ci.Tfs.Octane.dto.pipelines
         {
             JobCiId = jobCiId;
             Name = name;
+            Parameters = new List<CiParameter>();
+            PhasesInternal = new List<PipelinePhase>();
+            PhasesPostBuild = new List<PipelinePhase>();
+        }
+
+        public static string GenerateOctaneJobCiId(string collectionName, string projectId, string buildDefId)
+        {
+            var id = $"{collectionName.Replace(" ","-")}.{projectId}.{buildDefId}";
+            return id;
         }
     }
 }

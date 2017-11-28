@@ -9,7 +9,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 {
     [TestClass]
     public class TfsManagerTest : OctaneManagerBaseTest
-    {
+    {            
         [TestMethod]
         public void GetJobsList()
         {

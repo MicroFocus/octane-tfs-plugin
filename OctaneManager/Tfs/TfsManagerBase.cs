@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using Flurl;
+using log4net;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Build.WebApi;
@@ -18,24 +20,23 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 {
     public abstract class TfsManagerBase
     {
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly TfsConfiguration _tfsConf;
         private readonly TfsConfigurationServer _configurationServer;
-        private const string TfsUrl = "http://localhost:8080/tfs/";
-        private readonly string _pat;
-        private readonly Uri _tfsUri;
-
+        private const string TfsUrl = "http://localhost:8080/tfs";
+        
         protected TfsManagerBase(string pat)
         {
-            _tfsUri = new Uri(TfsUrl);
-            _pat = pat;
-
+            _tfsConf = new TfsConfiguration(new Uri(TfsUrl),pat);
+            
             _configurationServer =
-                TfsConfigurationServerFactory.GetConfigurationServer(_tfsUri);
+                TfsConfigurationServerFactory.GetConfigurationServer(_tfsConf.Uri);
         }
 
         protected List<TfsCollectionItem> GetCollections()
         {
 
-            var visualStudioServicesConnection = new VssConnection(_tfsUri, new PatCredentials(string.Empty, _pat));
+            var visualStudioServicesConnection = new VssConnection(_tfsConf.Uri, new PatCredentials(string.Empty, _tfsConf.Pat));
 
             // get ahold of the Project Collection client
             var projectCollectionHttpClient = visualStudioServicesConnection.GetClient<ProjectCollectionHttpClient>();
@@ -52,7 +53,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
                 var webUrlForProjectCollection = projectCollection.Links.Links["web"] as ReferenceLink;
 
                 if (webUrlForProjectCollection != null)
-                    Trace.WriteLine(
+                    Log.Debug(
                         $"Project Collection '{projectCollection.Name}' (Id: {projectCollection.Id}) at Web Url: '{webUrlForProjectCollection.Href}' & API Url: '{projectCollection.Url}'");
 
                 result.Add(new TfsCollectionItem(projectCollection.Id, projectCollection.Name));
@@ -89,9 +90,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
         protected List<TfsProjectItem> GetProjects(string collectionName)
-        {
-            var collectionUri = new Uri(Url.Combine(_tfsUri.ToString(), collectionName));
-            VssConnection collectionVssConnection = new VssConnection(collectionUri, new PatCredentials(string.Empty, _pat));
+        {            
+            var collectionUri = new Uri(Url.Combine(_tfsConf.Uri.ToString(), collectionName));
+            VssConnection collectionVssConnection = new VssConnection(collectionUri, new PatCredentials(string.Empty, _tfsConf.Pat));
             var projectHttpClient = collectionVssConnection.GetClient<ProjectHttpClient>();
 
             var result = new List<TfsProjectItem>();
@@ -116,9 +117,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
         protected List<TfsBuildDefenitionItem> GetBuildDefenitions(string collectionName, string projectName)
-        {
-            var uri = _tfsUri.Append(collectionName);
-            var buildClient = new BuildHttpClient(uri, new PatCredentials(string.Empty, _pat));
+        {            
+            var uri = _tfsConf.Uri.Append(collectionName);        
+            var buildClient = new BuildHttpClient(uri, new PatCredentials(string.Empty, _tfsConf.Pat));
             var definitions = buildClient.GetDefinitionsAsync(project: projectName);
             var result = new List<TfsBuildDefenitionItem>();
             foreach (var buildDefenition in definitions.Result)
@@ -134,16 +135,16 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
 
-        private T GetResult<T>(String urlSuffix)
+        private T GetResult<T>(string urlSuffix)
         {
             //encode your personal access token                   
-            string credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _pat)));
+            var credentials = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConf.Pat)));
 
 
             //use the httpclient
             using (var client = new HttpClient())
             {
-                client.BaseAddress = _tfsUri;
+                client.BaseAddress = _tfsConf.Uri;
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);

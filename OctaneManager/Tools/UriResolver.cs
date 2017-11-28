@@ -13,6 +13,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
     {
         private const string INTERNAL_API = "/internal-api/shared_spaces/";
         private const string ANALYTICS_CI_SERVERS = "/analytics/ci/servers/";
+        private const string ANALYTICS_CI_EVENTS = "/analytics/ci/events";
+
         private const string ANALYTICS_TEST_RESULTS = "/analytics/ci/test-results/";
         
         private int _sharedSpace;
@@ -28,6 +30,12 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
         {
             var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_CI_SERVERS}{_instDetails.InstanceId}/tasks";
             return baseUri;
+        }
+
+        public string GetEventsUri()
+        {
+            var result = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_CI_EVENTS}";
+            return result;
         }
 
         public string GetTaskQueryParams()

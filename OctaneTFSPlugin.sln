@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctaneTFSPlugin", "OctaneTFSPlugin\OctaneTFSPlugin.csproj", "{DFFD273E-73EC-436D-8FD5-2786114A9762}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctaneTFSPluginTests", "Oct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsConsolePluginRunner", "TfsConsolePluginRunner\TfsConsolePluginRunner.csproj", "{298597DA-2C68-418E-90D8-F73782AB10EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hpe.Nga.Api.Core", "..\m-seldin\alm-octane-csharp-rest-sdk\Hpe.Nga.Api.Core\Hpe.Nga.Api.Core.csproj", "{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hpe.Nga.Api.Core", "..\alm-octane-csharp-rest-sdk\Hpe.Nga.Api.Core\Hpe.Nga.Api.Core.csproj", "{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
