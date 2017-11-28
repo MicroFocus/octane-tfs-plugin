@@ -25,8 +25,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 
             var path = MicroFocus.Ci.Tfs.Octane.Configuration.ConfigurationManager.ConfigurationFile;
 
-            var connectionDetails = new ConnectionDetails(webbAppUrl,clientId,clientSecret,instanceId);
-            connectionDetails.Pat = pat;
+            var connectionDetails = new ConnectionDetails(webbAppUrl, clientId, clientSecret, instanceId) {Pat = pat};
             using (TextWriter writer = new StreamWriter(path))
             {
                 var config = JsonConvert.SerializeObject(connectionDetails);

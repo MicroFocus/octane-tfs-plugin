@@ -8,10 +8,12 @@
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Hpe.Nga.Api.Core.Connector;
 using Hpe.Nga.Api.Core.Connector.Exceptions;
+using log4net;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
@@ -47,9 +49,8 @@ namespace MicroFocus.Ci.Tfs.Octane
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly Server _server = new Server();
         //private CancellationToken _polingCancelationToken;
-        private TaskProcessor _taskProcessor = new TaskProcessor();
-
-        private Uri _tfsServerURi;
+        private readonly TaskProcessor _taskProcessor;
+        private readonly Uri _tfsServerURi;
         public OctaneManager(int servicePort, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
         {                        
             _pollingGetTimeout = pollingTimeout;
@@ -128,8 +129,8 @@ namespace MicroFocus.Ci.Tfs.Octane
                 Log.Error($"Error sending GetTestResultRelevant with jobname {jobName} to server");
                 Log.Error($"Error desc: {ex.Message}");
             }
-
-            IsInitialized = true;
+            
+            return false;
         }
 
         public void ShutDown()

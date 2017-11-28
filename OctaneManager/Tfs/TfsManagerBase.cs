@@ -135,16 +135,16 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         }
 
 
-        private T GetResult<T>(String urlSuffix)
+        private T GetResult<T>(string urlSuffix)
         {
             //encode your personal access token                   
-            string credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _pat)));
+            var credentials = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConf.Pat)));
 
 
             //use the httpclient
             using (var client = new HttpClient())
             {
-                client.BaseAddress = _tfsUri;
+                client.BaseAddress = _tfsConf.Uri;
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
