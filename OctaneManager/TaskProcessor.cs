@@ -68,6 +68,7 @@ namespace MicroFocus.Ci.Tfs.Octane
                     {
                         return TaskType.GetJobsList;
                     }
+                    return TaskType.GetJobsList;
                 }
                 else if (octaneParams.Count == 2)
                 {

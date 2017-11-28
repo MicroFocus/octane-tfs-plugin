@@ -273,8 +273,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\alm-octane-csharp-rest-sdk\Hpe.Nga.Api.Core\Hpe.Nga.Api.Core.csproj">
-      <Project>{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}</Project>
+    <ProjectReference Include="..\alm-octane-csharp-rest-sdk\Hpe.Nga.Api.Core\Hpe.Nga.Api.Core.csproj">
+      <Project>{344d2ea6-c3e6-4a67-95c1-51b5e7647e89}</Project>
       <Name>Hpe.Nga.Api.Core</Name>
     </ProjectReference>
   </ItemGroup>
