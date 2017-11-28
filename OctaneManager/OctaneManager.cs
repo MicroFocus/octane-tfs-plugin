@@ -15,7 +15,10 @@ using Hpe.Nga.Api.Core.Connector;
 using Hpe.Nga.Api.Core.Connector.Exceptions;
 using log4net;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
+using MicroFocus.Ci.Tfs.Octane.Dto.Events;
+using MicroFocus.Ci.Tfs.Octane.Dto.General;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
@@ -65,23 +68,7 @@ namespace MicroFocus.Ci.Tfs.Octane
             _taskProcessor = new TaskProcessor(_tfsManager);
             Log.Debug("Octane manager created...");
         }
-
-        public void Init()
-        {
-            if (!IsInitialized)
-            {
-            var connected = _restConnector.Connect(_connectionConf.Host,
-                new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
-            if (!connected)
-            {
-               throw new Exception("Could not connect to octane webapp"); 
-            }
-
-            IsInitialized = true;
-
-            InitTaskPolling();
-            }
-        }
+        
         public void SendTestResults()
         {
             TfsBuild build = _tfsManager.GetBuild("DefaultCollection", "Test2", 11);
@@ -251,6 +238,66 @@ namespace MicroFocus.Ci.Tfs.Octane
             }
 
             return false;
-        }        
+        }
+        public void Init()
+        {
+            InitializeRestServer();
+            InitializeConnectionToOctane();
+            InitTaskPolling();
+
+            IsInitialized = true;
+        }
+
+        private void InitializeRestServer()
+        {
+            _server.Start();
+            RestBase.BuildEvent += RestBase_BuildEvent;
+        }
+
+        private void InitializeConnectionToOctane()
+        {
+            var connected = _restConnector.Connect(_connectionConf.Host,
+                new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
+            if (!connected)
+            {
+                throw new Exception("Could not connect to octane webapp");
+            }
+        }
+
+        private void RestBase_BuildEvent(object sender, Dto.CiEvent e)
+        {
+            var list = new CiEventsList();
+            list.Events.Add(CreateStartEvent(e));
+            list.Events.Add(e);
+            list.Server = new CiServerInfo
+            {
+                Url = _tfsServerURi,
+                InstanceId = _connectionConf.InstanceId,
+                SendingTime = DateTime.Now.Ticks,
+                InstanceIdFrom = DateTime.Now.Ticks
+            };
+
+            var body = JsonConvert.SerializeObject(list);
+            var res = _restConnector.ExecutePut(_uriResolver.GetEventsUri(), null, body);
+
+            if (res.StatusCode == HttpStatusCode.OK)
+            {
+                Log.Info("Event succesfully sent");
+            }
+            else
+            {
+                Log.Error("Event was not sent succesfully");
+            }
+
+        }
+
+        private CiEvent CreateStartEvent(CiEvent finishEvent)
+        {
+            var startEvent = new CiEvent(finishEvent) { EventType = CiEventType.Started };
+
+            return startEvent;
+
+        }
+
     }
 }
