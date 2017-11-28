@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,10 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
         public string AutomatedTestType { get; set; }
 
         public string AutomatedTestStorage { get; set; }
+
+        public TfsItem Project { get; set; }
+
+        public TfsItem Build { get; set; }
 
 
     }

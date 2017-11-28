@@ -62,9 +62,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
             return baseUri;
         }
 
-        public string GetTestResults()
+        public string GetTestResults(bool skipErrors=false)
         {
-            var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_TEST_RESULTS}";
+            var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_TEST_RESULTS}?skip-errors={skipErrors}";
             return baseUri;
         }
     }

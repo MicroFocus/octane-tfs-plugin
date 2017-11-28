@@ -244,6 +244,7 @@
     <Compile Include="TaskProcessor.cs" />
     <Compile Include="TestResultUtils.cs" />
     <Compile Include="TfsManager.cs" />
+    <Compile Include="Tfs\Beans\v1\TfsItem.cs" />
     <Compile Include="Tfs\Beans\v1\TfsRuns.cs" />
     <Compile Include="Tfs\Beans\v1\TfsRun.cs" />
     <Compile Include="Tfs\Beans\v1\TfsBuild.cs" />
