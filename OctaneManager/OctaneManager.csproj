@@ -228,6 +228,11 @@
     <Compile Include="Dto\Parameters\CIParameter.cs" />
     <Compile Include="Dto\Pipelines\PipelineNode.cs" />
     <Compile Include="Dto\Pipelines\PipelinePhase.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResultError.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResultTestField.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResultBuild.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResult.cs" />
+    <Compile Include="Dto\TestResults\OctaneTestResultTestRun.cs" />
     <Compile Include="Dto\Scm\ScmCommit.cs" />
     <Compile Include="Dto\Scm\ScmData.cs" />
     <Compile Include="Dto\Scm\ScmRepository.cs" />
@@ -237,12 +242,20 @@
     <Compile Include="RestServer\RestBase.cs" />
     <Compile Include="RestServer\Server.cs" />
     <Compile Include="TaskProcessor.cs" />
+    <Compile Include="TestResultUtils.cs" />
     <Compile Include="TfsManager.cs" />
+    <Compile Include="Tfs\Beans\v1\TfsRuns.cs" />
+    <Compile Include="Tfs\Beans\v1\TfsRun.cs" />
+    <Compile Include="Tfs\Beans\v1\TfsBuild.cs" />
     <Compile Include="Tfs\Beans\TfsBuildDefenitionItem.cs" />
     <Compile Include="Tfs\Beans\Events\TfsBuildEvent.cs" />
     <Compile Include="Tfs\Beans\TfsItemBase.cs" />
     <Compile Include="Tfs\Beans\TfsProjectItem.cs" />
     <Compile Include="Tfs\Beans\TfsCollectionItem.cs" />
+    <Compile Include="Tfs\Beans\v1\TfsCollection.cs" />
+    <Compile Include="Tfs\Beans\v1\TfsBuilds.cs" />
+    <Compile Include="Tfs\Beans\v1\TfsTestResults.cs" />
+    <Compile Include="Tfs\Beans\v1\TfsTestResult.cs" />
     <Compile Include="Tfs\SubscriptionManager.cs" />
     <Compile Include="Tfs\TfsConfiguration.cs" />
     <Compile Include="Tfs\TfsManagerBase.cs" />
@@ -259,7 +272,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\HPSoftware\alm-octane-csharp-rest-sdk\Hpe.Nga.Api.Core\Hpe.Nga.Api.Core.csproj">
+    <ProjectReference Include="..\..\m-seldin\alm-octane-csharp-rest-sdk\Hpe.Nga.Api.Core\Hpe.Nga.Api.Core.csproj">
       <Project>{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}</Project>
       <Name>Hpe.Nga.Api.Core</Name>
     </ProjectReference>

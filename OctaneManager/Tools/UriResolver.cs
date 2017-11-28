@@ -15,6 +15,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
         private const string ANALYTICS_CI_SERVERS = "/analytics/ci/servers/";
         private const string ANALYTICS_CI_EVENTS = "/analytics/ci/events";
 
+        private const string ANALYTICS_TEST_RESULTS = "/analytics/ci/test-results/";
+        
         private int _sharedSpace;
         private InstanceDetails _instDetails;
         public UriResolver(int sharedSpace,InstanceDetails instDetails)
@@ -52,6 +54,18 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
             var result = $"{baseUri}/{taskId}/result";
 
             return result;
+        }
+
+        public string GetTestResultRelevant(string jobName)
+        {
+            var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_CI_SERVERS}{_instDetails.InstanceId}/jobs/{jobName}/tests-result-preflight";
+            return baseUri;
+        }
+
+        public string GetTestResults()
+        {
+            var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_TEST_RESULTS}";
+            return baseUri;
         }
     }
 }

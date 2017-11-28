@@ -29,5 +29,17 @@ namespace MicroFocus.Ci.Tfs.Tests
 
             
         }
+
+        [TestMethod]
+        public void SendResultsTest()
+        {
+            octaneManager.Init();
+
+            octaneManager.SendTestResults();
+
+            octaneManager.WaitShutdown();
+
+
+        }
     }
 }
