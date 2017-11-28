@@ -89,13 +89,14 @@ namespace MicroFocus.Ci.Tfs.Octane
         {
             TfsBuild build = _tfsManager.GetBuild("DefaultCollection", "Test2", 11);
             TfsTestResults testResults = _tfsManager.GetTestResultsByBuildUri("DefaultCollection", "Test2", build.Uri);
-            OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), testResults, build);
+            OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), testResults);
             String xml = TestResultUtils.SerializeToXml(octaneTestResult);
 
 
             try
             {
-                ResponseWrapper res = _restConnector.ExecutePost(_uriResolver.GetTestResults(), null, xml);
+               ResponseWrapper res = _restConnector.ExecutePost(_uriResolver.GetTestResults(true), null, xml,
+                    RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
 
                 if (res.StatusCode == HttpStatusCode.OK)
                 {
@@ -165,7 +166,7 @@ namespace MicroFocus.Ci.Tfs.Octane
                     Log.Debug("Waiting for task...");
                     res =
                         _restConnector.ExecuteGet(_uriResolver.GetTasksUri(), _uriResolver.GetTaskQueryParams(),
-                            RequestAdditionalData.Create().SetTimeout(_pollingGetTimeout));
+                            RequestConfiguration.Create().SetTimeout(_pollingGetTimeout));
                 }
                 catch (Exception ex)
                 {
