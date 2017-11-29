@@ -186,6 +186,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
             TfsRun run = GetRunByBuildUri(collectionName, projectName, buildUri);
             string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}/results?api-version=1.0");
             TfsTestResults results = GetResult<TfsTestResults>(uriSuffix);
+            results.Run = run;
             return results;
         }
     }

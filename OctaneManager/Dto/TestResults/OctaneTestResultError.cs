@@ -16,9 +16,13 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.TestResults
         [XmlTextAttribute]
         public string StackTrace { get; set; }
 
-        public static OctaneTestResultError Create(String message, String stackTrace)
+        public static OctaneTestResultError Create(String type, String message, String stackTrace)
         {
             OctaneTestResultError err = new OctaneTestResultError();
+            if (!string.IsNullOrEmpty(type) && !type.Equals("None"))
+            {
+                err.Type = type;
+            }
             err.StackTrace = stackTrace;
             err.Message = message;
             return err;

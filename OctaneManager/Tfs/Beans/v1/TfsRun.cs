@@ -13,5 +13,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems
         public long TotalTests { get; set; }
         public long PassedTests { get; set; }
         public long UnanalyzedTests { get; set; }
+        public string WebAccessUrl { get; set; }
+        
     }
 }
