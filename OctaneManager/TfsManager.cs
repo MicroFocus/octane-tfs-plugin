@@ -9,7 +9,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
     public class TfsManager : TfsManagerBase
     {
-        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly CiJobList MockJobList = new CiJobList();
         private  CiJobList _cachedJobList = new CiJobList();
         public TfsManager(string pat) : base(pat)

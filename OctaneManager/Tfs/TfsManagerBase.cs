@@ -23,7 +23,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly TfsConfiguration _tfsConf;
         private readonly TfsConfigurationServer _configurationServer;
-        private const string TfsUrl = "http://localhost:8080/tfs";
+        private const string TfsUrl = "http://localhost:8080/tfs/";
         
         protected TfsManagerBase(string pat)
         {
