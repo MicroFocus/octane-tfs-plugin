@@ -28,7 +28,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
             public DateTime FinishTime { get; set; }
             public string Reason { get; set; }
             public string Status { get; set; }
-            public TfsBuildDefenitionItem Definition { get; set; }
+            public TfsBuildDefinitionItem Definition { get; set; }
 
         }
 
@@ -66,8 +66,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 
             }
             ciEvent.Causes.Add(cause);
-            ciEvent.StartTime = Resource.StartTime.Ticks;
-            ciEvent.Duration = (Resource.FinishTime - Resource.StartTime).Ticks;
+            ciEvent.StartTime = TestResultUtils.ConvertToOctaneTime(Resource.StartTime);
+            ciEvent.Duration = (long)(Resource.FinishTime - Resource.StartTime).TotalMilliseconds;
             ciEvent.ProjectDisplayName = Resource.Definition.Name;
             ciEvent.PhaseType = "post";
             

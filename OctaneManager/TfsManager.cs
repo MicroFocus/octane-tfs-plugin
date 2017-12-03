@@ -27,12 +27,12 @@ namespace MicroFocus.Ci.Tfs.Octane
                 var projects = GetProjects(collection);
                 foreach (var project in projects)
                 {
-                    var buildDefenitions = GetBuildDefenitions(collection, project);
-                    foreach (var buildDefenition in buildDefenitions)
+                    var buildDefinitions = GetBuildDefinitions(collection, project);
+                    foreach (var buildDefinition in buildDefinitions)
                     {                        
-                        var id = PipelineNode.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefenition.Id);
+                        var id = PipelineNode.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
                         Log.Debug($"New job added to list with id: {id}");
-                        result.Jobs.Add(new PipelineNode(id,buildDefenition.Name));
+                        result.Jobs.Add(new PipelineNode(id,buildDefinition.Name));
                     }
                 }
             }

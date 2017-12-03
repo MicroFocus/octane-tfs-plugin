@@ -35,7 +35,7 @@ namespace MicroFocus.Ci.Tfs.Tests
         {
             octaneManager.Init();
 
-            octaneManager.SendTestResults();
+            octaneManager.SendTestResults("Aa","bb");
 
             octaneManager.WaitShutdown();
 

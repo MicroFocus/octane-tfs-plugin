@@ -11,28 +11,31 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.TestResults
     public class OctaneTestResultTestRun
     {
         [XmlAttribute("module")]
-        public String Module { get; set; }
+        public string Module { get; set; }
 
         [XmlAttribute("package")]
-        public String Package { get; set; }
+        public string Package { get; set; }
 
         [XmlAttribute("class")]
-        public String Class { get; set; }
+        public string Class { get; set; }
 
         [XmlAttribute("name")]
-        public String Name { get; set; }
+        public string Name { get; set; }
 
         [XmlAttribute("duration")]
         public long Duration { get; set; }
 
         [XmlAttribute("status")]
-        public String Status { get; set; }
+        public string Status { get; set; }
 
         [XmlAttribute("started")]
         public long Started { get; set; }
 
         [XmlElement("error")]
         public OctaneTestResultError Error { get; set; }
+
+        [XmlAttribute("external_report_url")]
+        public string ExternalReportUrl { get; set; }
 
     }
 }

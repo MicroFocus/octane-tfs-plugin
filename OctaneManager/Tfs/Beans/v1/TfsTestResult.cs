@@ -26,6 +26,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
 
         public string StackTrace { get; set; }
 
+        public string FailureType { get; set; }
+
         public string AutomatedTestName { get; set; }
 
         public string AutomatedTestType { get; set; }
@@ -36,6 +38,6 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
 
         public TfsItem Build { get; set; }
 
-
+        public TfsItem TestRun { get; set; }
     }
 }

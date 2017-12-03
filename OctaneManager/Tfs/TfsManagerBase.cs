@@ -111,22 +111,22 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
             return result;
         }
 
-        protected List<TfsBuildDefenitionItem> GetBuildDefenitions(TfsCollectionItem collection, TfsProjectItem project)
+        protected List<TfsBuildDefinitionItem> GetBuildDefinitions(TfsCollectionItem collection, TfsProjectItem project)
         {
-            return GetBuildDefenitions(collection.Name, project.Name);
+            return GetBuildDefinitions(collection.Name, project.Name);
         }
 
-        protected List<TfsBuildDefenitionItem> GetBuildDefenitions(string collectionName, string projectName)
+        protected List<TfsBuildDefinitionItem> GetBuildDefinitions(string collectionName, string projectName)
         {            
             var uri = _tfsConf.Uri.Append(collectionName);        
             var buildClient = new BuildHttpClient(uri, new PatCredentials(string.Empty, _tfsConf.Pat));
             var definitions = buildClient.GetDefinitionsAsync(project: projectName);
-            var result = new List<TfsBuildDefenitionItem>();
-            foreach (var buildDefenition in definitions.Result)
+            var result = new List<TfsBuildDefinitionItem>();
+            foreach (var buildDefinition in definitions.Result)
             {
-                Trace.WriteLine(buildDefenition.Name);
+                Trace.WriteLine(buildDefinition.Name);
 
-                result.Add(new TfsBuildDefenitionItem(buildDefenition.Id.ToString(), buildDefenition.Name));
+                result.Add(new TfsBuildDefinitionItem(buildDefinition.Id.ToString(), buildDefinition.Name));
 
             }
 
@@ -186,6 +186,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
             TfsRun run = GetRunByBuildUri(collectionName, projectName, buildUri);
             string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}/results?api-version=1.0");
             TfsTestResults results = GetResult<TfsTestResults>(uriSuffix);
+            results.Run = run;
             return results;
         }
     }
