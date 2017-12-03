@@ -248,7 +248,7 @@
     <Compile Include="Tfs\Beans\v1\TfsRuns.cs" />
     <Compile Include="Tfs\Beans\v1\TfsRun.cs" />
     <Compile Include="Tfs\Beans\v1\TfsBuild.cs" />
-    <Compile Include="Tfs\Beans\TfsBuildDefenitionItem.cs" />
+    <Compile Include="Tfs\Beans\TfsBuildDefinitionItem.cs" />
     <Compile Include="Tfs\Beans\Events\TfsBuildEvent.cs" />
     <Compile Include="Tfs\Beans\TfsItemBase.cs" />
     <Compile Include="Tfs\Beans\TfsProjectItem.cs" />

@@ -284,7 +284,7 @@ namespace MicroFocus.Ci.Tfs.Octane
                 Log.Info("Event succesfully sent");
 				if(e.EventType== CiEventType.Finished)
 				{
-					SendTestResults(e.Project, e.BuildCiId);					
+					//SendTestResults(e.Project, e.BuildCiId);					
 				}
             }
             else
