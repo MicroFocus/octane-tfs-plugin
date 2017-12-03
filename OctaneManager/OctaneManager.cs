@@ -23,7 +23,6 @@ using MicroFocus.Ci.Tfs.Octane.RestServer;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
@@ -69,7 +68,7 @@ namespace MicroFocus.Ci.Tfs.Octane
             Log.Debug("Octane manager created...");
         }
         
-        public void SendTestResults()
+        public void SendTestResults(string projectId, string buildCiId)
         {
             TfsBuild build = _tfsManager.GetBuild("DefaultCollection", "Test2", 11);
             TfsTestResults testResults = _tfsManager.GetTestResultsByBuildUri("DefaultCollection", "Test2", build.Uri);
@@ -273,8 +272,8 @@ namespace MicroFocus.Ci.Tfs.Octane
             {
                 Url = _tfsServerURi,
                 InstanceId = _connectionConf.InstanceId,
-                SendingTime = DateTime.Now.Ticks,
-                InstanceIdFrom = DateTime.Now.Ticks
+                SendingTime = TestResultUtils.ConvertToOctaneTime(DateTime.Now),
+                InstanceIdFrom = TestResultUtils.ConvertToOctaneTime(DateTime.Now) 
             };
 
             var body = JsonConvert.SerializeObject(list);
@@ -283,6 +282,10 @@ namespace MicroFocus.Ci.Tfs.Octane
             if (res.StatusCode == HttpStatusCode.OK)
             {
                 Log.Info("Event succesfully sent");
+				if(e.EventType== CiEventType.Finished)
+				{
+					SendTestResults(e.Project, e.BuildCiId);					
+				}
             }
             else
             {
@@ -291,7 +294,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         }
 
-        private CiEvent CreateStartEvent(CiEvent finishEvent)
+
+		private CiEvent CreateStartEvent(CiEvent finishEvent)
         {
             var startEvent = new CiEvent(finishEvent) { EventType = CiEventType.Started };
 
@@ -299,5 +303,5 @@ namespace MicroFocus.Ci.Tfs.Octane
 
         }
 
-    }
+	}
 }

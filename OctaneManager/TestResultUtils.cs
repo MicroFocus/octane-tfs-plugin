@@ -56,8 +56,7 @@ namespace MicroFocus.Ci.Tfs.Octane
                         run.Error = OctaneTestResultError.Create(testResult.FailureType, testResult.ErrorMessage, testResult.StackTrace);
                     }
 
-                    TimeSpan span = testResult.StartedDate.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-                    run.Started = (long)span.TotalMilliseconds;
+					run.Started = ConvertToOctaneTime(testResult.StartedDate);
 
                     //Run WebAccessUrl        http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=runCharts
                     //Run Result WebAccessUrl http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=resultSummary&resultId=100000
@@ -69,7 +68,13 @@ namespace MicroFocus.Ci.Tfs.Octane
             }
             return null;
         }
-    }
+
+		public static long ConvertToOctaneTime(DateTime data)
+		{
+			TimeSpan span = data.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, data.Kind));
+			return (long)span.TotalMilliseconds;
+		}
+	}
 
     public class Utf8StringWriter : StringWriter
     {
