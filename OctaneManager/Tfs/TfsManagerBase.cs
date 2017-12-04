@@ -167,9 +167,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
             }
         }
 
-        public TfsBuild GetBuild(string collectionName, string projectName, long buildId)
+        public TfsBuild GetBuild(string collectionName, string projectId, string buildId)
         {
-            string uriSuffix = ($"{collectionName}/{projectName}/_apis/build/builds/{buildId}?api-version=1.0");
+            string uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=1.0");
             TfsBuild build = GetResult<TfsBuild>(uriSuffix);
             return build;
         }
