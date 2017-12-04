@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Web;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tools
@@ -19,12 +13,15 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
         
         private int _sharedSpace;
         private InstanceDetails _instDetails;
-        public UriResolver(int sharedSpace,InstanceDetails instDetails)
+		private ConnectionDetails _connectionDetails;
+
+
+		public UriResolver(int sharedSpace,InstanceDetails instDetails, ConnectionDetails connectionDetails)
         {
             _sharedSpace = sharedSpace;
             _instDetails = instDetails;
-
-        }
+			_connectionDetails = connectionDetails;
+		}
 
         public string GetTasksUri()
         {
@@ -43,7 +40,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
             var result =
                 $"self-type={_instDetails.Type}&self-url={HttpUtility.UrlEncode(_instDetails.SelfLocation)}" +
                 $"&api-version={_instDetails.ApiVersion}&sdk-version={_instDetails.SdkVersion}" +
-                $"&plugin-version={_instDetails.PluginVersion}";
+                $"&plugin-version={_instDetails.PluginVersion}" +
+				$"&client-id={_connectionDetails.ClientId}";
             
             return result;
         }
@@ -64,7 +62,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 
         public string GetTestResults(bool skipErrors=false)
         {
-            var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_TEST_RESULTS}?skip-errors={skipErrors}";
+            var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_TEST_RESULTS}?skip-errors={skipErrors.ToString().ToLower()}";
             return baseUri;
         }
     }

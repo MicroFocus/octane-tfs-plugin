@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane.Configuration
 {
@@ -19,7 +14,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
         public string PluginVersion => PLUGIN_VERSION;
 
-        public string Type => "Tfs";
+        public string Type => "tfs";
         public Guid InstanceId { get; set; }
 
         public string SelfLocation { get; protected set; }

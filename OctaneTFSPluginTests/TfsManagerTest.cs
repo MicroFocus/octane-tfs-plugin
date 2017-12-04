@@ -7,22 +7,22 @@ using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
 
 namespace MicroFocus.Ci.Tfs.Tests
 {
-    [TestClass]
-    public class TfsManagerTest : OctaneManagerBaseTest
-    {            
-        [TestMethod]
-        public void GetJobsList()
-        {
-            _tfsManager.GetJobsList();
-        }
+	[TestClass]
+	public class TfsManagerTest : OctaneManagerBaseTest
+	{
+		[TestMethod]
+		public void GetJobsList()
+		{
+			_tfsManager.GetJobsList();
+		}
 
-        [TestMethod]
-        public void GetTestResultsTest()
-        {
-            TfsBuild build = _tfsManager.GetBuild("DefaultCollection", "Test2", 11);
-            TfsTestResults testResults = _tfsManager.GetTestResultsByBuildUri("DefaultCollection", "Test2", build.Uri);
-            OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult("asd", testResults);
-            String xml = TestResultUtils.SerializeToXml(octaneTestResult);
-        }
-    }
+		[TestMethod]
+		public void GetTestResultsTest()
+		{
+			TfsBuild build = _tfsManager.GetBuild("DefaultCollection", "Test2", "20171203.8");
+			TfsTestResults testResults = _tfsManager.GetTestResultsByBuildUri("DefaultCollection", "Test2", build.Uri);
+			OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult("77393d1d-c40c-439d-9fda-0b88b913a95f", "DefaultCollection.3086f4e9-d2ef-4f1a-9e48-19bf30c794a5.1", "20171203.13", testResults);
+			String xml = TestResultUtils.SerializeToXml(octaneTestResult);
+		}
+	}
 }
