@@ -3,8 +3,14 @@ using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
 {
-    public class TfsTestResults : TfsCollection<TfsTestResult>
-    {
-        public TfsRun Run { get; set; }
-    }
+	public class TfsTestResults : TfsCollection<TfsTestResult>
+	{
+		public TfsRun Run { get; set; }
+
+		public void Join(TfsTestResults joinedResults)
+		{
+			this.Results.AddRange(joinedResults.Results);
+			this.Count = this.Results.Count;
+		}
+	}
 }
