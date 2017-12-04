@@ -78,7 +78,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			try
 			{
 				ResponseWrapper res = _restConnector.ExecutePost(_uriResolver.GetTestResults(), null, xml,
-					 RequestConfiguration.Create().SetGZipCompression(false).AddHeader("ContentType", "application/xml"));
+					 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
 			}
 			catch (Exception ex)
 			{
