@@ -172,13 +172,15 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 					else
 					{
-						Trace.WriteLine("Recieved Task:");
+						Trace.WriteLine("Received Task:");
 						Trace.WriteLine($"Get status : {res?.StatusCode}");
 						Trace.WriteLine($"Get data : {res?.Data}");
 						try
 						{
-							var octaneTask = JsonConvert.DeserializeObject<OctaneTask>(res?.Data.Substring(1, res.Data.Length - 2).Replace("GET", "Get"));
-							var response = new OctaneTaskResult(200, octaneTask.Id, _taskProcessor.ProcessTask(octaneTask?.ResultUrl));
+							var octaneTask = JsonConvert.DeserializeObject<OctaneTask>(res?.Data.TrimStart('[').TrimEnd(']'));
+							var taskOutput = _taskProcessor.ProcessTask(octaneTask.Method, octaneTask?.ResultUrl);
+							int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
+							var response = new OctaneTaskResult(status, octaneTask.Id, taskOutput);
 
 							if (octaneTask == null)
 							{

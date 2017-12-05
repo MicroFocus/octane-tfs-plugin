@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using Flurl;
+﻿using Flurl;
 using log4net;
+using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.VisualStudio.Services.WebApi;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Newtonsoft.Json;
-using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs
 {
@@ -21,13 +18,14 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 	{
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private readonly TfsConfiguration _tfsConf;
+		private readonly TfsHttpConnector _tfsConnector;
 		private readonly TfsConfigurationServer _configurationServer;
 		private const string TfsUrl = "http://localhost:8080/tfs/";
 
 		protected TfsManagerBase(string pat)
 		{
 			_tfsConf = new TfsConfiguration(new Uri(TfsUrl), pat);
-
+			_tfsConnector = new TfsHttpConnector(_tfsConf);
 			_configurationServer =
 				TfsConfigurationServerFactory.GetConfigurationServer(_tfsConf.Uri);
 		}
@@ -60,27 +58,6 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 			}
 
 			return result;
-
-			//            ReadOnlyCollection<CatalogNode> collectionNodes = _configurationServer.CatalogNode.QueryChildren(
-			//                new[] {CatalogResourceTypes.ProjectCollection},
-			//                false, CatalogQueryOptions.None);
-			//
-			//            var result = new List<TfsCollectionItem>();
-			//            foreach (CatalogNode collectionNode in collectionNodes)
-			//            {
-			//
-			//                // Use the InstanceId property to get the team project collection
-			//                Guid collectionId = new Guid(collectionNode.Resource.Properties["InstanceId"]);
-			//                TfsTeamProjectCollection teamProjectCollection =
-			//                    _configurationServer.GetTeamProjectCollection(collectionId);
-			//
-			//                // Print the name of the team project collection
-			//                Trace.WriteLine("Found Collection: " + teamProjectCollection.Name);
-			//
-			//                result.Add(new TfsCollectionItem(teamProjectCollection.InstanceId, teamProjectCollection.Name));
-			//            }
-			//
-			//            return result;
 		}
 
 		protected List<TfsProjectItem> GetProjects(TfsCollectionItem collection)
@@ -133,50 +110,25 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 
 		}
 
-
-		private T GetResult<T>(string urlSuffix)
+		public void QueueNewBuild(string collectionName, string projectId, string buildDefinitionId)
 		{
-			//encode your personal access token                   
-			var credentials = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConf.Pat)));
-
-
-			//use the httpclient
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = _tfsConf.Uri;
-				client.DefaultRequestHeaders.Accept.Clear();
-				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
-				HttpResponseMessage response = client.GetAsync(urlSuffix, HttpCompletionOption.ResponseContentRead).Result;
-
-				//check to see if we have a succesfull respond
-				string content = response.Content.ReadAsStringAsync().Result;
-				if (response.IsSuccessStatusCode)
-				{
-					T result = JsonConvert.DeserializeObject<T>(content);
-					return result;
-				}
-				else
-				{
-					String msg = $"Failed to get result {urlSuffix} : {content})";
-					Trace.WriteLine(msg);
-					throw new Exception(msg);
-
-				}
-			}
+			//https://www.visualstudio.com/en-us/docs/integrate/api/build/builds#queueabuild
+			string uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/?api-version=2.0");
+			string body = $"{{\"definition\": {{ \"id\": {buildDefinitionId}}}}}";
+			TfsBuild build = _tfsConnector.SendPost<TfsBuild>(uriSuffix, body);
 		}
 
 		public TfsBuild GetBuild(string collectionName, string projectId, string buildId)
 		{
 			string uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=1.0");
-			TfsBuild build = GetResult<TfsBuild>(uriSuffix);
+			TfsBuild build = _tfsConnector.SendGet<TfsBuild>(uriSuffix);
 			return build;
 		}
 
 		private TfsRun GetRunByBuildUri(string collectionName, string projectName, string buildUri)
 		{
 			string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs?api-version=1.0&buildUri={buildUri}");
-			TfsRuns runs = GetResult<TfsRuns>(uriSuffix);
+			TfsRuns runs = _tfsConnector.SendGet<TfsRuns>(uriSuffix);
 			return runs.Results.Count > 0 ? runs.Results[0] : null;
 		}
 
@@ -191,7 +143,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 			while (!completed)
 			{
 				string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}/results?api-version=1.0&$skip={skip}&$top={top}");
-				TfsTestResults results = GetResult<TfsTestResults>(uriSuffix);
+				TfsTestResults results = _tfsConnector.SendGet<TfsTestResults>(uriSuffix);
 				skip += top;
 				completed = results.Count < top;
 				if (finalResults == null)
