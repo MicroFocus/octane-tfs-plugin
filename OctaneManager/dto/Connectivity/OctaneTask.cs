@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using Newtonsoft.Json;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Connectivity
 {
@@ -8,7 +9,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.Connectivity
     {        
 
         [JsonProperty("method")]        
-        public string Method { get; set; }
+        public HttpMethodEnum Method { get; set; }
 
      
         [JsonProperty("url")]

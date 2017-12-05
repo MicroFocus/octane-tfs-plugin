@@ -260,7 +260,8 @@
     <Compile Include="Tfs\SubscriptionManager.cs" />
     <Compile Include="Tfs\TfsConfiguration.cs" />
     <Compile Include="Tfs\TfsManagerBase.cs" />
-    <Compile Include="Tools\HttpHelper.cs" />
+    <Compile Include="Tools\TfsHttpConnector.cs" />
+    <Compile Include="Tools\HttpMethodEnum.cs" />
     <Compile Include="Tools\ToStringJsonConverter.cs" />
     <Compile Include="Tools\UriHelper.cs" />
     <Compile Include="Tools\UriResolver.cs" />
