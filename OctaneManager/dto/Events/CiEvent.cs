@@ -13,8 +13,8 @@ using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto
 {
-    public class CiEvent : IDtoBase
-    {
+	public class CiEvent : IDtoBase
+	{
 		public CiEvent() { }
 
 		public CiEvent Clone()
@@ -34,36 +34,45 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
 			return clonedEvent;
 		}
 
+		[JsonProperty("projectDisplayName")]
 		public string ProjectDisplayName { get; set; }
 
-        [JsonConverter(typeof(ToStringJsonConverter))]
-        public CiEventType EventType { get; set; }
+		[JsonProperty("eventType")]
+		[JsonConverter(typeof(ToStringJsonConverter))]
+		public CiEventType EventType { get; set; }
 
-        public string BuildCiId { get; set; }
+		[JsonProperty("buildCiId")]
+		public string BuildCiId { get; set; }
 
-        public string Project { get; set; }
+		[JsonProperty("project")]
+		public string Project { get; set; }
 
-        public string Number { get; set; }
+		[JsonProperty("number")]
+		public string Number { get; set; }
 
-        public List<CiEventCause> Causes => new List<CiEventCause>();
+		[JsonProperty("causes")]
+		public List<CiEventCause> Causes => new List<CiEventCause>();
 
-        public List<CiParameter> Parameters => new List<CiParameter>();
+		[JsonProperty("parameters")]
 
-        [JsonProperty("result")]
-        public CiBuildResult BuildResult { get; set; }
+		public List<CiParameter> Parameters => new List<CiParameter>();
 
-        public long StartTime { get; set; }
+		[JsonProperty("result")]
+		public CiBuildResult BuildResult { get; set; }
 
-        public long EstimatedDuration { get; set; }
+		[JsonProperty("startTime")]
+		public long StartTime { get; set; }
 
-        public long Duration { get; set; }
+		[JsonProperty("estimatedDuration")]
+		public long EstimatedDuration { get; set; }
 
-        public ScmData ScmData
-        {
-            get;
-            set;
-        }
+		[JsonProperty("duration")]
+		public long Duration { get; set; }
 
-        public string PhaseType { get; set; }
-    }
+		[JsonProperty("scmData")]
+		public ScmData ScmData { get; set; }
+
+		[JsonProperty("phaseType")]
+		public string PhaseType { get; set; }
+	}
 }

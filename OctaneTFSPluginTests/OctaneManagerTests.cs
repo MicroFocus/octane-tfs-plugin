@@ -33,9 +33,11 @@ namespace MicroFocus.Ci.Tfs.Tests
 		[TestMethod]
 		public void SendResultsTest()
 		{
-			octaneManager.Init();
+			var a= octaneManager.GetScmData("DefaultCollection", "3086f4e9-d2ef-4f1a-9e48-19bf30c794a5", "48");
+			var v = 5;
+			/*octaneManager.Init();
 			octaneManager.SendTestResults("DefaultCollection", "3086f4e9-d2ef-4f1a-9e48-19bf30c794a5", "50", "DefaultCollection.3086f4e9-d2ef-4f1a-9e48-19bf30c794a5.1", "20171207.2");
-			octaneManager.WaitShutdown();
+			octaneManager.WaitShutdown();*/
 
 
 		}

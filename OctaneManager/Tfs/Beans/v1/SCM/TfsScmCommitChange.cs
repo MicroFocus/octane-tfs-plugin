@@ -12,8 +12,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.SCM
 
 	public class TfsScmCommitChangeItem
 	{
-		public string path { get; set; }
-		public bool isFolder { get; set; }
-
+		public string Path { get; set; }
+		public bool IsFolder { get; set; }
 	}
 }

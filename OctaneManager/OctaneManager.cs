@@ -5,12 +5,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and limitations under the License.
 
-using System;
-using System.Diagnostics;
-using System.Net;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Hpe.Nga.Api.Core.Connector;
 using Hpe.Nga.Api.Core.Connector.Exceptions;
 using log4net;
@@ -19,13 +13,20 @@ using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using MicroFocus.Ci.Tfs.Octane.Dto.General;
+using MicroFocus.Ci.Tfs.Octane.Dto.Scm;
+using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
+using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
-using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -244,7 +245,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 			list.Events.Add(CreateStartEvent(finishEvent));
 			list.Events.Add(finishEvent);
 
-			//ScmData ScmData = GetScmData
+			var scmData = GetScmData(collectionName, project, finishEvent.Number);
+			if (scmData != null)
+			{
+				list.Events.Add(CreateScmEvent(finishEvent, scmData));
+			}
 
 			list.Server = new CiServerInfo
 			{
@@ -269,6 +274,66 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		}
 
+		public ScmData GetScmData(string collectionName, string project, string buildNumber)
+		{
+			try
+			{
+				ScmData scmData = null;
+
+				var changes = _tfsManager.GetBuildChanges(collectionName, project, buildNumber);
+				if (changes.Count > 0)
+				{
+					scmData = new ScmData();
+					scmData.BuildRevId = "aaaaa";
+					scmData.Commits = new List<ScmCommit>();
+					foreach (TfsScmChange change in changes)
+					{
+						var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
+						if (scmData.Repository == null)
+						{
+							var repository = _tfsManager.GetRepository(tfsCommit.Links.Repository.Href);
+							scmData.Repository = new ScmRepository();
+							scmData.Repository.Branch = repository.DefaultBranch; //TODO find real branch
+							scmData.Repository.Type = "git";//TODO find type 
+							scmData.Repository.Url = repository.Url;
+						}
+
+						ScmCommit scmCommit = new ScmCommit();
+						scmData.Commits.Add(scmCommit);
+
+						scmCommit.User = tfsCommit.Committer.Name;
+						scmCommit.UserEmail = tfsCommit.Committer.Email;
+						scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
+
+						scmCommit.RevId = tfsCommit.TreeId;//TODO check what value needs to be here
+						scmCommit.ParentRevId = tfsCommit.TreeId;//TODO check what value needs to be here
+
+						scmCommit.Comment = tfsCommit.Comment;
+
+						scmCommit.Changes = new List<ScmCommitFileChange>();
+
+						foreach (var tfsCommitChange in tfsCommit.Changes)
+						{
+							if (!tfsCommitChange.Item.IsFolder)
+							{
+								ScmCommitFileChange commitChange = new ScmCommitFileChange();
+								scmCommit.Changes.Add(commitChange);
+
+								commitChange.Type = tfsCommitChange.ChangeType;
+								commitChange.File = tfsCommitChange.Item.Path;
+							}
+						}
+					}
+				}
+				return scmData;
+
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Failed to create scm data for {collectionName}.{project}.{buildNumber}");
+				return null;
+			}
+		}
 
 		private CiEvent CreateStartEvent(CiEvent finishEvent)
 		{
@@ -276,7 +341,14 @@ namespace MicroFocus.Ci.Tfs.Octane
 			startEvent.EventType = CiEventType.Started;
 
 			return startEvent;
+		}
 
+		private CiEvent CreateScmEvent(CiEvent finishEvent, ScmData scmData)
+		{
+			var scmEventEvent = finishEvent.Clone();
+			scmEventEvent.EventType = CiEventType.Scm;
+			scmEventEvent.ScmData = scmData;
+			return scmEventEvent;
 		}
 
 	}
