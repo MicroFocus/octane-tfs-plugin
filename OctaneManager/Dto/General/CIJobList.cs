@@ -15,6 +15,7 @@ namespace MicroFocus.Ci.Tfs.Octane.dto.general
         [JsonProperty("jobs")]
         public IList<PipelineNode> Jobs { get; set; }
 
+        
         public CiJobList()
         {
             Jobs = new List<PipelineNode>();
@@ -28,6 +29,6 @@ namespace MicroFocus.Ci.Tfs.Octane.dto.general
                 var job = Jobs.FirstOrDefault(x => x.JobCiId == key);
                 Jobs[Jobs.IndexOf(job)] = value;
             }
-        }
+        }        
     }
 }

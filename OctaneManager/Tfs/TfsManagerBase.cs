@@ -16,10 +16,13 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 {
 	public abstract class TfsManagerBase
 	{
-		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-		private readonly TfsConfiguration _tfsConf;
+		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+	    protected readonly SubscriptionManager _subscriptionManager;
+        private readonly TfsConfiguration _tfsConf;
 		private readonly TfsHttpConnector _tfsConnector;
 		private readonly TfsConfigurationServer _configurationServer;
+	    
+
 		private const string TfsUrl = "http://localhost:8080/tfs/";
 
 		protected TfsManagerBase(string pat)
@@ -28,6 +31,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 			_tfsConnector = new TfsHttpConnector(_tfsConf);
 			_configurationServer =
 				TfsConfigurationServerFactory.GetConfigurationServer(_tfsConf.Uri);
+            _subscriptionManager= new SubscriptionManager(_tfsConf);
 		}
 
 		protected List<TfsCollectionItem> GetCollections()
@@ -68,7 +72,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 		protected List<TfsProjectItem> GetProjects(string collectionName)
 		{
 			var collectionUri = new Uri(Url.Combine(_tfsConf.Uri.ToString(), collectionName));
-			VssConnection collectionVssConnection = new VssConnection(collectionUri, new PatCredentials(string.Empty, _tfsConf.Pat));
+			var collectionVssConnection = new VssConnection(collectionUri, new PatCredentials(string.Empty, _tfsConf.Pat));
 			var projectHttpClient = collectionVssConnection.GetClient<ProjectHttpClient>();
 
 			var result = new List<TfsProjectItem>();
@@ -113,37 +117,37 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 		public void QueueNewBuild(string collectionName, string projectId, string buildDefinitionId)
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/build/builds#queueabuild
-			string uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/?api-version=2.0");
-			string body = $"{{\"definition\": {{ \"id\": {buildDefinitionId}}}}}";
-			TfsBuild build = _tfsConnector.SendPost<TfsBuild>(uriSuffix, body);
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/?api-version=2.0");
+			var body = $"{{\"definition\": {{ \"id\": {buildDefinitionId}}}}}";
+			var build = _tfsConnector.SendPost<TfsBuild>(uriSuffix, body);
 		}
 
 		public TfsBuild GetBuild(string collectionName, string projectId, string buildId)
 		{
-			string uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=1.0");
-			TfsBuild build = _tfsConnector.SendGet<TfsBuild>(uriSuffix);
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=1.0");
+			var build = _tfsConnector.SendGet<TfsBuild>(uriSuffix);
 			return build;
 		}
 
 		private TfsRun GetRunByBuildUri(string collectionName, string projectName, string buildUri)
 		{
-			string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs?api-version=1.0&buildUri={buildUri}");
-			TfsRuns runs = _tfsConnector.SendGet<TfsRuns>(uriSuffix);
+			var uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs?api-version=1.0&buildUri={buildUri}");
+			var runs = _tfsConnector.SendGet<TfsRuns>(uriSuffix);
 			return runs.Results.Count > 0 ? runs.Results[0] : null;
 		}
 
 		public TfsTestResults GetTestResultsByBuildUri(string collectionName, string projectName, String buildUri)
 		{
-			TfsRun run = GetRunByBuildUri(collectionName, projectName, buildUri);
-			int top = 1000;
-			int skip = 0;
-			bool completed = false;
+			var run = GetRunByBuildUri(collectionName, projectName, buildUri);
+			const int top = 1000;
+			var skip = 0;
+			var completed = false;
 			TfsTestResults finalResults = null;
 
 			while (!completed)
 			{
-				string uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}/results?api-version=1.0&$skip={skip}&$top={top}");
-				TfsTestResults results = _tfsConnector.SendGet<TfsTestResults>(uriSuffix);
+				var uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs/{run.Id}/results?api-version=1.0&$skip={skip}&$top={top}");
+				var results = _tfsConnector.SendGet<TfsTestResults>(uriSuffix);
 				skip += top;
 				completed = results.Count < top;
 				if (finalResults == null)

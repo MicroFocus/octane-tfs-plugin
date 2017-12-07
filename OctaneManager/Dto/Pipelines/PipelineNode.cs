@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MicroFocus.Ci.Tfs.Octane.dto.parameters;
+using MicroFocus.Ci.Tfs.Octane.Dto.General;
 using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.dto.pipelines
@@ -38,6 +39,13 @@ namespace MicroFocus.Ci.Tfs.Octane.dto.pipelines
         {
             var id = $"{collectionName.Replace(" ","-")}.{projectId}.{buildDefId}";
             return id;
+        }
+        public static TfsCiEntity TranslateOctaneJobCiIdToObject(string id)
+        {
+            var parts = id.Split('.');
+            var tfsCiEntity = new TfsCiEntity(parts[0], parts[1], parts[2]);
+
+            return tfsCiEntity;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 {
 	public class TfsHttpConnector
 	{
-		private TfsConfiguration _tfsConf;
+		private readonly TfsConfiguration _tfsConf;
 
 		public TfsHttpConnector(TfsConfiguration tfsConfiguration)
 		{
