@@ -8,7 +8,9 @@ using MicroFocus.Ci.Tfs.Octane.dto;
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Scm
 {
     public class ScmRepository : IDtoBase
-    {
-        //TODO : implement
-    }
+	{
+		public string Type { get; set; }
+		public string Url { get; set; }
+		public string Branch { get; set; }
+	}
 }

@@ -10,13 +10,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.Scm
 {
     public class ScmData : IDtoBase
     {
-        [JsonProperty("repository")]
         public ScmRepository Repository { get; set; }
-
-        [JsonProperty("buildRevId")]
         public string BuildRevId { get; set; }
 
-        [JsonProperty("commits")]
         public List<ScmCommit> Commits { get; set; }
     }
 }

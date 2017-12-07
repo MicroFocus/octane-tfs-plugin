@@ -70,9 +70,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void SendTestResults(string tfsCollectionName, string tfsProject, string tfsBuildId, string projectCiId, string buildCiId)
 		{
-	
 			var run = _tfsManager.GetRunForBuid(tfsCollectionName, tfsProject, tfsBuildId);
-
 			var testResults = _tfsManager.GetTestResultsForRun(tfsCollectionName, tfsProject, run.Id.ToString());
 			OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
 			String xml = TestResultUtils.SerializeToXml(octaneTestResult);
@@ -87,30 +85,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 				Log.Error($"Error sending SendTestResults to server");
 				Log.Error($"Error desc: {ex.Message}");
 			}
-		}
-
-		private bool GetTestResultRelevant(String jobName)
-		{
-			Log.Debug("Sending IsTestResultRelevant");
-			try
-			{
-				ResponseWrapper res = _restConnector.ExecuteGet(_uriResolver.GetTestResultRelevant(jobName), null);
-
-				if (res.StatusCode == HttpStatusCode.OK)
-				{
-					bool result = Boolean.Parse(res.Data);
-					return true;
-				}
-
-
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error sending GetTestResultRelevant with jobname {jobName} to server");
-				Log.Error($"Error desc: {ex.Message}");
-			}
-
-			return false;
 		}
 
 		public void ShutDown()
@@ -259,11 +233,19 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		private void RestBase_BuildEvent(object sender, Dto.CiEvent e)
+		private void RestBase_BuildEvent(object sender, Dto.CiEvent finishEvent)
 		{
+			string[] projectParts = finishEvent.Project.Split('.');
+			string collectionName = projectParts[0];
+			string project = projectParts[1];
+			string buildDefinitionId = projectParts[2];
+
 			var list = new CiEventsList();
-			list.Events.Add(CreateStartEvent(e));
-			list.Events.Add(e);
+			list.Events.Add(CreateStartEvent(finishEvent));
+			list.Events.Add(finishEvent);
+
+			//ScmData ScmData = GetScmData
+
 			list.Server = new CiServerInfo
 			{
 				Url = _tfsServerURi,
@@ -278,10 +260,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			if (res.StatusCode == HttpStatusCode.OK)
 			{
 				Log.Info("Event succesfully sent");
-				string[] projectParts = e.Project.Split('.');
-				string collectionName = projectParts[0];
-				string project = projectParts[1];
-				SendTestResults(collectionName, project, e.Number, e.Project, e.BuildCiId);
+				SendTestResults(collectionName, project, finishEvent.Number, finishEvent.Project, finishEvent.BuildCiId);
 			}
 			else
 			{
@@ -293,7 +272,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private CiEvent CreateStartEvent(CiEvent finishEvent)
 		{
-			var startEvent = new CiEvent(finishEvent) { EventType = CiEventType.Started };
+			var startEvent = finishEvent.Clone();
+			startEvent.EventType = CiEventType.Started;
 
 			return startEvent;
 

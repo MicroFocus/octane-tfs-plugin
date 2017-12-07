@@ -6,6 +6,7 @@ using MicroFocus.Ci.Tfs.Octane.Tfs;
 using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
+using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.SCM;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Client;
 using System;
@@ -18,6 +19,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 	{
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static readonly CiJobList MockJobList = new CiJobList();
+
+	
 		private CiJobList _cachedJobList = new CiJobList();
 
 		protected readonly SubscriptionManager _subscriptionManager;
@@ -92,6 +95,25 @@ namespace MicroFocus.Ci.Tfs.Octane
 			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}/changes?api=version=2.0");
 			var changes = _tfsConnector.GetPagedCollection<TfsScmChange>(uriSuffix, 100);
 			return changes;
+		}
+
+		public TfsScmCommit GetCommitWithChanges(string commitUrl)
+		{
+			var urlWithChanges = commitUrl;
+			//https://www.visualstudio.com/en-us/docs/integrate/api/git/commits#with-changed-items
+			if (!commitUrl.Contains("changeCount")){
+				var joiner = commitUrl.Contains("?") ? "&" : "?";
+				urlWithChanges = $"{commitUrl}{joiner}changeCount=100";
+			}
+
+			var commit = _tfsConnector.SendGet<TfsScmCommit>(urlWithChanges);
+			return commit;
+		}
+
+		public TfsScmRepository GetRepository(string repositoryUrl)
+		{
+			var repository = _tfsConnector.SendGet<TfsScmRepository>(repositoryUrl);
+			return repository;
 		}
 
 		public IList<TfsTestResult>  GetTestResultsForRun(string collectionName, string projectName, string runId)
