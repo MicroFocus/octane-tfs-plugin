@@ -70,9 +70,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void SendTestResults(string tfsCollectionName, string tfsProject, string tfsBuildId, string projectCiId, string buildCiId)
 		{
-			TfsBuild build = _tfsManager.GetBuild(tfsCollectionName, tfsProject, tfsBuildId);
-			TfsTestResults testResults = _tfsManager.GetTestResultsByBuildUri(tfsCollectionName, tfsProject, build.Uri);
-			OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults);
+	
+			var run = _tfsManager.GetRunForBuid(tfsCollectionName, tfsProject, tfsBuildId);
+
+			var testResults = _tfsManager.GetTestResultsForRun(tfsCollectionName, tfsProject, run.Id.ToString());
+			OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
 			String xml = TestResultUtils.SerializeToXml(octaneTestResult);
 
 			try

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
 using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using Newtonsoft.Json;
+using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 {
@@ -28,7 +25,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
             public DateTime FinishTime { get; set; }
             public string Reason { get; set; }
             public string Status { get; set; }
-            public TfsBuildDefinitionItem Definition { get; set; }
+            public TfsBuildDefinition Definition { get; set; }
 
         }
 
@@ -52,7 +49,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 
 
             ciEvent.BuildCiId = Resource.BuildNumber.ToString();
-            ciEvent.Project = GetId(Resource.Definition.Url.ToString());
+            ciEvent.Project = GenerateOctaneProjectIdFromBuildDefinitionUrl(Resource.Definition.Url.ToString());
             ciEvent.Number = Resource.Id.ToString();
             var cause = new CiEventCause();
             switch (Resource.Reason)
@@ -77,7 +74,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
             //            
         }
 
-        private string GetId(string value)
+		//Generate project id for octane : CollectionName.projectId.buildDefinitionId
+		private string GenerateOctaneProjectIdFromBuildDefinitionUrl(string value)
         {
             var elements = value.Split('/').ToList();
 

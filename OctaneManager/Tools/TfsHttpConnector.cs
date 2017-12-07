@@ -1,6 +1,8 @@
 ﻿using MicroFocus.Ci.Tfs.Octane.Tfs;
+using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -30,6 +32,37 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 		public T SendGet<T>(string urlSuffix)
 		{
 			return Send<T>(HttpMethodEnum.GET, urlSuffix, null);
+		}
+
+		public List<T> GetCollection<T>(string uriSuffix)
+		{
+			TfsBaseCollection<T> collections = SendGet<TfsBaseCollection<T>>(uriSuffix);
+			return collections.Items;
+		}
+
+		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize)
+		{
+			int top = pageSize;
+			int skip = 0;
+			bool completed = false;
+			List<T> finalResults = null;
+			string joiner = uriSuffix.Contains("?") ? "&" : "?";
+			while (!completed)
+			{
+				string uriSuffixWithPage = ($"{uriSuffix}{joiner}$skip={skip}&$top={top}");
+				TfsBaseCollection<T> results = SendGet<TfsBaseCollection<T>>(uriSuffixWithPage);
+				skip += top;
+				completed = results.Count < top;
+				if (finalResults == null)
+				{
+					finalResults = results.Items;
+				}
+				else
+				{
+					finalResults.AddRange(results.Items);
+				}
+			}
+			return finalResults;
 		}
 
 		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data)

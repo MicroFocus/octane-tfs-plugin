@@ -1,65 +1,146 @@
-﻿using System.Reflection;
-using log4net;
+﻿using log4net;
 using MicroFocus.Ci.Tfs.Octane.dto;
 using MicroFocus.Ci.Tfs.Octane.dto.general;
 using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
-using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.Tfs;
+using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
+using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
+using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
+using MicroFocus.Ci.Tfs.Octane.Tools;
+using Microsoft.TeamFoundation.Client;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
-    public class TfsManager : TfsManagerBase
-    {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly CiJobList MockJobList = new CiJobList();
-        private  CiJobList _cachedJobList = new CiJobList();
-        public TfsManager(string pat) : base(pat)
-        {
-            
-        }
+	public class TfsManager
+	{
+		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly CiJobList MockJobList = new CiJobList();
+		private CiJobList _cachedJobList = new CiJobList();
 
-        public IDtoBase GetJobsList()
-        {
-            var result = new CiJobList();
-            var collections = GetCollections();
+		protected readonly SubscriptionManager _subscriptionManager;
+		private readonly TfsConfiguration _tfsConf;
+		private readonly TfsHttpConnector _tfsConnector;
+		private readonly TfsConfigurationServer _configurationServer;
+		private const string TfsUrl = "http://localhost:8080/tfs/";
 
-            //TODO: make this simplier
-            foreach (var collection in collections)
-            {
-                var projects = GetProjects(collection);
-                foreach (var project in projects)
-                {
-                    var buildDefinitions = GetBuildDefinitions(collection, project);
-                    foreach (var buildDefinition in buildDefinitions)
-                    {                        
-                        var id = PipelineNode.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
-                        Log.Debug($"New job added to list with id: {id}");
-                        result.Jobs.Add(new PipelineNode(id,buildDefinition.Name));
-                    }
-                }
-            }
-            _cachedJobList = result;
+		public TfsManager(string pat)
+		{
+			_tfsConf = new TfsConfiguration(new Uri(TfsUrl), pat);
+			_tfsConnector = new TfsHttpConnector(_tfsConf);
+			_configurationServer = TfsConfigurationServerFactory.GetConfigurationServer(_tfsConf.Uri);
+			_subscriptionManager = new SubscriptionManager(_tfsConf);
+		}
 
-            return _cachedJobList;
-        }
+		public IDtoBase GetJobsList()
+		{
+			var result = new CiJobList();
+			var collections = GetProjectCollections();
 
-        public IDtoBase GetJobDetail(string jobId)
-        {            
-            var res =_cachedJobList[jobId];
-            if (res == null)
-            {
-                GetJobsList();
-                res = _cachedJobList[jobId];
-            }
+			//TODO: make this simplier
+			foreach (var collection in collections)
+			{
+				var projects = GetProjects(collection.Name);
+				foreach (var project in projects)
+				{
+					var buildDefinitions = GetBuildDefinitions(collection.Name, project.Id);
+					foreach (var buildDefinition in buildDefinitions)
+					{
+						var id = PipelineNode.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
+						Log.Debug($"New job added to list with id: {id}");
+						result.Jobs.Add(new PipelineNode(id, buildDefinition.Name));
+					}
+				}
+			}
+			_cachedJobList = result;
 
-            var tfsCiEntity = PipelineNode.TranslateOctaneJobCiIdToObject(jobId);
-            if (!_subscriptionManager.SubscriptionExists(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId))
-            {
-                _subscriptionManager.AddBuildCompletion(tfsCiEntity.CollectionName,tfsCiEntity.ProjectId);
-            }
+			return _cachedJobList;
+		}
 
-            return res;
-        }     
-       
-    }
+		public IDtoBase GetJobDetail(string jobId)
+		{
+			var res = _cachedJobList[jobId];
+			if (res == null)
+			{
+				GetJobsList();
+				res = _cachedJobList[jobId];
+			}
+
+			var tfsCiEntity = PipelineNode.TranslateOctaneJobCiIdToObject(jobId);
+			if (!_subscriptionManager.SubscriptionExists(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId))
+			{
+				_subscriptionManager.AddBuildCompletion(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId);
+			}
+
+			return res;
+		}
+
+		public TfsBuild QueueNewBuild(string collectionName, string projectId, string buildDefinitionId)
+		{
+			//https://www.visualstudio.com/en-us/docs/integrate/api/build/builds#queueabuild
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/?api-version=2.0");
+			var body = $"{{\"definition\": {{ \"id\": {buildDefinitionId}}}}}";
+			var build = _tfsConnector.SendPost<TfsBuild>(uriSuffix, body);
+			return build;
+		}
+
+		public IList<TfsScmChange> GetBuildChanges(string collectionName, string projectId, string buildId)
+		{
+			//https://www.visualstudio.com/en-us/docs/integrate/api/build/builds#changes
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}/changes?api=version=2.0");
+			var changes = _tfsConnector.GetPagedCollection<TfsScmChange>(uriSuffix, 100);
+			return changes;
+		}
+
+		public IList<TfsTestResult>  GetTestResultsForRun(string collectionName, string projectName, string runId)
+		{
+			var url = $"{collectionName}/{projectName}/_apis/test/runs/{runId}/results?api-version=1.0";
+			const int pageSize = 1000;
+			var testResults = _tfsConnector.GetPagedCollection<TfsTestResult>(url, pageSize);
+			
+			return testResults;
+		}
+
+		public TfsRun GetRunForBuid(string collectionName, string projectName, string buildId)
+		{
+			var build = GetBuild(collectionName, projectName, buildId);
+			var uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs?api-version=1.0&buildUri={build.Uri}");
+			var runs = _tfsConnector.GetCollection<TfsRun>(uriSuffix);
+			return runs.Count > 0 ? runs[0] : null;
+		}
+
+		private TfsBuild GetBuild(string collectionName, string projectId, string buildId)
+		{
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=1.0");
+			var build = _tfsConnector.SendGet<TfsBuild>(uriSuffix);
+			return build;
+		}
+
+		private List<TfsProjectCollection> GetProjectCollections()
+		{
+			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/project-collections
+			var uriSuffix = ($"_apis/projectcollections?api-version=1.0");
+			var collections = _tfsConnector.GetCollection<TfsProjectCollection>(uriSuffix);
+			return collections;
+		}
+
+		private List<TfsProject> GetProjects(string collectionName)
+		{
+			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/projects
+			var uriSuffix = ($"{collectionName}/_apis/projects?api-version=1.0");
+			var collections = _tfsConnector.SendGet<TfsBaseCollection<TfsProject>>(uriSuffix);
+			return collections.Items;
+		}
+
+		private List<TfsBuildDefinition> GetBuildDefinitions(string collectionName, string projectName)
+		{
+			//https://www.visualstudio.com/en-us/docs/integrate/api/xamlbuild/definitions
+			var uriSuffix = ($"{collectionName}/{projectName}/_apis/build/definitions?api-version=2.0");
+			var definitions = _tfsConnector.GetCollection<TfsBuildDefinition>(uriSuffix);
+			return definitions;
+		}
+
+	}
 }
