@@ -3,12 +3,14 @@ using log4net;
 using MicroFocus.Ci.Tfs.Octane.dto;
 using MicroFocus.Ci.Tfs.Octane.dto.general;
 using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
+using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.Tfs;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
     public class TfsManager : TfsManagerBase
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly CiJobList MockJobList = new CiJobList();
         private  CiJobList _cachedJobList = new CiJobList();
         public TfsManager(string pat) : base(pat)
@@ -42,8 +44,21 @@ namespace MicroFocus.Ci.Tfs.Octane
         }
 
         public IDtoBase GetJobDetail(string jobId)
-        {
-            return _cachedJobList[jobId];
+        {            
+            var res =_cachedJobList[jobId];
+            if (res == null)
+            {
+                GetJobsList();
+                res = _cachedJobList[jobId];
+            }
+
+            var tfsCiEntity = PipelineNode.TranslateOctaneJobCiIdToObject(jobId);
+            if (!_subscriptionManager.SubscriptionExists(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId))
+            {
+                _subscriptionManager.AddBuildCompletion(tfsCiEntity.CollectionName,tfsCiEntity.ProjectId);
+            }
+
+            return res;
         }     
        
     }

@@ -224,6 +224,7 @@
     <Compile Include="Dto\Events\PhaseType.cs" />
     <Compile Include="Dto\General\CIJobList.cs" />
     <Compile Include="Dto\General\CiServerInfo.cs" />
+    <Compile Include="Dto\General\TfsCiEntity.cs" />
     <Compile Include="Dto\IDtoBase.cs" />
     <Compile Include="Dto\Parameters\CIParameter.cs" />
     <Compile Include="Dto\Pipelines\PipelineNode.cs" />
@@ -244,6 +245,9 @@
     <Compile Include="TaskProcessor.cs" />
     <Compile Include="TestResultUtils.cs" />
     <Compile Include="TfsManager.cs" />
+    <Compile Include="Tfs\Beans\v1\Subscriptions\SubscriptionRequest.cs" />
+    <Compile Include="Tfs\Beans\v1\Subscriptions\SubscriptionResponse.cs" />
+    <Compile Include="Tfs\Beans\v1\Subscriptions\SubscriptionsListResponse.cs" />
     <Compile Include="Tfs\Beans\v1\TfsItem.cs" />
     <Compile Include="Tfs\Beans\v1\TfsRuns.cs" />
     <Compile Include="Tfs\Beans\v1\TfsRun.cs" />

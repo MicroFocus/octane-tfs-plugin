@@ -1,22 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.Subscriptions;
+using MicroFocus.Ci.Tfs.Octane.Tools;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs
 {
-    class SubscriptionManager
-    {
-        private TfsConfiguration _connConfig;
-        public SubscriptionManager(TfsConfiguration conn)
-        {
-            _connConfig = conn;
+    public class SubscriptionManager
+    {                
+        private readonly TfsHttpConnector _tfsConnector;
+        public SubscriptionManager(TfsConfiguration tfsConnectionConf)
+        {            
+            _tfsConnector = new TfsHttpConnector(tfsConnectionConf);
         }
 
-        public void BuildCompletion()
+        public void AddBuildCompletion(string collectionName ,string projectId)
         {
-            
+            //TODO: handle error
+            var subscription = new SubscriptionRequest(projectId, new Uri("http://localhost:4567/build-event"));
+            var uriSuffix = ($"{collectionName}/_apis/hooks/subscriptions/?api-version=1.0");
+
+            _tfsConnector.SendPost<Object>(uriSuffix, subscription.ToJson());
+        }
+
+        public bool SubscriptionExists(string collectionName,string projectId)
+        {
+            var uriSuffix = ($"{collectionName}/_apis/hooks/subscriptions/?api-version=1.0");
+            var res = _tfsConnector.SendGet<SubscriptionsListResponse>(uriSuffix);
+
+            var str = JsonConvert.SerializeObject(res.Value);
+            return str.Contains(projectId); //TODO:check if this is bullet proof
         }
 
 

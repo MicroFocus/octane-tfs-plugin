@@ -11,9 +11,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 
         private const string ANALYTICS_TEST_RESULTS = "/analytics/ci/test-results/";
         
-        private int _sharedSpace;
-        private InstanceDetails _instDetails;
-		private ConnectionDetails _connectionDetails;
+        private readonly int _sharedSpace;
+        private readonly InstanceDetails _instDetails;
+		private readonly ConnectionDetails _connectionDetails;
 
 
 		public UriResolver(int sharedSpace,InstanceDetails instDetails, ConnectionDetails connectionDetails)
