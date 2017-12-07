@@ -23,20 +23,20 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		public static OctaneTestResult ConvertToOctaneTestResult(string serverId, string projectCiId, string buildCiId, TfsTestResults testResults)
+		public static OctaneTestResult ConvertToOctaneTestResult(string serverId, string projectCiId, string buildCiId, IList<TfsTestResult> testResults, string runWebAccessUrl)
 		{
 		    if (testResults.Count <= 0) return null;
 		    //Serialization prepare
 		    var octaneTestResult = new OctaneTestResult();
-		    var build = testResults.Results[0].Build;
-		    var project = testResults.Results[0].Project;
+		    var build = testResults[0].Build;
+		    var project = testResults[0].Project;
 		    octaneTestResult.Build = OctaneTestResultBuild.Create(serverId, buildCiId, projectCiId);
 		    octaneTestResult.TestFields = new List<OctaneTestResultTestField>(new[] {
 		        OctaneTestResultTestField.Create(OctaneTestResultTestField.TEST_LEVEL_TYPE, "UnitTest")
 		    });
 
 		    octaneTestResult.TestRuns = new List<OctaneTestResultTestRun>();
-		    foreach (var testResult in testResults.Results)
+		    foreach (var testResult in testResults)
 		    {
 		        var run = new OctaneTestResultTestRun();
 		        var testNameParts = testResult.AutomatedTestName.Split('.');
@@ -55,9 +55,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		        run.Started = ConvertToOctaneTime(testResult.StartedDate);
 
-		        //Run WebAccessUrl        http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=runCharts
-		        //Run Result WebAccessUrl http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=resultSummary&resultId=100000
-		        run.ExternalReportUrl = testResults.Run.WebAccessUrl.Replace("_a=runCharts", ($"_a=resultSummary&resultId={testResult.Id}"));
+				if (!string.IsNullOrEmpty(runWebAccessUrl))
+				{
+					//Run WebAccessUrl        http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=runCharts
+					//Run Result WebAccessUrl http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=resultSummary&resultId=100000
+					run.ExternalReportUrl = runWebAccessUrl.Replace("_a=runCharts", ($"_a=resultSummary&resultId={testResult.Id}"));
+				}
 
 		        octaneTestResult.TestRuns.Add(run);
 		    }

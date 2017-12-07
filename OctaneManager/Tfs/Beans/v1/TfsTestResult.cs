@@ -34,10 +34,10 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
 
         public string AutomatedTestStorage { get; set; }
 
-        public TfsItem Project { get; set; }
+        public TfsBaseItem Project { get; set; }
 
-        public TfsItem Build { get; set; }
+        public TfsBaseItem Build { get; set; }
 
-        public TfsItem TestRun { get; set; }
+        public TfsBaseItem TestRun { get; set; }
     }
 }

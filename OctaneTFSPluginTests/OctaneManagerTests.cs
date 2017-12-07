@@ -34,7 +34,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 		public void SendResultsTest()
 		{
 			octaneManager.Init();
-			octaneManager.SendTestResults("DefaultCollection", "3086f4e9-d2ef-4f1a-9e48-19bf30c794a5", "38", "DefaultCollection.3086f4e9-d2ef-4f1a-9e48-19bf30c794a5.1", "20171203.13");
+			octaneManager.SendTestResults("DefaultCollection", "3086f4e9-d2ef-4f1a-9e48-19bf30c794a5", "50", "DefaultCollection.3086f4e9-d2ef-4f1a-9e48-19bf30c794a5.1", "20171207.2");
 			octaneManager.WaitShutdown();
 
 
