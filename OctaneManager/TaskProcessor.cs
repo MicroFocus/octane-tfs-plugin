@@ -25,7 +25,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public string ProcessTask(HttpMethodEnum method, Uri taskUrl)
 		{
-			TaskType taskType = ParseUriPath(taskUrl);
+			var taskType = ParseUriPath(taskUrl);
 			switch (taskType)
 			{
 				case TaskType.GetJobsList:
