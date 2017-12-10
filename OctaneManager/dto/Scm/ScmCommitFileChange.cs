@@ -3,13 +3,12 @@ using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Scm
 {
-    public class ScmRepository : IDtoBase
-	{
+	public  class ScmCommitFileChange : IDtoBase
+    {
 		[JsonProperty("type")]
 		public string Type { get; set; }
-		[JsonProperty("url")]
-		public string Url { get; set; }
-		[JsonProperty("branch")]
-		public string Branch { get; set; }
+
+		[JsonProperty("file")]
+		public string File { get; set; }
 	}
 }

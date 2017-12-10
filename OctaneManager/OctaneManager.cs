@@ -5,12 +5,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and limitations under the License.
 
-using System;
-using System.Diagnostics;
-using System.Net;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Hpe.Nga.Api.Core.Connector;
 using Hpe.Nga.Api.Core.Connector.Exceptions;
 using log4net;
@@ -19,13 +13,20 @@ using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Connectivity;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using MicroFocus.Ci.Tfs.Octane.Dto.General;
+using MicroFocus.Ci.Tfs.Octane.Dto.Scm;
+using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
+using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
-using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -70,9 +71,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void SendTestResults(string tfsCollectionName, string tfsProject, string tfsBuildId, string projectCiId, string buildCiId)
 		{
-	
 			var run = _tfsManager.GetRunForBuid(tfsCollectionName, tfsProject, tfsBuildId);
-
 			var testResults = _tfsManager.GetTestResultsForRun(tfsCollectionName, tfsProject, run.Id.ToString());
 			OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
 			String xml = TestResultUtils.SerializeToXml(octaneTestResult);
@@ -87,30 +86,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 				Log.Error($"Error sending SendTestResults to server");
 				Log.Error($"Error desc: {ex.Message}");
 			}
-		}
-
-		private bool GetTestResultRelevant(String jobName)
-		{
-			Log.Debug("Sending IsTestResultRelevant");
-			try
-			{
-				ResponseWrapper res = _restConnector.ExecuteGet(_uriResolver.GetTestResultRelevant(jobName), null);
-
-				if (res.StatusCode == HttpStatusCode.OK)
-				{
-					bool result = Boolean.Parse(res.Data);
-					return true;
-				}
-
-
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error sending GetTestResultRelevant with jobname {jobName} to server");
-				Log.Error($"Error desc: {ex.Message}");
-			}
-
-			return false;
 		}
 
 		public void ShutDown()
@@ -259,11 +234,23 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		private void RestBase_BuildEvent(object sender, Dto.CiEvent e)
+		private void RestBase_BuildEvent(object sender, Dto.CiEvent finishEvent)
 		{
+			string[] projectParts = finishEvent.Project.Split('.');
+			string collectionName = projectParts[0];
+			string project = projectParts[1];
+			string buildDefinitionId = projectParts[2];
+
 			var list = new CiEventsList();
-			list.Events.Add(CreateStartEvent(e));
-			list.Events.Add(e);
+			list.Events.Add(CreateStartEvent(finishEvent));
+			list.Events.Add(finishEvent);
+
+			var scmData = GetScmData(collectionName, project, finishEvent.Number);
+			if (scmData != null)
+			{
+				list.Events.Add(CreateScmEvent(finishEvent, scmData));
+			}
+
 			list.Server = new CiServerInfo
 			{
 				Url = _tfsServerURi,
@@ -278,10 +265,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			if (res.StatusCode == HttpStatusCode.OK)
 			{
 				Log.Info("Event succesfully sent");
-				string[] projectParts = e.Project.Split('.');
-				string collectionName = projectParts[0];
-				string project = projectParts[1];
-				SendTestResults(collectionName, project, e.Number, e.Project, e.BuildCiId);
+				SendTestResults(collectionName, project, finishEvent.Number, finishEvent.Project, finishEvent.BuildCiId);
 			}
 			else
 			{
@@ -290,13 +274,79 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		}
 
+		public ScmData GetScmData(string collectionName, string project, string buildNumber)
+		{
+			try
+			{
+				ScmData scmData = null;
+				var changes = _tfsManager.GetBuildChanges(collectionName, project, buildNumber);
+				if (changes.Count > 0)
+				{
+					scmData = new ScmData();
+
+					var build = _tfsManager.GetBuild(collectionName, project, buildNumber);
+					var repository = _tfsManager.GetRepositoryById(collectionName, build.Repository.Id);
+					scmData.Repository = new ScmRepository();
+					scmData.Repository.Branch = build.SourceBranch;
+					scmData.Repository.Type = build.Repository.Type;
+					scmData.Repository.Url = repository.RemoteUrl;
+
+					scmData.BuiltRevId = build.SourceVersion;
+					scmData.Commits = new List<ScmCommit>();
+					foreach (TfsScmChange change in changes)
+					{
+						var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
+						ScmCommit scmCommit = new ScmCommit();
+						scmData.Commits.Add(scmCommit);
+						scmCommit.User = tfsCommit.Committer.Name;
+						scmCommit.UserEmail = tfsCommit.Committer.Email;
+						scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
+						scmCommit.RevId = tfsCommit.CommitId;
+						if (tfsCommit.Parents.Count > 0)
+						{
+							scmCommit.ParentRevId = tfsCommit.Parents[0];
+						}
+
+						scmCommit.Comment = tfsCommit.Comment;
+						scmCommit.Changes = new List<ScmCommitFileChange>();
+
+						foreach (var tfsCommitChange in tfsCommit.Changes)
+						{
+							if (!tfsCommitChange.Item.IsFolder)
+							{
+								ScmCommitFileChange commitChange = new ScmCommitFileChange();
+								scmCommit.Changes.Add(commitChange);
+
+								commitChange.Type = tfsCommitChange.ChangeType;
+								commitChange.File = tfsCommitChange.Item.Path;
+							}
+						}
+					}
+				}
+				return scmData;
+
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Failed to create scm data for {collectionName}.{project}.{buildNumber}-{e.Message}");
+				return null;
+			}
+		}
 
 		private CiEvent CreateStartEvent(CiEvent finishEvent)
 		{
-			var startEvent = new CiEvent(finishEvent) { EventType = CiEventType.Started };
+			var startEvent = finishEvent.Clone();
+			startEvent.EventType = CiEventType.Started;
 
 			return startEvent;
+		}
 
+		private CiEvent CreateScmEvent(CiEvent finishEvent, ScmData scmData)
+		{
+			var scmEventEvent = finishEvent.Clone();
+			scmEventEvent.EventType = CiEventType.Scm;
+			scmEventEvent.ScmData = scmData;
+			return scmEventEvent;
 		}
 
 	}

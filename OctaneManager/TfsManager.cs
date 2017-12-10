@@ -6,6 +6,7 @@ using MicroFocus.Ci.Tfs.Octane.Tfs;
 using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
+using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.SCM;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Client;
 using System;
@@ -18,6 +19,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 	{
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static readonly CiJobList MockJobList = new CiJobList();
+
+	
 		private CiJobList _cachedJobList = new CiJobList();
 
 		protected readonly SubscriptionManager _subscriptionManager;
@@ -94,6 +97,34 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return changes;
 		}
 
+		public TfsScmCommit GetCommitWithChanges(string commitUrl)
+		{
+			var urlWithChanges = commitUrl;
+			//https://www.visualstudio.com/en-us/docs/integrate/api/git/commits#with-changed-items
+			if (!commitUrl.Contains("changeCount")){
+				var joiner = commitUrl.Contains("?") ? "&" : "?";
+				urlWithChanges = $"{commitUrl}{joiner}changeCount=100";
+			}
+
+			var commit = _tfsConnector.SendGet<TfsScmCommit>(urlWithChanges);
+			return commit;
+		}
+
+		public TfsScmRepository GetRepositoryByLocation(string repositoryUrl)
+		{
+			var repository = _tfsConnector.SendGet<TfsScmRepository>(repositoryUrl);
+			return repository;
+		}
+
+		public TfsScmRepository GetRepositoryById(string collectionName, string repositoryId)
+		{
+			var url = $"{collectionName}/_apis/git/repositories/{repositoryId}";
+			var repository = _tfsConnector.SendGet<TfsScmRepository>(url);
+			return repository;
+		}
+
+		
+
 		public IList<TfsTestResult>  GetTestResultsForRun(string collectionName, string projectName, string runId)
 		{
 			var url = $"{collectionName}/{projectName}/_apis/test/runs/{runId}/results?api-version=1.0";
@@ -111,9 +142,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return runs.Count > 0 ? runs[0] : null;
 		}
 
-		private TfsBuild GetBuild(string collectionName, string projectId, string buildId)
+		public TfsBuild GetBuild(string collectionName, string projectId, string buildId)
 		{
-			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=1.0");
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=2.0");
 			var build = _tfsConnector.SendGet<TfsBuild>(uriSuffix);
 			return build;
 		}

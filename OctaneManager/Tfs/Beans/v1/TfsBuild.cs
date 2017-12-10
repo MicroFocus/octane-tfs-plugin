@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.SCM;
+using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems
 {
@@ -12,5 +13,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems
         public string Status { get; set; }
         public string StartTime { get; set; }
         public string FinishTime { get; set; }
-    }
+		public string  SourceBranch { get; set; }
+		public string  SourceVersion { get; set; }
+		public TfsScmRepository Repository { get; set; }
+	}
 }
