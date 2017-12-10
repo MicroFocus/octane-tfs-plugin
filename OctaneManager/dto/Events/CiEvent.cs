@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MicroFocus.Ci.Tfs.Octane.dto;
+﻿using MicroFocus.Ci.Tfs.Octane.dto;
 using MicroFocus.Ci.Tfs.Octane.dto.parameters;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using MicroFocus.Ci.Tfs.Octane.Dto.Scm;
-using MicroFocus.Ci.Tfs.Octane.Dto.Snapshots;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto
 {
@@ -58,6 +53,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
 		public List<CiParameter> Parameters => new List<CiParameter>();
 
 		[JsonProperty("result")]
+		[JsonConverter(typeof(ToStringJsonConverter))]
 		public CiBuildResult BuildResult { get; set; }
 
 		[JsonProperty("startTime")]

@@ -238,7 +238,7 @@
     <Compile Include="Dto\Scm\ScmCommit.cs" />
     <Compile Include="Dto\Scm\ScmData.cs" />
     <Compile Include="Dto\Scm\ScmRepository.cs" />
-    <Compile Include="Dto\Snapshots\CiBuildResult.cs" />
+    <Compile Include="Dto\Events\CiBuildResult.cs" />
     <Compile Include="OctaneManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestServer\RestBase.cs" />

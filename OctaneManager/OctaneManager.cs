@@ -284,7 +284,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				if (changes.Count > 0)
 				{
 					scmData = new ScmData();
-					scmData.BuildRevId = "aaaaa";
+					scmData.BuiltRevId = changes[0].Id;
 					scmData.Commits = new List<ScmCommit>();
 					foreach (TfsScmChange change in changes)
 					{
@@ -294,8 +294,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 							var repository = _tfsManager.GetRepository(tfsCommit.Links.Repository.Href);
 							scmData.Repository = new ScmRepository();
 							scmData.Repository.Branch = repository.DefaultBranch; //TODO find real branch
-							scmData.Repository.Type = "git";//TODO find type 
-							scmData.Repository.Url = repository.Url;
+							scmData.Repository.Type = changes[0].Type;//TODO find type 
+							scmData.Repository.Url = repository.RemoteUrl;
 						}
 
 						ScmCommit scmCommit = new ScmCommit();
@@ -305,8 +305,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 						scmCommit.UserEmail = tfsCommit.Committer.Email;
 						scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
 
-						scmCommit.RevId = tfsCommit.TreeId;//TODO check what value needs to be here
-						scmCommit.ParentRevId = tfsCommit.TreeId;//TODO check what value needs to be here
+						scmCommit.RevId = tfsCommit.CommitId;
+						if (tfsCommit.Parents.Count > 0)
+						{
+							scmCommit.ParentRevId = tfsCommit.Parents[0];
+						}
+
 
 						scmCommit.Comment = tfsCommit.Comment;
 
@@ -330,7 +334,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 			catch (Exception e)
 			{
-				Log.Error($"Failed to create scm data for {collectionName}.{project}.{buildNumber}");
+				Log.Error($"Failed to create scm data for {collectionName}.{project}.{buildNumber}-{e.Message}");
 				return null;
 			}
 		}
