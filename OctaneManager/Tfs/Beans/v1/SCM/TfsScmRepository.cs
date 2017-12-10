@@ -10,6 +10,6 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.SCM
 		public string DefaultBranch { get; set; }
 		public string RemoteUrl { get; set; }
 		public string Url { get; set; }
-		
+		public string Type { get; set; }
 	}
 }

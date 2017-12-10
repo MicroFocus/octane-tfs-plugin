@@ -110,11 +110,20 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return commit;
 		}
 
-		public TfsScmRepository GetRepository(string repositoryUrl)
+		public TfsScmRepository GetRepositoryByLocation(string repositoryUrl)
 		{
 			var repository = _tfsConnector.SendGet<TfsScmRepository>(repositoryUrl);
 			return repository;
 		}
+
+		public TfsScmRepository GetRepositoryById(string collectionName, string repositoryId)
+		{
+			var url = $"{collectionName}/_apis/git/repositories/{repositoryId}";
+			var repository = _tfsConnector.SendGet<TfsScmRepository>(url);
+			return repository;
+		}
+
+		
 
 		public IList<TfsTestResult>  GetTestResultsForRun(string collectionName, string projectName, string runId)
 		{
@@ -133,9 +142,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return runs.Count > 0 ? runs[0] : null;
 		}
 
-		private TfsBuild GetBuild(string collectionName, string projectId, string buildId)
+		public TfsBuild GetBuild(string collectionName, string projectId, string buildId)
 		{
-			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=1.0");
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=2.0");
 			var build = _tfsConnector.SendGet<TfsBuild>(uriSuffix);
 			return build;
 		}

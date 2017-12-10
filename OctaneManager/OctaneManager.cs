@@ -279,41 +279,35 @@ namespace MicroFocus.Ci.Tfs.Octane
 			try
 			{
 				ScmData scmData = null;
-
 				var changes = _tfsManager.GetBuildChanges(collectionName, project, buildNumber);
 				if (changes.Count > 0)
 				{
 					scmData = new ScmData();
-					scmData.BuiltRevId = changes[0].Id;
+
+					var build = _tfsManager.GetBuild(collectionName, project, buildNumber);
+					var repository = _tfsManager.GetRepositoryById(collectionName, build.Repository.Id);
+					scmData.Repository = new ScmRepository();
+					scmData.Repository.Branch = build.SourceBranch;
+					scmData.Repository.Type = build.Repository.Type;
+					scmData.Repository.Url = repository.RemoteUrl;
+
+					scmData.BuiltRevId = build.SourceVersion;
 					scmData.Commits = new List<ScmCommit>();
 					foreach (TfsScmChange change in changes)
 					{
 						var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
-						if (scmData.Repository == null)
-						{
-							var repository = _tfsManager.GetRepository(tfsCommit.Links.Repository.Href);
-							scmData.Repository = new ScmRepository();
-							scmData.Repository.Branch = repository.DefaultBranch; //TODO find real branch
-							scmData.Repository.Type = changes[0].Type;//TODO find type 
-							scmData.Repository.Url = repository.RemoteUrl;
-						}
-
 						ScmCommit scmCommit = new ScmCommit();
 						scmData.Commits.Add(scmCommit);
-
 						scmCommit.User = tfsCommit.Committer.Name;
 						scmCommit.UserEmail = tfsCommit.Committer.Email;
 						scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
-
 						scmCommit.RevId = tfsCommit.CommitId;
 						if (tfsCommit.Parents.Count > 0)
 						{
 							scmCommit.ParentRevId = tfsCommit.Parents[0];
 						}
 
-
 						scmCommit.Comment = tfsCommit.Comment;
-
 						scmCommit.Changes = new List<ScmCommitFileChange>();
 
 						foreach (var tfsCommitChange in tfsCommit.Changes)
