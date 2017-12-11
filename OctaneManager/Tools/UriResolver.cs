@@ -59,5 +59,11 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
             var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_TEST_RESULTS}?skip-errors={skipErrors.ToString().ToLower()}";
             return baseUri;
         }
-    }
+
+		public string GetTestResultRelevant(string jobName)
+		{
+			var baseUri = $"{INTERNAL_API}{_sharedSpace}{ANALYTICS_CI_SERVERS}{_instDetails.InstanceId}/jobs/{jobName}/tests-result-preflight";
+			return baseUri;
+		}
+	}
 }
