@@ -24,7 +24,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
 			clonedEvent.StartTime = StartTime;
 			clonedEvent.EstimatedDuration = EstimatedDuration;
 			clonedEvent.Duration = Duration;
-			clonedEvent.ScmData = ScmData; //TODO: [URGENT] Refactor with copy constructor!!!
+			clonedEvent.ScmData = ScmData; 
 			clonedEvent.PhaseType = PhaseType;
 			return clonedEvent;
 		}
