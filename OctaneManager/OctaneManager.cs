@@ -71,21 +71,46 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void SendTestResults(string tfsCollectionName, string tfsProject, string tfsBuildId, string projectCiId, string buildCiId)
 		{
-			var run = _tfsManager.GetRunForBuid(tfsCollectionName, tfsProject, tfsBuildId);
-			var testResults = _tfsManager.GetTestResultsForRun(tfsCollectionName, tfsProject, run.Id.ToString());
-			OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
-			String xml = TestResultUtils.SerializeToXml(octaneTestResult);
+			if (GetTestResultRelevant(projectCiId))
+			{
+				var run = _tfsManager.GetRunForBuid(tfsCollectionName, tfsProject, tfsBuildId);
+				var testResults = _tfsManager.GetTestResultsForRun(tfsCollectionName, tfsProject, run.Id.ToString());
+				OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
+				String xml = TestResultUtils.SerializeToXml(octaneTestResult);
 
+				try
+				{
+					ResponseWrapper res = _restConnector.ExecutePost(_uriResolver.GetTestResults(), null, xml,
+						 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
+				}
+				catch (Exception ex)
+				{
+					Log.Error($"Error sending SendTestResults to server");
+					Log.Error($"Error desc: {ex.Message}");
+				}
+			}
+		}
+
+		private bool GetTestResultRelevant(string jobName)
+		{
+			bool result = false;
+			Log.Debug("Sending IsTestResultRelevant");
 			try
 			{
-				ResponseWrapper res = _restConnector.ExecutePost(_uriResolver.GetTestResults(), null, xml,
-					 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
+				ResponseWrapper res = _restConnector.ExecuteGet(_uriResolver.GetTestResultRelevant(jobName), null);
+				if (res.StatusCode == HttpStatusCode.OK)
+				{
+					result = Boolean.Parse(res.Data);
+				}
 			}
 			catch (Exception ex)
 			{
-				Log.Error($"Error sending SendTestResults to server");
+				Log.Error($"Error sending GetTestResultRelevant with jobname {jobName} to server");
 				Log.Error($"Error desc: {ex.Message}");
 			}
+
+			Log.Debug($"IsTestResultRelevant - {jobName} : {result}");
+			return result;
 		}
 
 		public void ShutDown()
@@ -142,7 +167,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				finally
 				{
-					Trace.WriteLine($"Time: {DateTime.Now.ToLongTimeString()}");
+					Trace.WriteLine($"Time: {DateTime.UtcNow.ToLongTimeString()}");
 					if (res == null)
 					{
 						Trace.WriteLine("No tasks");
@@ -255,8 +280,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 			{
 				Url = _tfsServerURi,
 				InstanceId = _connectionConf.InstanceId,
-				SendingTime = TestResultUtils.ConvertToOctaneTime(DateTime.Now),
-				InstanceIdFrom = TestResultUtils.ConvertToOctaneTime(DateTime.Now)
+				SendingTime = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow),
+				InstanceIdFrom = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow)
 			};
 
 			var body = JsonConvert.SerializeObject(list);
