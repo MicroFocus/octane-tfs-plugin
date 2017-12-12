@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
@@ -282,46 +283,50 @@ namespace MicroFocus.Ci.Tfs.Octane
 				var changes = _tfsManager.GetBuildChanges(collectionName, project, buildNumber);
 				if (changes.Count > 0)
 				{
-					scmData = new ScmData();
-
 					var build = _tfsManager.GetBuild(collectionName, project, buildNumber);
-					var repository = _tfsManager.GetRepositoryById(collectionName, build.Repository.Id);
-					scmData.Repository = new ScmRepository();
-					scmData.Repository.Branch = build.SourceBranch;
-					scmData.Repository.Type = build.Repository.Type;
-					scmData.Repository.Url = repository.RemoteUrl;
-
-					scmData.BuiltRevId = build.SourceVersion;
-					scmData.Commits = new List<ScmCommit>();
-					foreach (TfsScmChange change in changes)
+					ICollection<TfsScmChange> filteredChanges = GetFilteredBuildChanges(collectionName, project, build, changes);
+					if (filteredChanges.Count > 0)
 					{
-						var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
-						ScmCommit scmCommit = new ScmCommit();
-						scmData.Commits.Add(scmCommit);
-						scmCommit.User = tfsCommit.Committer.Name;
-						scmCommit.UserEmail = tfsCommit.Committer.Email;
-						scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
-						scmCommit.RevId = tfsCommit.CommitId;
-						if (tfsCommit.Parents.Count > 0)
-						{
-							scmCommit.ParentRevId = tfsCommit.Parents[0];
-						}
+						scmData = new ScmData();
+						var repository = _tfsManager.GetRepositoryById(collectionName, build.Repository.Id);
+						scmData.Repository = new ScmRepository();
+						scmData.Repository.Branch = build.SourceBranch;
+						scmData.Repository.Type = build.Repository.Type;
+						scmData.Repository.Url = repository.RemoteUrl;
 
-						scmCommit.Comment = tfsCommit.Comment;
-						scmCommit.Changes = new List<ScmCommitFileChange>();
-
-						foreach (var tfsCommitChange in tfsCommit.Changes)
+						scmData.BuiltRevId = build.SourceVersion;
+						scmData.Commits = new List<ScmCommit>();
+						foreach (TfsScmChange change in filteredChanges)
 						{
-							if (!tfsCommitChange.Item.IsFolder)
+							var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
+							ScmCommit scmCommit = new ScmCommit();
+							scmData.Commits.Add(scmCommit);
+							scmCommit.User = tfsCommit.Committer.Name;
+							scmCommit.UserEmail = tfsCommit.Committer.Email;
+							scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
+							scmCommit.RevId = tfsCommit.CommitId;
+							if (tfsCommit.Parents.Count > 0)
 							{
-								ScmCommitFileChange commitChange = new ScmCommitFileChange();
-								scmCommit.Changes.Add(commitChange);
+								scmCommit.ParentRevId = tfsCommit.Parents[0];
+							}
 
-								commitChange.Type = tfsCommitChange.ChangeType;
-								commitChange.File = tfsCommitChange.Item.Path;
+							scmCommit.Comment = tfsCommit.Comment;
+							scmCommit.Changes = new List<ScmCommitFileChange>();
+
+							foreach (var tfsCommitChange in tfsCommit.Changes)
+							{
+								if (!tfsCommitChange.Item.IsFolder)
+								{
+									ScmCommitFileChange commitChange = new ScmCommitFileChange();
+									scmCommit.Changes.Add(commitChange);
+
+									commitChange.Type = tfsCommitChange.ChangeType;
+									commitChange.File = tfsCommitChange.Item.Path;
+								}
 							}
 						}
 					}
+
 				}
 				return scmData;
 
@@ -330,6 +335,51 @@ namespace MicroFocus.Ci.Tfs.Octane
 			{
 				Log.Error($"Failed to create scm data for {collectionName}.{project}.{buildNumber}-{e.Message}");
 				return null;
+			}
+		}
+
+		/// <summary>
+		/// Tfs returns associated changes from last successful build. That mean, for failed build it can return change that was reported for previous failed build.
+		/// This method - clear previously reported changes of previous failed build
+		/// </summary>
+		private ICollection<TfsScmChange> GetFilteredBuildChanges(string collectionName, string project, TfsBuild build, ICollection<TfsScmChange> changes)
+		{
+			if (build.Result.Equals("failed"))
+			{
+				//put changes in map
+				Dictionary<string, TfsScmChange> changesMap = new Dictionary<string, TfsScmChange>();
+				foreach (TfsScmChange change in changes)
+				{
+					changesMap[change.Id] = change;
+				}
+
+				//find previous failed build
+				IList<TfsBuild> previousBuilds = _tfsManager.GetPreviousFailedBuilds(collectionName, project, build.Id);
+				TfsBuild foundPreviousFailedBuild = null;
+				foreach (TfsBuild previousBuild in previousBuilds)
+				{
+					//pick only build that done on the same branch
+					if (build.SourceBranch.Equals(previousBuild.SourceBranch))
+					{
+						foundPreviousFailedBuild = previousBuild;
+						break;
+					}
+				}
+
+				if (foundPreviousFailedBuild != null)
+				{
+					var previousChanges = _tfsManager.GetBuildChanges(collectionName, project, foundPreviousFailedBuild.Id.ToString());
+					foreach (TfsScmChange previousChange in previousChanges)
+					{
+						changesMap.Remove(previousChange.Id);
+					}
+				}
+
+				return changesMap.Values;
+			}
+			else
+			{
+				return changes;
 			}
 		}
 

@@ -89,7 +89,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return build;
 		}
 
-		public IList<TfsScmChange> GetBuildChanges(string collectionName, string projectId, string buildId)
+		public List<TfsScmChange> GetBuildChanges(string collectionName, string projectId, string buildId)
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/build/builds#changes
 			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}/changes?api=version=2.0");
@@ -149,7 +149,19 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return build;
 		}
 
-		private List<TfsProjectCollection> GetProjectCollections()
+		public IList<TfsBuild> GetPreviousFailedBuilds(string collectionName, string projectId, int buildId)
+		{
+			//https://www.visualstudio.com/en-us/docs/integrate/api/build/builds
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds?api-version=2.0&resultFilter=failed&$top=100");
+			var builds = _tfsConnector.GetCollection<TfsBuild>(uriSuffix);
+			while(builds.Count>0 && builds[0].Id>= buildId)
+			{
+				builds.RemoveAt(0);
+			}
+			return builds;
+		}
+
+		private IList<TfsProjectCollection> GetProjectCollections()
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/project-collections
 			var uriSuffix = ($"_apis/projectcollections?api-version=1.0");
@@ -157,7 +169,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return collections;
 		}
 
-		private List<TfsProject> GetProjects(string collectionName)
+		private IList<TfsProject> GetProjects(string collectionName)
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/projects
 			var uriSuffix = ($"{collectionName}/_apis/projects?api-version=1.0");
@@ -165,7 +177,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return collections.Items;
 		}
 
-		private List<TfsBuildDefinition> GetBuildDefinitions(string collectionName, string projectName)
+		private IList<TfsBuildDefinition> GetBuildDefinitions(string collectionName, string projectName)
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/xamlbuild/definitions
 			var uriSuffix = ($"{collectionName}/{projectName}/_apis/build/definitions?api-version=2.0");
