@@ -76,7 +76,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 				case "failed":
 					ciEvent.BuildResult = CiBuildResult.Failure;
 					break;
-
+				case "stopped":
+					ciEvent.BuildResult = CiBuildResult.Aborted;
+					break;
 				default:
 					ciEvent.BuildResult = CiBuildResult.Unavailable;
 					break;
