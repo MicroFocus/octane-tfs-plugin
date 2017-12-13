@@ -37,6 +37,19 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 		public CiEvent ToCiEvent()
 		{
 			var ciEvent = new CiEvent();
+
+			//create  build info
+			TfsBuildInfo buildInfo = new TfsBuildInfo();
+			var elements = Resource.Definition.Url.Split('/').ToList();
+			var i = elements.FindIndex(x => x == "_apis");
+			buildInfo.CollectionName = elements[i - 2];
+			buildInfo.Project = elements[i - 1];
+			buildInfo.BuildDefinitionId = Resource.Definition.Id;
+			buildInfo.BuildId = Resource.Id.ToString();
+			buildInfo.BuildName = Resource.BuildNumber;
+			ciEvent.BuildInfo = buildInfo;
+
+			//start filling ciEvent
 			switch (EventType)
 			{
 				case "build.complete":
@@ -47,10 +60,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 					break;
 			}
 
-
-			ciEvent.BuildCiId = Resource.BuildNumber.ToString();
-			ciEvent.Project = GenerateOctaneProjectIdFromBuildDefinitionUrl(Resource.Definition.Url.ToString());
-			ciEvent.Number = Resource.Id.ToString();
+			ciEvent.BuildId = buildInfo.BuildId + "." + buildInfo.BuildName;
+			ciEvent.Project = PipelineNode.GenerateOctaneJobCiId(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildDefinitionId);
+			ciEvent.BuildTitle = buildInfo.BuildName;
 			var cause = new CiEventCause();
 			switch (Resource.Reason)
 			{
@@ -76,28 +88,17 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 				case "failed":
 					ciEvent.BuildResult = CiBuildResult.Failure;
 					break;
-
+				case "stopped":
+					ciEvent.BuildResult = CiBuildResult.Aborted;
+					break;
 				default:
 					ciEvent.BuildResult = CiBuildResult.Unavailable;
 					break;
 
-
 					//UNSTABLE("unstable"),
-					//ABORTED("aborted"),
 			}
 
 			return ciEvent;
-		}
-
-		//Generate project id for octane : CollectionName.projectId.buildDefinitionId
-		private string GenerateOctaneProjectIdFromBuildDefinitionUrl(string value)
-		{
-			var elements = value.Split('/').ToList();
-
-			var i = elements.FindIndex(x => x == "_apis");
-
-			var id = PipelineNode.GenerateOctaneJobCiId(elements[i - 2], elements[i - 1], Resource.Definition.Id);
-			return id;
 		}
 	}
 }

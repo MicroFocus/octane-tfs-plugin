@@ -40,19 +40,20 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 			return collections.Items;
 		}
 
-		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize)
+		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize, int maxPages)
 		{
 			int top = pageSize;
 			int skip = 0;
 			bool completed = false;
 			List<T> finalResults = null;
 			string joiner = uriSuffix.Contains("?") ? "&" : "?";
-			while (!completed)
+			int pages = 0;
+			while (!completed && pages < maxPages)
 			{
 				string uriSuffixWithPage = ($"{uriSuffix}{joiner}$skip={skip}&$top={top}");
 				TfsBaseCollection<T> results = SendGet<TfsBaseCollection<T>>(uriSuffixWithPage);
 				skip += top;
-				completed = results.Count < top;
+
 				if (finalResults == null)
 				{
 					finalResults = results.Items;
@@ -61,6 +62,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 				{
 					finalResults.AddRange(results.Items);
 				}
+				pages++;
+				completed = results.Count < top;
 			}
 			return finalResults;
 		}

@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
@@ -68,47 +69,42 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Debug("Octane manager created...");
 		}
 
-		public void SendTestResults(string tfsCollectionName, string tfsProject, string tfsBuildId, string projectCiId, string buildCiId)
+		public void SendTestResults(TfsBuildInfo buildInfo, string projectCiId, string buildCiId)
 		{
-			if (GetTestResultRelevant(projectCiId))
+			try
 			{
-				var run = _tfsManager.GetRunForBuid(tfsCollectionName, tfsProject, tfsBuildId);
-				var testResults = _tfsManager.GetTestResultsForRun(tfsCollectionName, tfsProject, run.Id.ToString());
-				OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
-				String xml = TestResultUtils.SerializeToXml(octaneTestResult);
-
-				try
+				if (GetTestResultRelevant(projectCiId))
 				{
+
+					var run = _tfsManager.GetRunForBuid(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
+					var testResults = _tfsManager.GetTestResultsForRun(buildInfo.CollectionName, buildInfo.Project, run.Id.ToString());
+					OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
+					String xml = TestResultUtils.SerializeToXml(octaneTestResult);
+
 					ResponseWrapper res = _restConnector.ExecutePost(_uriResolver.GetTestResults(), null, xml,
 						 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
+					Log.Debug($"{buildInfo} : testResults are sent");
 				}
-				catch (Exception ex)
+				else
 				{
-					Log.Error($"Error sending SendTestResults to server");
-					Log.Error($"Error desc: {ex.Message}");
+					Log.Debug($"{buildInfo} - GetTestResultRelevant=false for project {projectCiId}");
 				}
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"{buildInfo} : error in SendTestResults : {ex.Message}");
 			}
 		}
 
 		private bool GetTestResultRelevant(string jobName)
 		{
 			bool result = false;
-			Log.Debug("Sending IsTestResultRelevant");
-			try
+			ResponseWrapper res = _restConnector.ExecuteGet(_uriResolver.GetTestResultRelevant(jobName), null);
+			if (res.StatusCode == HttpStatusCode.OK)
 			{
-				ResponseWrapper res = _restConnector.ExecuteGet(_uriResolver.GetTestResultRelevant(jobName), null);
-				if (res.StatusCode == HttpStatusCode.OK)
-				{
-					result = Boolean.Parse(res.Data);
-				}
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error sending GetTestResultRelevant with jobname {jobName} to server");
-				Log.Error($"Error desc: {ex.Message}");
+				result = Boolean.Parse(res.Data);
 			}
 
-			Log.Debug($"IsTestResultRelevant - {jobName} : {result}");
 			return result;
 		}
 
@@ -258,21 +254,25 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		private void RestBase_BuildEvent(object sender, Dto.CiEvent finishEvent)
+		private void RestBase_BuildEvent(object sender, CiEvent finishEvent)
 		{
-			string[] projectParts = finishEvent.Project.Split('.');
-			string collectionName = projectParts[0];
-			string project = projectParts[1];
-			string buildDefinitionId = projectParts[2];
+
+			Log.Debug($"{finishEvent.BuildInfo} - start handling event");
 
 			var list = new CiEventsList();
 			list.Events.Add(CreateStartEvent(finishEvent));
 			list.Events.Add(finishEvent);
 
-			var scmData = GetScmData(collectionName, project, finishEvent.Number);
+
+			var scmData = GetScmData(finishEvent.BuildInfo);
 			if (scmData != null)
 			{
 				list.Events.Add(CreateScmEvent(finishEvent, scmData));
+				Log.Debug($"{finishEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
+			}
+			else
+			{
+				Log.Debug($"{finishEvent.BuildInfo} - scm data is empty");
 			}
 
 			list.Server = new CiServerInfo
@@ -288,72 +288,132 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 			if (res.StatusCode == HttpStatusCode.OK)
 			{
-				Log.Info("Event succesfully sent");
-				SendTestResults(collectionName, project, finishEvent.Number, finishEvent.Project, finishEvent.BuildCiId);
+				Log.Debug($"{finishEvent.BuildInfo} - {list.Events.Count} events succesfully sent");
+				SendTestResults(finishEvent.BuildInfo, finishEvent.Project, finishEvent.BuildId);
 			}
 			else
 			{
-				Log.Error("Event was not sent succesfully");
+				Log.Error("{finishEvent.BuildInfo} - events was not sent succesfully.");
 			}
 
 		}
 
-		public ScmData GetScmData(string collectionName, string project, string buildNumber)
+		public ScmData GetScmData(TfsBuildInfo buildInfo)
 		{
 			try
 			{
 				ScmData scmData = null;
-				var changes = _tfsManager.GetBuildChanges(collectionName, project, buildNumber);
+				var changes = _tfsManager.GetBuildChanges(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
 				if (changes.Count > 0)
 				{
-					scmData = new ScmData();
-
-					var build = _tfsManager.GetBuild(collectionName, project, buildNumber);
-					var repository = _tfsManager.GetRepositoryById(collectionName, build.Repository.Id);
-					scmData.Repository = new ScmRepository();
-					scmData.Repository.Branch = build.SourceBranch;
-					scmData.Repository.Type = build.Repository.Type;
-					scmData.Repository.Url = repository.RemoteUrl;
-
-					scmData.BuiltRevId = build.SourceVersion;
-					scmData.Commits = new List<ScmCommit>();
-					foreach (var change in changes)
+					var build = _tfsManager.GetBuild(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
+					ICollection<TfsScmChange> filteredChanges = GetFilteredBuildChanges(buildInfo, build, changes);
+					if (filteredChanges.Count > 0)
 					{
-						var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
-						ScmCommit scmCommit = new ScmCommit();
-						scmData.Commits.Add(scmCommit);
-						scmCommit.User = tfsCommit.Committer.Name;
-						scmCommit.UserEmail = tfsCommit.Committer.Email;
-						scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
-						scmCommit.RevId = tfsCommit.CommitId;
-						if (tfsCommit.Parents.Count > 0)
-						{
-							scmCommit.ParentRevId = tfsCommit.Parents[0];
-						}
+						scmData = new ScmData();
+						var repository = _tfsManager.GetRepositoryById(buildInfo.CollectionName, build.Repository.Id);
+						scmData.Repository = new ScmRepository();
+						scmData.Repository.Branch = build.SourceBranch;
+						scmData.Repository.Type = build.Repository.Type;
+						scmData.Repository.Url = repository.RemoteUrl;
 
-						scmCommit.Comment = tfsCommit.Comment;
-						scmCommit.Changes = new List<ScmCommitFileChange>();
-
-						foreach (var tfsCommitChange in tfsCommit.Changes)
+						scmData.BuiltRevId = build.SourceVersion;
+						scmData.Commits = new List<ScmCommit>();
+						foreach (TfsScmChange change in filteredChanges)
 						{
-							if (!tfsCommitChange.Item.IsFolder)
+							var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
+							ScmCommit scmCommit = new ScmCommit();
+							scmData.Commits.Add(scmCommit);
+							scmCommit.User = tfsCommit.Committer.Name;
+							scmCommit.UserEmail = tfsCommit.Committer.Email;
+							scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
+							scmCommit.RevId = tfsCommit.CommitId;
+							if (tfsCommit.Parents.Count > 0)
 							{
-								ScmCommitFileChange commitChange = new ScmCommitFileChange();
-								scmCommit.Changes.Add(commitChange);
+								scmCommit.ParentRevId = tfsCommit.Parents[0];
+							}
 
-								commitChange.Type = tfsCommitChange.ChangeType;
-								commitChange.File = tfsCommitChange.Item.Path;
+							scmCommit.Comment = tfsCommit.Comment;
+							scmCommit.Changes = new List<ScmCommitFileChange>();
+
+							foreach (var tfsCommitChange in tfsCommit.Changes)
+							{
+								if (!tfsCommitChange.Item.IsFolder)
+								{
+									ScmCommitFileChange commitChange = new ScmCommitFileChange();
+									scmCommit.Changes.Add(commitChange);
+
+									commitChange.Type = tfsCommitChange.ChangeType;
+									commitChange.File = tfsCommitChange.Item.Path;
+								}
 							}
 						}
 					}
+
 				}
 				return scmData;
 
 			}
 			catch (Exception e)
 			{
-				Log.Error($"Failed to create scm data for {collectionName}.{project}.{buildNumber}-{e.Message}");
+				Log.Error($"{buildInfo} - Failed to create scm data : {e.Message}");
 				return null;
+			}
+		}
+
+		/// <summary>
+		/// Tfs returns associated changes from last successful build. That mean, for failed build it can return change that was reported for previous failed build.
+		/// This method - clear previously reported changes of previous failed build
+		/// </summary>
+		private ICollection<TfsScmChange> GetFilteredBuildChanges(TfsBuildInfo buildInfo, TfsBuild build, ICollection<TfsScmChange> changes)
+		{
+			if (build.Result.Equals("failed"))
+			{
+				//put changes in map
+				Dictionary<string, TfsScmChange> changesMap = new Dictionary<string, TfsScmChange>();
+				foreach (TfsScmChange change in changes)
+				{
+					changesMap[change.Id] = change;
+				}
+
+				//find previous failed build
+				IList<TfsBuild> previousBuilds = _tfsManager.GetPreviousFailedBuilds(buildInfo.CollectionName, buildInfo.Project, build.StartTime);
+				TfsBuild foundPreviousFailedBuild = null;
+				foreach (TfsBuild previousBuild in previousBuilds)
+				{
+					//pick only build that done on the same branch
+					if (build.SourceBranch.Equals(previousBuild.SourceBranch))
+					{
+						foundPreviousFailedBuild = previousBuild;
+						break;
+					}
+				}
+
+				if (foundPreviousFailedBuild != null)
+				{
+					//remove changes from previous build
+					var previousChanges = _tfsManager.GetBuildChanges(buildInfo.CollectionName, buildInfo.Project, foundPreviousFailedBuild.Id.ToString());
+					foreach (TfsScmChange previousChange in previousChanges)
+					{
+						changesMap.Remove(previousChange.Id);
+					}
+
+					int removedCount = changes.Count - changesMap.Count;
+					if (removedCount == 0)
+					{
+						Log.Debug($"{buildInfo} - build {build.Id} contains {changes.Count} associated changes. No one of them was already reported in previous build {foundPreviousFailedBuild.Id}");
+					}
+					else
+					{
+						Log.Debug($"{buildInfo} - build {build.Id} contains {changes.Count} associated changes while {removedCount} changes were already reported in build {foundPreviousFailedBuild.Id}");
+					}
+				}
+
+				return changesMap.Values;
+			}
+			else
+			{
+				return changes;
 			}
 		}
 
