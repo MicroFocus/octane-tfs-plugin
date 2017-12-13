@@ -222,6 +222,7 @@
     <Compile Include="Dto\Events\CiEventsList.cs" />
     <Compile Include="Dto\Events\CiEventType.cs" />
     <Compile Include="Dto\Events\PhaseType.cs" />
+    <Compile Include="Dto\Events\TfsBuildInfo.cs" />
     <Compile Include="Dto\General\CIJobList.cs" />
     <Compile Include="Dto\General\CiServerInfo.cs" />
     <Compile Include="Dto\General\TfsCiEntity.cs" />
