@@ -22,10 +22,10 @@ namespace MicroFocus.Ci.Tfs.Tests
             var devTimeout = (int)TimeSpan.FromSeconds(int.Parse(ConfigurationManager.AppSettings["devTimeout"])).TotalMilliseconds;
             var instanceId = Guid.Parse(ConfigurationManager.AppSettings["InstanceId"]);
             var pat = ConfigurationManager.AppSettings["pat"];
-
+            var tfsLocation = "http://localhost:8080/tfs";
             var path = MicroFocus.Ci.Tfs.Octane.Configuration.ConfigurationManager.ConfigurationFile;
 
-            var connectionDetails = new ConnectionDetails(webbAppUrl, clientId, clientSecret, instanceId) {Pat = pat};
+            var connectionDetails = new ConnectionDetails(webbAppUrl, clientId, clientSecret, tfsLocation, instanceId) {Pat = pat};
             using (TextWriter writer = new StreamWriter(path))
             {
                 var config = JsonConvert.SerializeObject(connectionDetails);
@@ -33,7 +33,7 @@ namespace MicroFocus.Ci.Tfs.Tests
                 writer.Close();
             }     
             
-            octaneManager = new OctaneManager(9999,devTimeout);
+            octaneManager = new OctaneManager(devTimeout);
             _tfsManager = new TfsManager(connectionDetails.Pat);
         }
     }

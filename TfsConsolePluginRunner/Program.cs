@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using log4net;
 using log4net.Config;
 using MicroFocus.Ci.Tfs.Octane;
+using MicroFocus.Ci.Tfs.Octane.Configuration;
 
 [assembly: XmlConfigurator(ConfigFile = @"agent-log-config.xml", Watch = true)]
 namespace TfsConsolePluginRunner
@@ -22,7 +18,12 @@ namespace TfsConsolePluginRunner
         {            
             Log.Info("Starting proccess...");
 
-            _octaneManager = new OctaneManager(8080);
+            if (!ConfigurationManager.ConfigurationExists())
+            {
+                ConfigurationManager.WriteConfig(ConfigFileGenerator.GenerateConfig());
+            }
+
+            _octaneManager = new OctaneManager();
             _octaneManager.Init();
 
             Console.WriteLine("TFS plugin is running , press any key to exit...");

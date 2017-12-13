@@ -16,7 +16,6 @@ using MicroFocus.Ci.Tfs.Octane.Dto.General;
 using MicroFocus.Ci.Tfs.Octane.Dto.Scm;
 using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
-using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -54,13 +53,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 		//private CancellationToken _polingCancelationToken;
 		private readonly TaskProcessor _taskProcessor;
 		private readonly Uri _tfsServerURi;
-		public OctaneManager(int servicePort, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
+		public OctaneManager(int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
 		{
 			_pollingGetTimeout = pollingTimeout;
 			var hostName = Dns.GetHostName();
 			var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
 			_connectionConf = ConfigurationManager.Read();
-			_tfsServerURi = new Uri($"http://{hostName}:{servicePort}");
+			_tfsServerURi = new Uri(_connectionConf.TfsLocation);
 			var instanceDetails = new InstanceDetails(_connectionConf.InstanceId, _tfsServerURi.ToString());
 
 			_uriResolver = new UriResolver(_connectionConf.SharedSpace, instanceDetails, _connectionConf);
@@ -318,7 +317,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 					scmData.BuiltRevId = build.SourceVersion;
 					scmData.Commits = new List<ScmCommit>();
-					foreach (TfsScmChange change in changes)
+					foreach (var change in changes)
 					{
 						var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
 						ScmCommit scmCommit = new ScmCommit();

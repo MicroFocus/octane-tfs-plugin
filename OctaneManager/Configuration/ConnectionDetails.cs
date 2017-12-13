@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Hpe.Nga.Api.Core.Entities;
+using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Configuration
 {
-    internal class ConnectionDetails
+    public class ConnectionDetails
     {
+        [JsonIgnore]
         public string Host
         {
             get
@@ -36,16 +38,19 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
         public string Pat { get; set; }
 
+        public string TfsLocation { get; set; }
         public ConnectionDetails()
         {
+
         }
 
-        public ConnectionDetails(string webAppUrl, string clientId, string clientSecret,Guid? instanceId = null)
+        public ConnectionDetails(string webAppUrl, string clientId, string clientSecret,string tfsLocation , Guid? instanceId = null)
         {
             WebAppUrl = webAppUrl;
             ClientId = clientId;
             ClientSecret = clientSecret;
             InstanceId = instanceId ?? Guid.NewGuid();
+            TfsLocation = tfsLocation;
         }
 
         public Guid InstanceId { get; set; } = Guid.NewGuid();

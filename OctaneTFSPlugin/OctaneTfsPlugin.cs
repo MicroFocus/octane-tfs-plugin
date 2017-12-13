@@ -48,7 +48,7 @@ namespace MicroFocus.Ci.Tfs.Core
                 }
                 try
                 {
-                    _octaneManager = new OctaneManager(9999);
+                    _octaneManager = new OctaneManager();
                     _octaneManager.Init();
                     
                 }
