@@ -48,9 +48,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 			}
 
 
-			ciEvent.BuildCiId = Resource.BuildNumber.ToString();
+			ciEvent.BuildId = Resource.BuildNumber + "." + Resource.Id; ;
 			ciEvent.Project = GenerateOctaneProjectIdFromBuildDefinitionUrl(Resource.Definition.Url.ToString());
-			ciEvent.Number = Resource.Id.ToString();
+			ciEvent.BuildTitle = Resource.BuildNumber;
 			var cause = new CiEventCause();
 			switch (Resource.Reason)
 			{
