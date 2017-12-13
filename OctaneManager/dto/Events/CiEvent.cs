@@ -70,5 +70,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
 
 		[JsonProperty("phaseType")]
 		public string PhaseType { get; set; }
+
+		[JsonIgnore]
+		public TfsBuildInfo BuildInfo { get; set; }
 	}
 }

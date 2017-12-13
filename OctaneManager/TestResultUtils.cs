@@ -14,7 +14,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		public static string SerializeToXml(OctaneTestResult octaneTestResult)
 		{
 			var xmlSerializer = new XmlSerializer(typeof(OctaneTestResult));
-		    using (StringWriter textWriter = new Utf8StringWriter())
+			using (StringWriter textWriter = new Utf8StringWriter())
 			{
 				var ns = new XmlSerializerNamespaces();
 				ns.Add("", "");
@@ -25,35 +25,50 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public static OctaneTestResult ConvertToOctaneTestResult(string serverId, string projectCiId, string buildCiId, IList<TfsTestResult> testResults, string runWebAccessUrl)
 		{
-		    if (testResults.Count <= 0) return null;
-		    //Serialization prepare
-		    var octaneTestResult = new OctaneTestResult();
-		    var build = testResults[0].Build;
-		    var project = testResults[0].Project;
-		    octaneTestResult.Build = OctaneTestResultBuild.Create(serverId, buildCiId, projectCiId);
-		    octaneTestResult.TestFields = new List<OctaneTestResultTestField>(new[] {
+			if (testResults.Count <= 0) return null;
+			//Serialization prepare
+			var octaneTestResult = new OctaneTestResult();
+			var build = testResults[0].Build;
+			var project = testResults[0].Project;
+			octaneTestResult.Build = OctaneTestResultBuild.Create(serverId, buildCiId, projectCiId);
+			/*octaneTestResult.TestFields = new List<OctaneTestResultTestField>(new[] {
 		        OctaneTestResultTestField.Create(OctaneTestResultTestField.TEST_LEVEL_TYPE, "UnitTest")
-		    });
+		    });*/
 
-		    octaneTestResult.TestRuns = new List<OctaneTestResultTestRun>();
-		    foreach (var testResult in testResults)
-		    {
-		        var run = new OctaneTestResultTestRun();
-		        var testNameParts = testResult.AutomatedTestName.Split('.');
-		        run.Name = testNameParts[testNameParts.Length - 1];
-		        run.Class = testNameParts[testNameParts.Length - 2];
-		        run.Package = String.Join(".", new ArraySegment<String>(testNameParts, 0, testNameParts.Length - 2));
+			octaneTestResult.TestRuns = new List<OctaneTestResultTestRun>();
+			foreach (var testResult in testResults)
+			{
+				var run = new OctaneTestResultTestRun();
+				if (testResult.AutomatedTestType.Equals("JUnit"))
+				{
+					var testNameParts = testResult.AutomatedTestStorage.Split('.');
+					run.Name = testResult.AutomatedTestName;
+					run.Class = testNameParts[testNameParts.Length - 1];
+					run.Package = String.Join(".", new ArraySegment<String>(testNameParts, 0, testNameParts.Length - 1));
+				}
+				else // UnitTest
+				{
+					var testNameParts = testResult.AutomatedTestName.Split('.');
+					run.Name = testNameParts[testNameParts.Length - 1];
+					run.Class = testNameParts[testNameParts.Length - 2];
+					run.Package = String.Join(".", new ArraySegment<String>(testNameParts, 0, testNameParts.Length - 2));
+					run.Module = Path.GetFileNameWithoutExtension(testResult.AutomatedTestStorage);
+				}
 
-		        run.Module = Path.GetFileNameWithoutExtension(testResult.AutomatedTestStorage);
 
-		        run.Duration = (long)testResult.DurationInMs;
-		        run.Status = testResult.Outcome;
-		        if (run.Status.Equals("Failed"))
-		        {
-		            run.Error = OctaneTestResultError.Create(testResult.FailureType, testResult.ErrorMessage, testResult.StackTrace);
-		        }
+				run.Duration = (long)testResult.DurationInMs;
+				run.Status = testResult.Outcome;
+				if (run.Status.Equals("NotExecuted"))
+				{
+					run.Status = "Skipped";
+				}
 
-		        run.Started = ConvertToOctaneTime(testResult.StartedDate);
+				if (run.Status.Equals("Failed"))
+				{
+					run.Error = OctaneTestResultError.Create(testResult.FailureType, testResult.ErrorMessage, testResult.StackTrace);
+				}
+
+				run.Started = ConvertToOctaneTime(testResult.StartedDate);
 
 				if (!string.IsNullOrEmpty(runWebAccessUrl))
 				{
@@ -62,9 +77,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 					run.ExternalReportUrl = runWebAccessUrl.Replace("_a=runCharts", ($"_a=resultSummary&resultId={testResult.Id}"));
 				}
 
-		        octaneTestResult.TestRuns.Add(run);
-		    }
-		    return octaneTestResult;
+				octaneTestResult.TestRuns.Add(run);
+			}
+			return octaneTestResult;
 		}
 
 		public static long ConvertToOctaneTime(DateTime data)
