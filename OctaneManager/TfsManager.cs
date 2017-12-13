@@ -149,15 +149,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return build;
 		}
 
-		public IList<TfsBuild> GetPreviousFailedBuilds(string collectionName, string projectId, int buildId)
+		public IList<TfsBuild> GetPreviousFailedBuilds(string collectionName, string projectId,string maxFinishTime)
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/build/builds
-			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds?api-version=2.0&resultFilter=failed&$top=100");
+			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds?api-version=2.0&resultFilter=failed&maxFinishTime={maxFinishTime}&$top=100");
 			var builds = _tfsConnector.GetCollection<TfsBuild>(uriSuffix);
-			while(builds.Count>0 && builds[0].Id>= buildId)
-			{
-				builds.RemoveAt(0);
-			}
+			
 			return builds;
 		}
 

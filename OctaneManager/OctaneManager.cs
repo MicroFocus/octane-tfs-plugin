@@ -74,13 +74,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			if (GetTestResultRelevant(projectCiId))
 			{
-				var run = _tfsManager.GetRunForBuid(tfsCollectionName, tfsProject, tfsBuildId);
-				var testResults = _tfsManager.GetTestResultsForRun(tfsCollectionName, tfsProject, run.Id.ToString());
-				OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
-				String xml = TestResultUtils.SerializeToXml(octaneTestResult);
-
 				try
 				{
+					var run = _tfsManager.GetRunForBuid(tfsCollectionName, tfsProject, tfsBuildId);
+					var testResults = _tfsManager.GetTestResultsForRun(tfsCollectionName, tfsProject, run.Id.ToString());
+					OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
+					String xml = TestResultUtils.SerializeToXml(octaneTestResult);
+
 					ResponseWrapper res = _restConnector.ExecutePost(_uriResolver.GetTestResults(), null, xml,
 						 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
 				}
@@ -271,7 +271,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 			list.Events.Add(CreateStartEvent(finishEvent));
 			list.Events.Add(finishEvent);
 
-			var scmData = GetScmData(collectionName, project, finishEvent.Number);
+			string[] buildCiIdParts = finishEvent.BuildId.Split('.');
+			string tfsBuildId = buildCiIdParts[buildCiIdParts.Length - 1];//tfsBuild is last part
+
+			var scmData = GetScmData(collectionName, project, tfsBuildId);
 			if (scmData != null)
 			{
 				list.Events.Add(CreateScmEvent(finishEvent, scmData));
@@ -291,7 +294,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			if (res.StatusCode == HttpStatusCode.OK)
 			{
 				Log.Info("Event succesfully sent");
-				SendTestResults(collectionName, project, finishEvent.Number, finishEvent.Project, finishEvent.BuildCiId);
+				SendTestResults(collectionName, project, tfsBuildId, finishEvent.Project, finishEvent.BuildId);
 			}
 			else
 			{
@@ -379,7 +382,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 
 				//find previous failed build
-				IList<TfsBuild> previousBuilds = _tfsManager.GetPreviousFailedBuilds(collectionName, project, build.Id);
+				IList<TfsBuild> previousBuilds = _tfsManager.GetPreviousFailedBuilds(collectionName, project, build.StartTime);
 				TfsBuild foundPreviousFailedBuild = null;
 				foreach (TfsBuild previousBuild in previousBuilds)
 				{
@@ -397,6 +400,16 @@ namespace MicroFocus.Ci.Tfs.Octane
 					foreach (TfsScmChange previousChange in previousChanges)
 					{
 						changesMap.Remove(previousChange.Id);
+					}
+
+					int removedCount = changes.Count - changesMap.Count;
+					if (removedCount == 0)
+					{
+						Log.Debug($"Build {build.Id} contains {changes.Count} associated changes. No one of them was already reported in previous build {foundPreviousFailedBuild.Id}");
+					}
+					else
+					{
+						Log.Debug($"Build {build.Id} contains {changes.Count} associated changes while {removedCount} changes were already reported in build {foundPreviousFailedBuild.Id}");
 					}
 				}
 

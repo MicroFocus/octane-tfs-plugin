@@ -17,9 +17,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
 			CiEvent clonedEvent = new CiEvent();
 			clonedEvent.ProjectDisplayName = ProjectDisplayName;
 			clonedEvent.EventType = new CiEventType(EventType.ToString());
-			clonedEvent.BuildCiId = BuildCiId;
+			clonedEvent.BuildId = BuildId;
 			clonedEvent.Project = Project;
-			clonedEvent.Number = Number;
+			clonedEvent.BuildTitle = BuildTitle;
 			clonedEvent.BuildResult = BuildResult;
 			clonedEvent.StartTime = StartTime;
 			clonedEvent.EstimatedDuration = EstimatedDuration;
@@ -37,13 +37,13 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
 		public CiEventType EventType { get; set; }
 
 		[JsonProperty("buildCiId")]
-		public string BuildCiId { get; set; }
+		public string BuildId { get; set; }
+
+		[JsonProperty("number")]
+		public string BuildTitle { get; set; }
 
 		[JsonProperty("project")]
 		public string Project { get; set; }
-
-		[JsonProperty("number")]
-		public string Number { get; set; }
 
 		[JsonProperty("causes")]
 		public List<CiEventCause> Causes => new List<CiEventCause>();
