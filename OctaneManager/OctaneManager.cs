@@ -317,21 +317,21 @@ namespace MicroFocus.Ci.Tfs.Octane
 						scmData.Repository.Type = build.Repository.Type;
 						scmData.Repository.Url = repository.RemoteUrl;
 
-						scmData.BuiltRevId = build.SourceVersion;
-						scmData.Commits = new List<ScmCommit>();
-						foreach (TfsScmChange change in filteredChanges)
+					scmData.BuiltRevId = build.SourceVersion;
+					scmData.Commits = new List<ScmCommit>();
+					foreach (TfsScmChange change in changes)
+					{
+						var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
+						ScmCommit scmCommit = new ScmCommit();
+						scmData.Commits.Add(scmCommit);
+						scmCommit.User = tfsCommit.Committer.Name;
+						scmCommit.UserEmail = tfsCommit.Committer.Email;
+						scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
+						scmCommit.RevId = tfsCommit.CommitId;
+						if (tfsCommit.Parents.Count > 0)
 						{
-							var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
-							ScmCommit scmCommit = new ScmCommit();
-							scmData.Commits.Add(scmCommit);
-							scmCommit.User = tfsCommit.Committer.Name;
-							scmCommit.UserEmail = tfsCommit.Committer.Email;
-							scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
-							scmCommit.RevId = tfsCommit.CommitId;
-							if (tfsCommit.Parents.Count > 0)
-							{
-								scmCommit.ParentRevId = tfsCommit.Parents[0];
-							}
+							scmCommit.ParentRevId = tfsCommit.Parents[0];
+						}
 
 							scmCommit.Comment = tfsCommit.Comment;
 							scmCommit.Changes = new List<ScmCommitFileChange>();
