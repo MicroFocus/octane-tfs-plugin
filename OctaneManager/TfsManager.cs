@@ -92,8 +92,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/build/builds#changes
 			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}/changes?api=version=2.0");
-			const int pageSize = 100;
-			const int maxPages = 10;
+			const int pageSize = 200;
+			const int maxPages = 5;
 			var changes = _tfsConnector.GetPagedCollection<TfsScmChange>(uriSuffix, pageSize, maxPages);
 			return changes;
 		}

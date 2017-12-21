@@ -304,11 +304,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 			try
 			{
 				ScmData scmData = null;
-				var changes = _tfsManager.GetBuildChanges(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
-				if (changes.Count > 0)
+				var originalChanges = _tfsManager.GetBuildChanges(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
+				if (originalChanges.Count > 0)
 				{
 					var build = _tfsManager.GetBuild(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
-					ICollection<TfsScmChange> filteredChanges = GetFilteredBuildChanges(buildInfo, build, changes);
+					ICollection<TfsScmChange> filteredChanges = GetFilteredBuildChanges(buildInfo, build, originalChanges);
 					if (filteredChanges.Count > 0)
 					{
 						scmData = new ScmData();
@@ -318,21 +318,21 @@ namespace MicroFocus.Ci.Tfs.Octane
 						scmData.Repository.Type = build.Repository.Type;
 						scmData.Repository.Url = repository.RemoteUrl;
 
-					scmData.BuiltRevId = build.SourceVersion;
-					scmData.Commits = new List<ScmCommit>();
-					foreach (TfsScmChange change in changes)
-					{
-						var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
-						ScmCommit scmCommit = new ScmCommit();
-						scmData.Commits.Add(scmCommit);
-						scmCommit.User = tfsCommit.Committer.Name;
-						scmCommit.UserEmail = tfsCommit.Committer.Email;
-						scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
-						scmCommit.RevId = tfsCommit.CommitId;
-						if (tfsCommit.Parents.Count > 0)
+						scmData.BuiltRevId = build.SourceVersion;
+						scmData.Commits = new List<ScmCommit>();
+						foreach (TfsScmChange change in filteredChanges)
 						{
-							scmCommit.ParentRevId = tfsCommit.Parents[0];
-						}
+							var tfsCommit = _tfsManager.GetCommitWithChanges(change.Location);
+							ScmCommit scmCommit = new ScmCommit();
+							scmData.Commits.Add(scmCommit);
+							scmCommit.User = tfsCommit.Committer.Name;
+							scmCommit.UserEmail = tfsCommit.Committer.Email;
+							scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
+							scmCommit.RevId = tfsCommit.CommitId;
+							if (tfsCommit.Parents.Count > 0)
+							{
+								scmCommit.ParentRevId = tfsCommit.Parents[0];
+							}
 
 							scmCommit.Comment = tfsCommit.Comment;
 							scmCommit.Changes = new List<ScmCommitFileChange>();
@@ -368,54 +368,49 @@ namespace MicroFocus.Ci.Tfs.Octane
 		/// </summary>
 		private ICollection<TfsScmChange> GetFilteredBuildChanges(TfsBuildInfo buildInfo, TfsBuild build, ICollection<TfsScmChange> changes)
 		{
-			if (build.Result.Equals("failed"))
+
+			//put changes in map
+			Dictionary<string, TfsScmChange> changesMap = new Dictionary<string, TfsScmChange>();
+			foreach (TfsScmChange change in changes)
 			{
-				//put changes in map
-				Dictionary<string, TfsScmChange> changesMap = new Dictionary<string, TfsScmChange>();
-				foreach (TfsScmChange change in changes)
-				{
-					changesMap[change.Id] = change;
-				}
-
-				//find previous failed build
-				IList<TfsBuild> previousBuilds = _tfsManager.GetPreviousFailedBuilds(buildInfo.CollectionName, buildInfo.Project, build.StartTime);
-				TfsBuild foundPreviousFailedBuild = null;
-				foreach (TfsBuild previousBuild in previousBuilds)
-				{
-					//pick only build that done on the same branch
-					if (build.SourceBranch.Equals(previousBuild.SourceBranch))
-					{
-						foundPreviousFailedBuild = previousBuild;
-						break;
-					}
-				}
-
-				if (foundPreviousFailedBuild != null)
-				{
-					//remove changes from previous build
-					var previousChanges = _tfsManager.GetBuildChanges(buildInfo.CollectionName, buildInfo.Project, foundPreviousFailedBuild.Id.ToString());
-					foreach (TfsScmChange previousChange in previousChanges)
-					{
-						changesMap.Remove(previousChange.Id);
-					}
-
-					int removedCount = changes.Count - changesMap.Count;
-					if (removedCount == 0)
-					{
-						Log.Debug($"{buildInfo} - build {build.Id} contains {changes.Count} associated changes. No one of them was already reported in previous build {foundPreviousFailedBuild.Id}");
-					}
-					else
-					{
-						Log.Debug($"{buildInfo} - build {build.Id} contains {changes.Count} associated changes while {removedCount} changes were already reported in build {foundPreviousFailedBuild.Id}");
-					}
-				}
-
-				return changesMap.Values;
+				changesMap[change.Id] = change;
 			}
-			else
+
+			//find previous failed build
+			IList<TfsBuild> previousBuilds = _tfsManager.GetPreviousFailedBuilds(buildInfo.CollectionName, buildInfo.Project, build.StartTime);
+			TfsBuild foundPreviousFailedBuild = null;
+			foreach (TfsBuild previousBuild in previousBuilds)
 			{
-				return changes;
+				//pick only build that done on the same branch
+				if (build.SourceBranch.Equals(previousBuild.SourceBranch))
+				{
+					foundPreviousFailedBuild = previousBuild;
+					break;
+				}
 			}
+
+			if (foundPreviousFailedBuild != null)
+			{
+				//remove changes from previous build
+				var previousChanges = _tfsManager.GetBuildChanges(buildInfo.CollectionName, buildInfo.Project, foundPreviousFailedBuild.Id.ToString());
+				foreach (TfsScmChange previousChange in previousChanges)
+				{
+					changesMap.Remove(previousChange.Id);
+				}
+
+				int removedCount = changes.Count - changesMap.Count;
+				if (removedCount == 0)
+				{
+					Log.Debug($"{buildInfo} - build {build.Id} contains {changes.Count} associated changes. No one of them was already reported in previous build {foundPreviousFailedBuild.Id}");
+				}
+				else
+				{
+					Log.Debug($"{buildInfo} - build {build.Id} contains {changes.Count} associated changes while {removedCount} changes were already reported in build {foundPreviousFailedBuild.Id}");
+				}
+			}
+
+			return changesMap.Values;
+
 		}
 
 		private CiEvent CreateStartEvent(CiEvent finishEvent)
