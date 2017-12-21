@@ -8,7 +8,6 @@ using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.SCM;
 using MicroFocus.Ci.Tfs.Octane.Tools;
-using Microsoft.TeamFoundation.Client;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -25,14 +24,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 		protected readonly SubscriptionManager _subscriptionManager;
 		private readonly TfsConfiguration _tfsConf;
 		private readonly TfsHttpConnector _tfsConnector;
-		private readonly TfsConfigurationServer _configurationServer;
+
 		private const string TfsUrl = "http://localhost:8080/tfs/";
 
 		public TfsManager(string pat)
 		{
 			_tfsConf = new TfsConfiguration(new Uri(TfsUrl), pat);
 			_tfsConnector = new TfsHttpConnector(_tfsConf);
-			_configurationServer = TfsConfigurationServerFactory.GetConfigurationServer(_tfsConf.Uri);
 			_subscriptionManager = new SubscriptionManager(_tfsConf);
 		}
 

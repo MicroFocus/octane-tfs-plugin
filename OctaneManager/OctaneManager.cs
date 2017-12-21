@@ -16,18 +16,17 @@ using MicroFocus.Ci.Tfs.Octane.Dto.General;
 using MicroFocus.Ci.Tfs.Octane.Dto.Scm;
 using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
+using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
