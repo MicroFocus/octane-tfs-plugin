@@ -36,6 +36,9 @@
     <Reference Include="Microsoft.TeamFoundation.Build.Server">
       <HintPath>..\tfs-server-dlls\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Build2.WebApi">
+      <HintPath>..\tfs-server-dlls\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\tfs-server-dlls\Microsoft.TeamFoundation.Common.dll</HintPath>

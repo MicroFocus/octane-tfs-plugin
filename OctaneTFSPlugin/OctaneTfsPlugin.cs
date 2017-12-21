@@ -1,5 +1,6 @@
 ﻿using MicroFocus.Ci.Tfs.Octane;
 using Microsoft.TeamFoundation.Build.Server;
+using Microsoft.TeamFoundation.Build.WebApi.Events;
 using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
@@ -67,9 +68,9 @@ namespace MicroFocus.Ci.Tfs.Core
         {
             var subscribedEventsList = new List<Type>()
             {
-                typeof(BuildCompletionNotificationEvent),
-                typeof(BuildStartedNotificationEvent)                
-            };
+				typeof(BuildCompletedEvent),
+				typeof(BuildStartedEvent),
+			};
 
             return subscribedEventsList.ToArray();
         }
@@ -86,22 +87,22 @@ namespace MicroFocus.Ci.Tfs.Core
             statusMessage = String.Empty;
             try
             {
-                if (notificationType == NotificationType.Notification && notificationEventArgs is BuildCompletionNotificationEvent)
+                if (notificationEventArgs is BuildCompletedEvent)
                 {
-                  
-                  
-                  Trace.WriteLine($"Processing notification of type \"{notificationType}\"");                    
+                  Trace.WriteLine($"Handling  BuildCompletedEvent");                    
                 }
-
-            }
+				else if (notificationEventArgs is BuildStartedEvent)
+				{
+					Trace.WriteLine($"Handling  BuildStartedEvent");
+				}
+			}
             catch (Exception e)
             {
+
+                Trace.TraceError($"An error \"{e.Message}\" occured during processing of event.", e);
                 
-                
-                Trace.TraceError($"An error \"{e.Message}\" occured during processing of notification.", e);
-                
-                TeamFoundationApplicationCore.Log(requestContext, "HPE ALI : Process Server Event",
-                    $"The error occured during processing notification: {e}", 123, EventLogEntryType.Error);
+                TeamFoundationApplicationCore.Log(requestContext, "HPE : Process Server Event",
+                    $"The error occured during processing of event: {e}", 123, EventLogEntryType.Error);
             }
             return EventNotificationStatus.ActionPermitted;
         }
