@@ -1,7 +1,6 @@
 ﻿using System;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.Subscriptions;
 using MicroFocus.Ci.Tfs.Octane.Tools;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs
