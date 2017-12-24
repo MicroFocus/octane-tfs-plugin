@@ -5,13 +5,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
+using log4net;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tools
 {
 	public class TfsHttpConnector
 	{
-		private readonly TfsConfiguration _tfsConf;
+	    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly TfsConfiguration _tfsConf;
 
 		public TfsHttpConnector(TfsConfiguration tfsConfiguration)
 		{
@@ -69,8 +72,11 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 
 		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data)
 		{
-			//encode your personal access token                   
-			var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConf.Pat)));
+            Log.Debug($"Sending request : {httpType}  to {_tfsConf.Uri.ToString()}/{urlSuffix}");
+		    Log.Debug($"Data : {data}");
+
+            //encode your personal access token                   
+            var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConf.Pat)));
 
 
 			//use the httpclient

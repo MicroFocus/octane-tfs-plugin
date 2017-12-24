@@ -9,7 +9,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net.Config;
 
+[assembly: XmlConfigurator(ConfigFile = @"agent-log-config.xml", Watch = true)]
 namespace MicroFocus.Ci.Tfs.Core
 {
 	public class OctaneTfsPlugin : ISubscriber
