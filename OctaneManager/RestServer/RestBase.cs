@@ -23,10 +23,8 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 			{
 				var text = Context.Request.Body.AsString();
 				Log.Debug($"Received build event : {text}");
-				Task.Factory.StartNew(() =>
-				{
-					HandleBuildEvent(text);
-				});
+				HandleBuildEvent(text);
+				
 				return "Received";
 			};
 		}

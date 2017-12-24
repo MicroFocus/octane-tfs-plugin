@@ -22,7 +22,22 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
         public static CiEventType Finished => new CiEventType("finished");
         public static CiEventType Scm => new CiEventType("scm");
 
-        public override string ToString()
+		public override bool Equals(object obj)
+		{
+			if (obj == null || GetType() != obj.GetType())
+			{
+				return false;
+			}
+
+			return _value.Equals(((CiEventType)obj)._value);
+		}
+
+		public override int GetHashCode()
+		{
+			return _value.GetHashCode();
+		}
+
+		public override string ToString()
         {
             return _value;
         }        

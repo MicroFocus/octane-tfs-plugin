@@ -16,14 +16,14 @@ namespace MicroFocus.Ci.Tfs.Core
 	{
 		private static string PLUGIN_DISPLAY_NAME = "OctaneTfsPlugin";
 
-		private readonly TimeSpan _initTimeout = new TimeSpan(0, 0, 0, 5);
+		private static readonly TimeSpan _initTimeout = new TimeSpan(0, 0, 0, 5);
 
 		private static OctaneManager _octaneManager = null;
 
 		private static Task _octaneInitializationThread = null;
 		private static readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-		public OctaneTfsPlugin()
+		static OctaneTfsPlugin()
 		{
 			if (_octaneInitializationThread == null)
 			{
@@ -31,10 +31,10 @@ namespace MicroFocus.Ci.Tfs.Core
 					Task.Factory.StartNew(() => InitializeOctaneManager(_cancellationTokenSource.Token),
 						TaskCreationOptions.LongRunning);
 			}
-
 		}
 
-		private void InitializeOctaneManager(CancellationToken token)
+
+		private static void InitializeOctaneManager(CancellationToken token)
 		{
 			while (!IsOctaneInitialized())
 			{
@@ -98,12 +98,14 @@ namespace MicroFocus.Ci.Tfs.Core
 					if (notificationEventArgs is BuildStartedEvent)
 					{
 						CiEvent startedEvent = CiEventUtils.ToCiEvent(build);
-						_octaneManager.ReportStartEvent(startedEvent);
+						startedEvent.EventType = CiEventType.Started;
+						_octaneManager.ReportEventAsync(startedEvent);
 					}
 					else if (notificationEventArgs is BuildCompletedEvent)
 					{
 						CiEvent finishEvent = CiEventUtils.ToCiEvent(build);
-						_octaneManager.ReportFinishEvent(finishEvent);
+						finishEvent.EventType = CiEventType.Finished;
+						_octaneManager.ReportEventAsync(finishEvent);
 					}
 				}
 				else
