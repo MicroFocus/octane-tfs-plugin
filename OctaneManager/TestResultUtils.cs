@@ -1,4 +1,5 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
+﻿using MicroFocus.Ci.Tfs.Octane.Dto.General;
+using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
 using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using System;
@@ -86,6 +87,20 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			var span = data.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, data.Kind));
 			return (long)span.TotalMilliseconds;
+		}
+
+		public static string GenerateOctaneJobCiId(string collectionName, string projectId, string buildDefId)
+		{
+			var id = $"{collectionName.Replace(" ", "-")}.{projectId}.{buildDefId}";
+			return id;
+		}
+
+		public static TfsCiEntity TranslateOctaneJobCiIdToObject(string id)
+		{
+			var parts = id.Split('.');
+			var tfsCiEntity = new TfsCiEntity(parts[0], parts[1], parts[2]);
+
+			return tfsCiEntity;
 		}
 	}
 

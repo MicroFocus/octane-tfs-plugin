@@ -426,5 +426,15 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return scmEventEvent;
 		}
 
+		public void ReportStartEvent(CiEvent startEvent)
+		{
+			startEvent.EventType = CiEventType.Started;
+
+		}
+		public void ReportFinishEvent(CiEvent finishEvent)
+		{
+			finishEvent.EventType = CiEventType.Finished;
+		}
+
 	}
 }
