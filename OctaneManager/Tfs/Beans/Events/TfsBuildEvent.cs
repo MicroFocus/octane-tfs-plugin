@@ -60,7 +60,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 			}
 
 			ciEvent.BuildId = buildInfo.BuildId + "." + buildInfo.BuildName;
-			ciEvent.Project = PipelineNode.GenerateOctaneJobCiId(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildDefinitionId);
+			ciEvent.Project = TestResultUtils.GenerateOctaneJobCiId(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildDefinitionId);
 			ciEvent.BuildTitle = buildInfo.BuildName;
 			var cause = new CiEventCause();
 			switch (Resource.Reason)

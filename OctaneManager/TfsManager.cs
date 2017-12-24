@@ -48,7 +48,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 					var buildDefinitions = GetBuildDefinitions(collection.Name, project.Id);
 					foreach (var buildDefinition in buildDefinitions)
 					{
-						var id = PipelineNode.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
+						var id = TestResultUtils.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
 						Log.Debug($"New job added to list with id: {id}");
 						result.Jobs.Add(new PipelineNode(id, buildDefinition.Name));
 					}
@@ -68,7 +68,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				res = _cachedJobList[jobId];
 			}
 
-			var tfsCiEntity = PipelineNode.TranslateOctaneJobCiIdToObject(jobId);
+			var tfsCiEntity = TestResultUtils.TranslateOctaneJobCiIdToObject(jobId);
 			if (!_subscriptionManager.SubscriptionExists(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId))
 			{
 				_subscriptionManager.AddBuildCompletion(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId);

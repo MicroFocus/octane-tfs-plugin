@@ -1,4 +1,7 @@
 ﻿using MicroFocus.Ci.Tfs.Octane;
+using MicroFocus.Ci.Tfs.Octane.Dto;
+using MicroFocus.Ci.Tfs.Octane.Dto.Events;
+using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Build.WebApi.Events;
 using Microsoft.TeamFoundation.Framework.Server;
 using System;
@@ -86,7 +89,27 @@ namespace MicroFocus.Ci.Tfs.Core
 			statusMessage = String.Empty;
 			try
 			{
-				Trace.WriteLine($"Processing notification of type \"{notificationEventArgs.GetType().ToString()}\"");
+				BuildUpdatedEvent updatedEvent = (BuildUpdatedEvent)notificationEventArgs;
+				Build build = updatedEvent.Build;
+				Trace.WriteLine($"ProcessEvent \"{notificationEventArgs.GetType().ToString()}\" for build {updatedEvent.BuildId}");
+
+				if (IsOctaneInitialized())
+				{
+					if (notificationEventArgs is BuildStartedEvent)
+					{
+						CiEvent startedEvent = CiEventUtils.ToCiEvent(build);
+						_octaneManager.ReportStartEvent(startedEvent);
+					}
+					else if (notificationEventArgs is BuildCompletedEvent)
+					{
+						CiEvent finishEvent = CiEventUtils.ToCiEvent(build);
+						_octaneManager.ReportFinishEvent(finishEvent);
+					}
+				}
+				else
+				{
+					Trace.WriteLine($"ProcessEvent cancelled as Octane is not configured.");
+				}
 			}
 			catch (Exception e)
 			{

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
-
-namespace MicroFocus.Ci.Tfs.Octane.Dto.General
+﻿namespace MicroFocus.Ci.Tfs.Octane.Dto.General
 {
-    public class TfsCiEntity
+	public class TfsCiEntity
     {
         public string CollectionName { get; }
         public string ProjectId { get; }
@@ -22,7 +15,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.General
 
         public override string ToString()
         {
-            return PipelineNode.GenerateOctaneJobCiId(CollectionName, ProjectId, BuildDefId);
+            return TestResultUtils.GenerateOctaneJobCiId(CollectionName, ProjectId, BuildDefId);
         }
         
     }

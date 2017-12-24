@@ -7,7 +7,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 {
 	public static class ConfigurationManager
     {
-        private static string _configFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OctaneTfsPlugin");
+        private static string _configFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "OctaneTfsPlugin");
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public static string ConfigurationFile => "octane.conf.json";
         public static ConnectionDetails Read()
