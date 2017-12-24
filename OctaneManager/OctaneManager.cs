@@ -139,28 +139,18 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				catch (Exception ex)
 				{
-					if (ex is WebException)
+					if (ex.InnerException != null && ex.InnerException is WebException && ((WebException)ex.InnerException).Status == WebExceptionStatus.Timeout)
 					{
-						var innerEx = (WebException)ex.InnerException;
-						var mqmEx = ex as MqmRestException;
-						if (innerEx?.Status == WebExceptionStatus.Timeout)
-						{
-							Trace.WriteLine("Timeout");
-							Trace.WriteLine($"Exception Info {mqmEx?.Description}");
-						}
-						else
-						{
-							Trace.WriteLine("Error getting status from octane : " + ex.Message);
-						}
+						//known exception
 					}
 					else
 					{
-						Trace.TraceError($"Known excetion  {ex}");
+						Trace.WriteLine($"Task polling exception : {ex.Message}");
 					}
 				}
 				finally
 				{
-					Trace.WriteLine($"Time: {DateTime.UtcNow.ToLongTimeString()}");
+					Trace.Write($"Time: {DateTime.UtcNow.ToLongTimeString()}  - ");
 					if (res == null)
 					{
 						Trace.WriteLine("No tasks");
@@ -254,49 +244,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private void RestBase_BuildEvent(object sender, CiEvent finishEvent)
 		{
-
-			Log.Debug($"{finishEvent.BuildInfo} - start handling event");
-
-			var list = new CiEventsList();
-			list.Events.Add(CreateStartEvent(finishEvent));
-			list.Events.Add(finishEvent);
-
-
-			var scmData = GetScmData(finishEvent.BuildInfo);
-			if (scmData != null)
-			{
-				list.Events.Add(CreateScmEvent(finishEvent, scmData));
-				Log.Debug($"{finishEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
-			}
-			else
-			{
-				Log.Debug($"{finishEvent.BuildInfo} - scm data is empty");
-			}
-
-			list.Server = new CiServerInfo
-			{
-				Url = _tfsServerURi,
-				InstanceId = _connectionConf.InstanceId,
-				SendingTime = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow),
-				InstanceIdFrom = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow)
-			};
-
-			var body = JsonHelper.SerializeObject(list);
-			var res = _restConnector.ExecutePut(_uriResolver.GetEventsUri(), null, body);
-
-			if (res.StatusCode == HttpStatusCode.OK)
-			{
-				Log.Debug($"{finishEvent.BuildInfo} - {list.Events.Count} events succesfully sent");
-				SendTestResults(finishEvent.BuildInfo, finishEvent.Project, finishEvent.BuildId);
-			}
-			else
-			{
-				Log.Error("{finishEvent.BuildInfo} - events was not sent succesfully.");
-			}
-
+			CiEvent startEvent = CreateStartEvent(finishEvent);
+			ReportEventAsync(startEvent);
+			ReportEventAsync(finishEvent);
 		}
 
-		public ScmData GetScmData(TfsBuildInfo buildInfo)
+		private ScmData GetScmData(TfsBuildInfo buildInfo)
 		{
 			try
 			{
@@ -426,15 +379,61 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return scmEventEvent;
 		}
 
-		public void ReportStartEvent(CiEvent startEvent)
-		{
-			startEvent.EventType = CiEventType.Started;
 
-		}
-		public void ReportFinishEvent(CiEvent finishEvent)
+		public void ReportEventAsync(CiEvent ciEvent)
 		{
-			finishEvent.EventType = CiEventType.Finished;
+			Task task = Task.Factory.StartNew(() =>
+			{
+				ReportEvent(ciEvent);
+			});
 		}
+		private void ReportEvent(CiEvent ciEvent)
+		{
+			Log.Debug($"{ciEvent.BuildInfo} - start handling event");
 
+			var list = new CiEventsList();
+			list.Events.Add(ciEvent);
+
+			bool isFinishEvent = ciEvent.EventType.Equals(CiEventType.Finished);
+			if (isFinishEvent)
+			{
+				var scmData = GetScmData(ciEvent.BuildInfo);
+				if (scmData != null)
+				{
+					list.Events.Add(CreateScmEvent(ciEvent, scmData));
+					Log.Debug($"{ciEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
+				}
+				else
+				{
+					Log.Debug($"{ciEvent.BuildInfo} - scm data is empty");
+				}
+			}
+
+
+			list.Server = new CiServerInfo
+			{
+				Url = _tfsServerURi,
+				InstanceId = _connectionConf.InstanceId,
+				SendingTime = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow),
+				InstanceIdFrom = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow)
+			};
+
+			var body = JsonHelper.SerializeObject(list);
+			var res = _restConnector.ExecutePut(_uriResolver.GetEventsUri(), null, body);
+
+			if (res.StatusCode == HttpStatusCode.OK)
+			{
+				Log.Debug($"{ciEvent.BuildInfo} - {list.Events.Count} events succesfully sent");
+
+				if (isFinishEvent)
+				{
+					SendTestResults(ciEvent.BuildInfo, ciEvent.Project, ciEvent.BuildId);
+				}
+			}
+			else
+			{
+				Log.Error($"{ciEvent.BuildInfo} - events was not sent succesfully.");
+			}
+		}
 	}
 }
