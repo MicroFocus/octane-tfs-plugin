@@ -57,9 +57,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 			_pollingGetTimeout = pollingTimeout;
 			var hostName = Dns.GetHostName();
 			var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
-			_connectionConf = ConfigurationManager.Read();
-			_tfsServerURi = new Uri(_connectionConf.TfsLocation);
-			var instanceDetails = new InstanceDetails(_connectionConf.InstanceId, _tfsServerURi.ToString());
+		    _connectionConf = ConfigurationManager.Read();
+		    _tfsServerURi = _connectionConf.TfsLocation == null ? new Uri($"http://{hostName}.{domainName}:8080/tfs") : new Uri(_connectionConf.TfsLocation);
+
+		    var instanceDetails = new InstanceDetails(_connectionConf.InstanceId, _tfsServerURi.ToString());
 
 			_uriResolver = new UriResolver(_connectionConf.SharedSpace, instanceDetails, _connectionConf);
 			_tfsManager = new TfsManager(_connectionConf.Pat);
