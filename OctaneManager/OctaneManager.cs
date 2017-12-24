@@ -18,8 +18,6 @@ using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
 using MicroFocus.Ci.Tfs.Octane.RestServer;
 using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tools;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -174,7 +172,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 						Trace.WriteLine($"Get data : {res?.Data}");
 						try
 						{
-							var octaneTask = JsonConvert.DeserializeObject<OctaneTask>(res?.Data.TrimStart('[').TrimEnd(']'));
+							var octaneTask = JsonHelper.DeserializeObject<OctaneTask>(res?.Data.TrimStart('[').TrimEnd(']'));
 							var taskOutput = _taskProcessor.ProcessTask(octaneTask.Method, octaneTask?.ResultUrl);
 							int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
 							var response = new OctaneTaskResult(status, octaneTask.Id, taskOutput);
@@ -207,13 +205,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private bool SendTaskResultToOctane(Guid resultId, string resultObj)
 		{
 			Log.Debug("Sending result to octane");
-			Log.Debug(JToken.Parse(resultObj).ToString());
+			Log.Debug(JsonHelper.FormatAsJsonObject(resultObj));
 			try
 			{
 				var res = _restConnector.ExecutePut(_uriResolver.PostTaskResultUri(resultId.ToString()), null,
 					resultObj);
 
-				if (res.StatusCode == HttpStatusCode.OK)
+				if (res.StatusCode == HttpStatusCode.NoContent)
 				{
 					return true;
 				}
@@ -283,7 +281,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				InstanceIdFrom = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow)
 			};
 
-			var body = JsonConvert.SerializeObject(list);
+			var body = JsonHelper.SerializeObject(list);
 			var res = _restConnector.ExecutePut(_uriResolver.GetEventsUri(), null, body);
 
 			if (res.StatusCode == HttpStatusCode.OK)

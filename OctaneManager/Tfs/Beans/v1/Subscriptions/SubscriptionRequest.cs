@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.Subscriptions
 {
-    public class SubscriptionRequest
+	public class SubscriptionRequest
     {
         public string PublisherId => "tfs";
         public string EventType => "build.complete";
@@ -40,7 +37,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.Subscriptions
 
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonHelper.SerializeObject(this);
         }
     }
 }

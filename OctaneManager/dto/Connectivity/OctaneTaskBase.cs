@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MicroFocus.Ci.Tfs.Octane.dto;
+﻿using MicroFocus.Ci.Tfs.Octane.dto;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.Connectivity
 {
-    internal abstract class OctaneTaskBase : IDtoBase
+	internal abstract class OctaneTaskBase : IDtoBase
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }
@@ -24,7 +21,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.Connectivity
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonHelper.SerializeObject(this);
         }
     }
 }

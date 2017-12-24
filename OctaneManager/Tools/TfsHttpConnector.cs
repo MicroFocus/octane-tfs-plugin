@@ -1,6 +1,5 @@
 ﻿using MicroFocus.Ci.Tfs.Octane.Tfs;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -102,7 +101,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 				string content = response.Content.ReadAsStringAsync().Result;
 				if (response.IsSuccessStatusCode)
 				{
-					T result = JsonConvert.DeserializeObject<T>(content);
+					T result = JsonHelper.DeserializeObject<T>(content);
 					return result;
 				}
 				else
