@@ -1,9 +1,8 @@
-﻿using System;
+﻿using MicroFocus.Ci.Tfs.Octane.Tools;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
-using Newtonsoft.Json;
-using MicroFocus.Ci.Tfs.Octane.Tools;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -29,10 +28,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 			switch (taskType)
 			{
 				case TaskType.GetJobsList:
-					return JsonConvert.SerializeObject(_tfsManager.GetJobsList());
+					return JsonHelper.SerializeObject(_tfsManager.GetJobsList());
 				case TaskType.GetJobDetail:
 					var jobId = taskUrl.Segments[taskUrl.Segments.Length - 1];
-					return JsonConvert.SerializeObject(_tfsManager.GetJobDetail(jobId));
+					return JsonHelper.SerializeObject(_tfsManager.GetJobDetail(jobId));
 				case TaskType.ExecutePipelineRunRequest:
 					var joinedProjectName = taskUrl.Segments[taskUrl.Segments.Length - 2].Trim('/');
 					var buildParts = joinedProjectName.Split('.');

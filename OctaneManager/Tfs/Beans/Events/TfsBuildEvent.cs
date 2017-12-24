@@ -2,7 +2,6 @@
 using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
-using Newtonsoft.Json;
 using System;
 using System.Linq;
 
@@ -31,7 +30,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
 
 		public override string ToString()
 		{
-			return JsonConvert.SerializeObject(this);
+			return JsonHelper.SerializeObject(this);
 		}
 
 		public CiEvent ToCiEvent()

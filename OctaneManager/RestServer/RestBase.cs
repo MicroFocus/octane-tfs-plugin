@@ -3,7 +3,6 @@ using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events;
 using Nancy;
 using Nancy.Extensions;
-using Newtonsoft.Json;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -36,7 +35,7 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 		{
 			try
 			{
-				var buildEvent = JsonConvert.DeserializeObject<TfsBuildEvent>(body);
+				var buildEvent = JsonHelper.DeserializeObject<TfsBuildEvent>(body);
 
 				var ciEvent = buildEvent.ToCiEvent();
 

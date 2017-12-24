@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using log4net;
+using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using log4net;
-using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Configuration
 {
-    public static class ConfigurationManager
+	public static class ConfigurationManager
     {
         private static string _configFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OctaneTfsPlugin");
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -36,7 +31,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
             using (var reader = sr)
             {
                 var text = reader.ReadToEnd();
-                res = JsonConvert.DeserializeObject<ConnectionDetails>(text);
+                res = JsonHelper.DeserializeObject<ConnectionDetails>(text);
                 reader.Close();
 
                 Log.Info(text);
@@ -61,7 +56,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
         {
             CheckConfigDir();
             var configFile = GetConfigFile();
-            var configText = JsonConvert.SerializeObject(config);
+            var configText = JsonHelper.SerializeObject(config);
 
             Log.Info("Writing configuration info");
             Log.Info(configText);

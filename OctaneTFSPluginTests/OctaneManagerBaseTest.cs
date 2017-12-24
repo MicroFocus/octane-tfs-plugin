@@ -1,14 +1,13 @@
-﻿using System;
-using System.IO;
-using MicroFocus.Ci.Tfs.Octane;
+﻿using MicroFocus.Ci.Tfs.Octane;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
+using System;
+using System.IO;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace MicroFocus.Ci.Tfs.Tests
 {
-    [TestClass]
+	[TestClass]
     public class OctaneManagerBaseTest
     {
         protected static OctaneManager octaneManager;
@@ -28,7 +27,7 @@ namespace MicroFocus.Ci.Tfs.Tests
             var connectionDetails = new ConnectionDetails(webbAppUrl, clientId, clientSecret, tfsLocation, instanceId) {Pat = pat};
             using (TextWriter writer = new StreamWriter(path))
             {
-                var config = JsonConvert.SerializeObject(connectionDetails);
+                var config = JsonHelper.SerializeObject(connectionDetails);
                 writer.Write(config);
                 writer.Close();
             }     
