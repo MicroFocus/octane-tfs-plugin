@@ -14,7 +14,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
         public string PluginVersion => PLUGIN_VERSION;
 
-        public string Type => "tfs";
+        public string Type => "TFS";
         public Guid InstanceId { get; set; }
 
         public string SelfLocation { get; protected set; }

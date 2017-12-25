@@ -10,7 +10,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.General
     public class CiServerInfo
     {
         [JsonProperty("type")]
-        public string Type => "tfs";
+        public string Type => "TFS";
         [JsonProperty("version")]
         public string Version => "2017"; //TODO : Get programaticly!
         [JsonProperty("url")]
