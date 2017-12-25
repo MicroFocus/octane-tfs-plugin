@@ -33,7 +33,7 @@ namespace MicroFocus.Ci.Tfs.Tests
             }     
             
             octaneManager = new OctaneManager(devTimeout);
-            _tfsManager = new TfsManager(connectionDetails.Pat);
+            _tfsManager = new TfsManager(new Uri(tfsLocation), connectionDetails.Pat);
         }
     }
 }

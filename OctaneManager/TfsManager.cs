@@ -25,11 +25,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private readonly TfsConfiguration _tfsConf;
 		private readonly TfsHttpConnector _tfsConnector;
 
-		private const string TfsUrl = "http://localhost:8080/tfs/";
+		//private const string TfsUrl = "http://localhost:8080/tfs";
 
-		public TfsManager(string pat)
+		public TfsManager(Uri tfsUri,string pat)
 		{
-			_tfsConf = new TfsConfiguration(new Uri(TfsUrl), pat);
+			_tfsConf = new TfsConfiguration(tfsUri, pat);
 			_tfsConnector = new TfsHttpConnector(_tfsConf);
 			_subscriptionManager = new SubscriptionManager(_tfsConf);
 		}
