@@ -1,4 +1,7 @@
-﻿using MicroFocus.Ci.Tfs.Octane;
+﻿using log4net;
+using log4net.Config;
+using MicroFocus.Ci.Tfs.Octane;
+using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using Microsoft.TeamFoundation.Build.WebApi;
@@ -7,34 +10,83 @@ using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using log4net.Config;
 
-[assembly: XmlConfigurator(ConfigFile = @"agent-log-config.xml", Watch = true)]
 namespace MicroFocus.Ci.Tfs.Core
 {
-	public class OctaneTfsPlugin : ISubscriber
+	public class OctaneTfsPlugin : ISubscriber, IDisposable
 	{
 		private static string PLUGIN_DISPLAY_NAME = "OctaneTfsPlugin";
 
-		private static readonly TimeSpan _initTimeout = new TimeSpan(0, 0, 0, 5);
+		private static readonly TimeSpan _initTimeout = new TimeSpan(0, 0, 0, 30);
 
 		private static OctaneManager _octaneManager = null;
 
 		private static Task _octaneInitializationThread = null;
 		private static readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
+		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
 		static OctaneTfsPlugin()
 		{
+			ConfigureLog4Net();
+
+			Log.Info("OctaneTfsPlugin started");
 			if (_octaneInitializationThread == null)
 			{
 				_octaneInitializationThread =
 					Task.Factory.StartNew(() => InitializeOctaneManager(_cancellationTokenSource.Token),
 						TaskCreationOptions.LongRunning);
 			}
+
+			Octane.RestServer.Server.GetInstance().Start();
 		}
 
+		private static void ConfigureLog4Net()
+		{
+			//find config file to load
+			var logConfigFileName = "OctaneTFSPluginLogConfig.xml";
+			string fullPath = null;
+			if (File.Exists(logConfigFileName)) //check on C://windows/system32
+			{
+				fullPath = logConfigFileName;
+			}
+			else
+			{
+				var dllPath = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
+				string temp = Path.Combine(Path.GetDirectoryName(dllPath), logConfigFileName);
+				if (File.Exists(temp))
+				{
+					fullPath = temp;
+				}
+			}
+			if (fullPath != null)
+			{
+				Log.Debug($"Log4net configuration file {fullPath}");
+				XmlConfigurator.ConfigureAndWatch(new FileInfo(fullPath));
+
+				//change path to log file for unrooted files (like 'abc.log')
+				var logFolder = Path.Combine(ConfigurationManager.ConfigFolder, "Logs");
+				log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
+				foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
+				{
+					if (appender is log4net.Appender.FileAppender)
+					{
+						log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
+						if (!Path.IsPathRooted(fileAppender.File))
+						{
+							fileAppender.File = Path.Combine(logFolder, Path.GetFileName(fileAppender.File));
+							fileAppender.ActivateOptions();
+						}
+
+					}
+				}
+			}
+
+		}
 
 		private static void InitializeOctaneManager(CancellationToken token)
 		{
@@ -47,13 +99,15 @@ namespace MicroFocus.Ci.Tfs.Core
 				}
 				try
 				{
-					_octaneManager = new OctaneManager();
+					_octaneManager = new OctaneManager(Octane.Tools.PluginRunMode.ServerPlugin);
 					_octaneManager.Init();
 
 				}
 				catch (Exception ex)
 				{
-					TeamFoundationApplicationCore.Log($"Error initializing octane plugin! {ex.Message}", 1, EventLogEntryType.Error);
+					var msg = $"Error initializing octane plugin! {ex.Message}";
+					TeamFoundationApplicationCore.Log(msg, 1, EventLogEntryType.Error);
+					Log.Error(msg);
 				}
 
 				//Sleep till next retry
@@ -93,7 +147,7 @@ namespace MicroFocus.Ci.Tfs.Core
 			{
 				BuildUpdatedEvent updatedEvent = (BuildUpdatedEvent)notificationEventArgs;
 				Build build = updatedEvent.Build;
-				Trace.WriteLine($"ProcessEvent \"{notificationEventArgs.GetType().ToString()}\" for build {updatedEvent.BuildId}");
+				Log.Info($"ProcessEvent \"{notificationEventArgs.GetType().ToString()}\" for build {updatedEvent.BuildId}");
 
 				if (IsOctaneInitialized())
 				{
@@ -112,13 +166,13 @@ namespace MicroFocus.Ci.Tfs.Core
 				}
 				else
 				{
-					Trace.WriteLine($"ProcessEvent cancelled as Octane is not configured.");
+					Log.Info($"ProcessEvent cancelled as Octane is not configured.");
 				}
 			}
 			catch (Exception e)
 			{
 
-				Trace.TraceError($"An error \"{e.Message}\" occured during processing of notification.", e);
+				Log.Error($"An error \"{e.Message}\" occured during processing of notification.", e);
 
 				TeamFoundationApplicationCore.Log(requestContext, "HPE  : Process Server Event",
 					$"The error occured during processing notification: {e}", 123, EventLogEntryType.Error);
@@ -126,7 +180,9 @@ namespace MicroFocus.Ci.Tfs.Core
 			return EventNotificationStatus.ActionPermitted;
 		}
 
-
-
+		public void Dispose()
+		{
+			Octane.RestServer.Server.GetInstance().Stop();
+		}
 	}
 }

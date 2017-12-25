@@ -15,12 +15,14 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return JsonConvert.SerializeObject(value);
 		}
 
+		public static string SerializeObject(object value, bool formatted)
+		{
+			return JsonConvert.SerializeObject(value, formatted ? Formatting.Indented : Formatting.None);
+		}
+
 		public static string FormatAsJsonObject(string value)
 		{
 			return JToken.Parse(value).ToString();
 		}
-
-
-
 	}
 }

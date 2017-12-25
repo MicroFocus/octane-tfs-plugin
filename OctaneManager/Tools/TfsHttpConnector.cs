@@ -72,8 +72,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 
 		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data)
 		{
-            Log.Debug($"Sending request : {httpType}  to {_tfsConf.Uri.ToString()}/{urlSuffix}");
-		    Log.Debug($"Data : {data}");
+            //Log.Debug($"Sending request : {httpType}  to {_tfsConf.Uri.ToString()}/{urlSuffix}");
+		    //Log.Debug($"Data : {data}");
 
             //encode your personal access token                   
             var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConf.Pat)));

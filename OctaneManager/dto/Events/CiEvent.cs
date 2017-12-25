@@ -26,6 +26,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto
 			clonedEvent.Duration = Duration;
 			clonedEvent.ScmData = ScmData; 
 			clonedEvent.PhaseType = PhaseType;
+			clonedEvent.BuildInfo = BuildInfo;
 			return clonedEvent;
 		}
 

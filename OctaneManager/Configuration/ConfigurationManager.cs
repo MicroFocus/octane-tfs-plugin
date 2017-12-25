@@ -6,70 +6,114 @@ using System.Reflection;
 namespace MicroFocus.Ci.Tfs.Octane.Configuration
 {
 	public static class ConfigurationManager
-    {
-        private static string _configFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "OctaneTfsPlugin");
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        public static string ConfigurationFile => "octane.conf.json";
-        public static ConnectionDetails Read()
-        {
-            
-            var fullConfigFilePath = GetConfigFile();
+	{
+		private static string _configFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "OctaneTfsPlugin");
+		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static string _configurationFile = "octane.conf.json";
+		private static FileSystemWatcher _watcher;
+		private static DateTime lastWriteTime;
 
-            CheckConfigDir();
+		public static event EventHandler ConfigurationChanged;
 
-            if (!File.Exists(fullConfigFilePath))
-            {
-                throw new FileNotFoundException($"Configuration file {fullConfigFilePath} was not found!");
-            }
+		static ConfigurationManager()
+		{
+			Init();
+		}
 
-            Log.Info("Loading config info...");            
+		public static string ConfigFolder
+		{
+			get
+			{
+				return _configFolder;
+			}
+		}
+		public static void Init()
+		{
+			CreateConfigDirIfMissing();
+			WatchForConfigFileChanges();
+		}
 
-            var file = new FileInfo(fullConfigFilePath);
-            var fullFile = file.FullName;
-            var sr = new StreamReader(fullFile);
-            ConnectionDetails res = null;
-            using (var reader = sr)
-            {
-                var text = reader.ReadToEnd();
-                res = JsonHelper.DeserializeObject<ConnectionDetails>(text);
-                reader.Close();
+		public static ConnectionDetails Read()
+		{
+			Log.Info("Loading configuration");
 
-                Log.Info(text);
-            }            
+			var fullConfigFilePath = GetConfigFilePath();
+			if (!File.Exists(fullConfigFilePath))
+			{
+				throw new FileNotFoundException($"Configuration file {fullConfigFilePath} was not found!");
+			}
 
-            Log.Info("Done");
-            return res;
-        }
+			var text = File.ReadAllText(fullConfigFilePath);
 
-        public static bool ConfigurationExists()
-        {
-            return File.Exists(GetConfigFile());
-        }
+			ConnectionDetails res = JsonHelper.DeserializeObject<ConnectionDetails>(text);
+			Log.Info($"Loaded configuration : {text}");
 
-        public static string GetConfigFile()
-        {
-            return Path.Combine(_configFolder, ConfigurationFile);
+			return res;
+		}
 
-        }
+		public static bool ConfigurationExists()
+		{
+			return File.Exists(GetConfigFilePath());
+		}
 
-        public static void WriteConfig(ConnectionDetails config)
-        {
-            CheckConfigDir();
-            var configFile = GetConfigFile();
-            var configText = JsonHelper.SerializeObject(config);
+		private static string GetConfigFilePath()
+		{
+			return Path.Combine(_configFolder, _configurationFile);
+		}
 
-            Log.Info("Writing configuration info");
-            Log.Info(configText);
-            File.WriteAllText(configFile, configText);
-            Log.Info("Done");
-        }
+		public static void WriteConfig(ConnectionDetails config)
+		{
+			var configFile = GetConfigFilePath();
+			var configText = JsonHelper.SerializeObject(config, true);
 
-        public static void CheckConfigDir()
-        {
-            if (!Directory.Exists(_configFolder))
-            {
-                Directory.CreateDirectory(_configFolder);
-            }
-        }
-    }
+			Log.Info($"Writing configuration : {configText}");
+			_watcher.EnableRaisingEvents = false;
+			File.WriteAllText(configFile, configText);
+			_watcher.EnableRaisingEvents = true;
+			Log.Info("Done");
+		}
+
+		private static void CreateConfigDirIfMissing()
+		{
+			if (!Directory.Exists(_configFolder))
+			{
+				Directory.CreateDirectory(_configFolder);
+			}
+		}
+
+		private static void WatchForConfigFileChanges()
+		{
+			if (_watcher == null)
+			{
+				// Create a new FileSystemWatcher and set its properties.
+				_watcher = new FileSystemWatcher();
+				_watcher.Path = _configFolder;
+				_watcher.Filter = _configurationFile;
+				_watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.Size;
+
+				// Add event handlers.
+				_watcher.Changed += ConfigurationFileChanged;
+				_watcher.Created += ConfigurationFileChanged;
+				_watcher.Deleted += ConfigurationFileChanged;
+				_watcher.Renamed += ConfigurationFileChanged;
+				_watcher.EnableRaisingEvents = true;
+			}
+		}
+
+		private static void ConfigurationFileChanged(object sender, FileSystemEventArgs e)
+		{
+			DateTime newLastWriteTime = File.GetLastWriteTime(GetConfigFilePath());
+			if (lastWriteTime == null || lastWriteTime != newLastWriteTime)
+			{
+				Log.Info($"Configuration changed on FS : {e.ChangeType}");
+				lastWriteTime = newLastWriteTime;
+				ConfigurationChanged?.Invoke(sender, e);
+			}
+		}
+
+
+
+
+
+	}
 }

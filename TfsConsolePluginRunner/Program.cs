@@ -11,8 +11,6 @@ namespace TfsConsolePluginRunner
     class Program
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        //private static readonly TfsManager _tfsManager = new TfsManager();
-        private static OctaneManager _octaneManager;
 
         static void Main(string[] args)
         {            
@@ -23,12 +21,15 @@ namespace TfsConsolePluginRunner
                 ConfigurationManager.WriteConfig(ConfigFileGenerator.GenerateConfig());
             }
 
-            _octaneManager = new OctaneManager();
+			MicroFocus.Ci.Tfs.Octane.RestServer.Server.GetInstance().Start();
+			var _octaneManager = new OctaneManager(MicroFocus.Ci.Tfs.Octane.Tools.PluginRunMode.Service);
             _octaneManager.Init();
 
             Console.WriteLine("TFS plugin is running , press any key to exit...");
             Console.ReadLine();
-            _octaneManager.ShutDown();
+
+			MicroFocus.Ci.Tfs.Octane.RestServer.Server.GetInstance().Stop();
+			_octaneManager.ShutDown();
             _octaneManager.WaitShutdown();
         }
     }
