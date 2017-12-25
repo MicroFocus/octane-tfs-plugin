@@ -1,6 +1,5 @@
 ﻿using MicroFocus.Ci.Tfs.Octane.Dto.General;
 using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
-using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
 using System;
 using System.Collections.Generic;

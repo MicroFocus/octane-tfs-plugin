@@ -5,7 +5,6 @@ using Nancy;
 using Nancy.Extensions;
 using System;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane.RestServer
 {

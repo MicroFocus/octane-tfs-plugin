@@ -17,7 +17,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 	public class TfsManager
 	{
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-		private static readonly CiJobList MockJobList = new CiJobList();
 
 		private CiJobList _cachedJobList = new CiJobList();
 
@@ -49,7 +48,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 					foreach (var buildDefinition in buildDefinitions)
 					{
 						var id = TestResultUtils.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
-						Log.Debug($"New job added to list with id: {id}");
 						result.Jobs.Add(new PipelineNode(id, buildDefinition.Name));
 					}
 				}
@@ -156,7 +154,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return builds;
 		}
 
-		private IList<TfsProjectCollection> GetProjectCollections()
+		public IList<TfsProjectCollection> GetProjectCollections()
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/project-collections
 			var uriSuffix = ($"_apis/projectcollections?api-version=1.0");

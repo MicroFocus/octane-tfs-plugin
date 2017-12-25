@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MicroFocus.Ci.Tfs.Tests
 {
@@ -22,12 +20,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 		public void GetStatusTest()
 		{
 			octaneManager.Init();
-
-
-
 			octaneManager.WaitShutdown();
-
-
 		}
 
 		[TestMethod]

@@ -114,6 +114,8 @@
     <Compile Include="Tfs\Beans\v1\TfsTestResult.cs" />
     <Compile Include="Tfs\SubscriptionManager.cs" />
     <Compile Include="Tfs\TfsConfiguration.cs" />
+    <Compile Include="Tools\PluginRunMode.cs" />
+    <Compile Include="Tools\ScmEventHelper.cs" />
     <Compile Include="Tools\TfsHttpConnector.cs" />
     <Compile Include="Tools\HttpMethodEnum.cs" />
     <Compile Include="Tools\ToStringJsonConverter.cs" />
