@@ -1,6 +1,6 @@
 ﻿<log4net>
   <appender name="FileAppender" type="log4net.Appender.RollingFileAppender">
-    <file value="tfs-plugin.log" />
+    <file value="tfs-plugin-server-plugin.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
     <maxSizeRollBackups value="10" />

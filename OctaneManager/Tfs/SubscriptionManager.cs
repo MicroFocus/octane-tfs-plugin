@@ -12,7 +12,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tfs
 			_tfsConnector = new TfsHttpConnector(tfsConnectionConf);
 		}
 
-		public void AddBuildCompletion(string collectionName, string projectId)
+		public void AddSubscription(string collectionName, string projectId)
 		{
 			//TODO: handle error
 			var subscription = new SubscriptionRequest(projectId, new Uri("http://localhost:4567/build-event"));

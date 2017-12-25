@@ -54,7 +54,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			_runMode = runMode;
 			_pollingGetTimeout = pollingTimeout;
 
-			if (_runMode == PluginRunMode.Service)
+			if (_runMode == PluginRunMode.ConsoleApp)
 			{
 				RestBase.BuildEvent += RestBase_BuildEvent;
 			}
@@ -190,10 +190,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 			_tfsServerUri = new Uri(tfsServerUriStr);
 
 
-
 			var instanceDetails = new InstanceDetails(_connectionConf.InstanceId, _tfsServerUri.ToString());
 			_uriResolver = new UriResolver(_connectionConf.SharedSpace, instanceDetails, _connectionConf);
-			_tfsManager = new TfsManager(_tfsServerUri, _connectionConf.Pat);
+			_tfsManager = new TfsManager(_runMode, _tfsServerUri, _connectionConf.Pat);
 			_taskProcessor = new TaskProcessor(_tfsManager);
 
 			try

@@ -47,45 +47,61 @@ namespace MicroFocus.Ci.Tfs.Core
 
 		private static void ConfigureLog4Net()
 		{
-			//find config file to load
-			var logConfigFileName = "OctaneTFSPluginLogConfig.xml";
-			string fullPath = null;
-			if (File.Exists(logConfigFileName)) //check on C://windows/system32
+			try
 			{
-				fullPath = logConfigFileName;
-			}
-			else
-			{
+				//find config file to load
+				var logConfigFileName = "OctaneTFSPluginLogConfig.xml";
+
 				var dllPath = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
-				string temp = Path.Combine(Path.GetDirectoryName(dllPath), logConfigFileName);
-				if (File.Exists(temp))
+				var pluginsDirectory = Path.GetDirectoryName(dllPath);
+
+				string fullPath = null;
+				if (File.Exists(logConfigFileName)) //check on C://windows/system32
 				{
-					fullPath = temp;
+					fullPath = logConfigFileName;
 				}
-			}
-			if (fullPath != null)
-			{
-				Log.Debug($"Log4net configuration file {fullPath}");
-				XmlConfigurator.ConfigureAndWatch(new FileInfo(fullPath));
-
-				//change path to log file for unrooted files (like 'abc.log')
-				var logFolder = Path.Combine(ConfigurationManager.ConfigFolder, "Logs");
-				log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
-				foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
+				else
 				{
-					if (appender is log4net.Appender.FileAppender)
+					string temp = Path.Combine(pluginsDirectory, logConfigFileName);
+					if (File.Exists(temp))
 					{
-						log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
-						if (!Path.IsPathRooted(fileAppender.File))
-						{
-							fileAppender.File = Path.Combine(logFolder, Path.GetFileName(fileAppender.File));
-							fileAppender.ActivateOptions();
-						}
+						fullPath = temp;
+					}
+				}
+				if (fullPath != null)
+				{
+					TeamFoundationApplicationCore.Log($"Log4net configuration file {fullPath}", 124, EventLogEntryType.Information);
+					XmlConfigurator.ConfigureAndWatch(new FileInfo(fullPath));
 
+					//change path to log file for unrooted files (like 'abc.log')
+					var logFolder = Path.Combine(ConfigurationManager.ConfigFolder, "Logs");
+					log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
+					foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
+					{
+						if (appender is log4net.Appender.FileAppender)
+						{
+							log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
+							if (fileAppender.File.Contains("TfsJobAgent"))
+							//it means - config file contains only name of log file, for example abc.log. Directory path was added automatically.
+							//usually app doesn't have permissions to write logs in plugin directory
+							{
+								if (!Directory.Exists(logFolder))
+								{
+									Directory.CreateDirectory(logFolder);
+								}
+
+								fileAppender.File = Path.Combine(logFolder, Path.GetFileName(fileAppender.File));
+								fileAppender.ActivateOptions();
+							}
+							TeamFoundationApplicationCore.Log($"Log4net log file is  {fileAppender.File}", 125, EventLogEntryType.Information);
+						}
 					}
 				}
 			}
-
+			catch (Exception e)
+			{
+				TeamFoundationApplicationCore.LogException("Failed to initialize log4net : " + e.Message, e);
+			}
 		}
 
 		private static void InitializeOctaneManager(CancellationToken token)
@@ -99,7 +115,11 @@ namespace MicroFocus.Ci.Tfs.Core
 				}
 				try
 				{
-					_octaneManager = new OctaneManager(Octane.Tools.PluginRunMode.ServerPlugin);
+					if (_octaneManager == null)
+					{
+						_octaneManager = new OctaneManager(Octane.Tools.PluginRunMode.ServerPlugin);
+					}
+
 					_octaneManager.Init();
 
 				}
@@ -120,7 +140,6 @@ namespace MicroFocus.Ci.Tfs.Core
 		{
 			return _octaneManager != null && _octaneManager.IsInitialized;
 		}
-
 
 		public Type[] SubscribedTypes()
 		{
@@ -147,7 +166,7 @@ namespace MicroFocus.Ci.Tfs.Core
 			{
 				BuildUpdatedEvent updatedEvent = (BuildUpdatedEvent)notificationEventArgs;
 				Build build = updatedEvent.Build;
-				Log.Info($"ProcessEvent \"{notificationEventArgs.GetType().ToString()}\" for build {updatedEvent.BuildId}");
+				Log.Info($"ProcessEvent \"{notificationEventArgs.GetType().Name}\" for build {updatedEvent.BuildId}");
 
 				if (IsOctaneInitialized())
 				{
@@ -171,11 +190,9 @@ namespace MicroFocus.Ci.Tfs.Core
 			}
 			catch (Exception e)
 			{
-
-				Log.Error($"An error \"{e.Message}\" occured during processing of notification.", e);
-
-				TeamFoundationApplicationCore.Log(requestContext, "HPE  : Process Server Event",
-					$"The error occured during processing notification: {e}", 123, EventLogEntryType.Error);
+				var msg = $"ProcessEvent \"{notificationEventArgs.GetType().ToString()}\" failed {e.Message}";
+				Log.Error(msg, e);
+				TeamFoundationApplicationCore.LogException(requestContext, msg, e);
 			}
 			return EventNotificationStatus.ActionPermitted;
 		}
