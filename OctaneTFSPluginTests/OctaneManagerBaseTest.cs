@@ -1,5 +1,6 @@
 ﻿using MicroFocus.Ci.Tfs.Octane;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using SystemConfigurationManager = System.Configuration.ConfigurationManager;

@@ -1,4 +1,6 @@
-﻿namespace MicroFocus.Ci.Tfs.Octane.Dto.General
+﻿using MicroFocus.Ci.Tfs.Octane.Tools;
+
+namespace MicroFocus.Ci.Tfs.Octane.Dto.General
 {
 	public class TfsCiEntity
     {

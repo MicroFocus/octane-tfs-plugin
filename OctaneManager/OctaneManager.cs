@@ -175,12 +175,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private void OnConfigurationChanged(object sender, EventArgs e)
 		{
-			IsInitialized = false;
 			Init();
 		}
 
 		public void Init()
 		{
+			IsInitialized = false;
 			_connectionConf = ConfigurationManager.Read();
 
 			var hostName = Dns.GetHostName();
@@ -197,8 +197,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 			try
 			{
+				DateTime start = DateTime.Now;
 				Log.Debug($"Validate connection to TFS  {_tfsServerUri.ToString()}");
 				//_tfsManager.GetProjectCollections();
+				DateTime end = DateTime.Now;
+				Log.Debug($"Validate connection to TFS finished in {(long)((end-start).TotalMilliseconds)} ms");
 			}
 			catch (Exception e)
 			{
@@ -209,8 +212,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 			try
 			{
+				DateTime start = DateTime.Now;
 				Log.Debug($"Validate connection to Octane {_connectionConf.Host}");
 				var octaneConnected = _octaneRestConnector.Connect(_connectionConf.Host, new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
+				DateTime end = DateTime.Now;
+				Log.Debug($"Validate connection to Octane finished in {(long)((end - start).TotalMilliseconds)} ms");
 			}
 			catch (Exception e)
 			{

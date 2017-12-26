@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace MicroFocus.Ci.Tfs.Octane
+namespace MicroFocus.Ci.Tfs.Octane.Tools
 {
 	public class TfsManager
 	{

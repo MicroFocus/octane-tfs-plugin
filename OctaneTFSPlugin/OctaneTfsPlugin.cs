@@ -21,28 +21,17 @@ namespace MicroFocus.Ci.Tfs.Core
 	{
 		private static string PLUGIN_DISPLAY_NAME = "OctaneTfsPlugin";
 
-		private static readonly TimeSpan _initTimeout = new TimeSpan(0, 0, 0, 30);
-
-		private static OctaneManager _octaneManager = null;
-
-		private static Task _octaneInitializationThread = null;
-		private static readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-
+		
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static OctaneManagerInitializer _octaneManagerInitializer = new OctaneManagerInitializer();
 
 		static OctaneTfsPlugin()
 		{
+
 			ConfigureLog4Net();
-
+			_octaneManagerInitializer = new OctaneManagerInitializer();
+			_octaneManagerInitializer.Start(Octane.Tools.PluginRunMode.ServerPlugin);
 			Log.Info("OctaneTfsPlugin started");
-			if (_octaneInitializationThread == null)
-			{
-				_octaneInitializationThread =
-					Task.Factory.StartNew(() => InitializeOctaneManager(_cancellationTokenSource.Token),
-						TaskCreationOptions.LongRunning);
-			}
-
-			Octane.RestServer.Server.GetInstance().Start();
 		}
 
 		private static void ConfigureLog4Net()
@@ -70,8 +59,9 @@ namespace MicroFocus.Ci.Tfs.Core
 				}
 				if (fullPath != null)
 				{
-					TeamFoundationApplicationCore.Log($"Log4net configuration file {fullPath}", 124, EventLogEntryType.Information);
+					
 					XmlConfigurator.ConfigureAndWatch(new FileInfo(fullPath));
+					TeamFoundationApplicationCore.Log($"Log4net configuration file {fullPath}", 124, EventLogEntryType.Information);
 
 					//change path to log file for unrooted files (like 'abc.log')
 					var logFolder = Path.Combine(ConfigurationManager.ConfigFolder, "Logs");
@@ -104,43 +94,6 @@ namespace MicroFocus.Ci.Tfs.Core
 			}
 		}
 
-		private static void InitializeOctaneManager(CancellationToken token)
-		{
-			while (!IsOctaneInitialized())
-			{
-				if (token.IsCancellationRequested)
-				{
-					TeamFoundationApplicationCore.Log("Octane initialization thread was requested to quit!", 1, EventLogEntryType.Information);
-					break;
-				}
-				try
-				{
-					if (_octaneManager == null)
-					{
-						_octaneManager = new OctaneManager(Octane.Tools.PluginRunMode.ServerPlugin);
-					}
-
-					_octaneManager.Init();
-
-				}
-				catch (Exception ex)
-				{
-					var msg = $"Error initializing octane plugin! {ex.Message}";
-					TeamFoundationApplicationCore.Log(msg, 1, EventLogEntryType.Error);
-					Log.Error(msg);
-				}
-
-				//Sleep till next retry
-				Thread.Sleep(_initTimeout);
-
-			}
-		}
-
-		private static bool IsOctaneInitialized()
-		{
-			return _octaneManager != null && _octaneManager.IsInitialized;
-		}
-
 		public Type[] SubscribedTypes()
 		{
 			var subscribedEventsList = new List<Type>()
@@ -168,19 +121,19 @@ namespace MicroFocus.Ci.Tfs.Core
 				Build build = updatedEvent.Build;
 				Log.Info($"ProcessEvent \"{notificationEventArgs.GetType().Name}\" for build {updatedEvent.BuildId}");
 
-				if (IsOctaneInitialized())
+				if (_octaneManagerInitializer.IsOctaneInitialized())
 				{
 					if (notificationEventArgs is BuildStartedEvent)
 					{
 						CiEvent startedEvent = CiEventUtils.ToCiEvent(build);
 						startedEvent.EventType = CiEventType.Started;
-						_octaneManager.ReportEventAsync(startedEvent);
+						_octaneManagerInitializer.OctaneManager.ReportEventAsync(startedEvent);
 					}
 					else if (notificationEventArgs is BuildCompletedEvent)
 					{
 						CiEvent finishEvent = CiEventUtils.ToCiEvent(build);
 						finishEvent.EventType = CiEventType.Finished;
-						_octaneManager.ReportEventAsync(finishEvent);
+						_octaneManagerInitializer.OctaneManager.ReportEventAsync(finishEvent);
 					}
 				}
 				else

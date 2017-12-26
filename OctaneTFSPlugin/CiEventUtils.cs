@@ -1,6 +1,6 @@
-﻿using MicroFocus.Ci.Tfs.Octane;
-using MicroFocus.Ci.Tfs.Octane.Dto;
+﻿using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Build.WebApi;
 using System.Linq;
 
