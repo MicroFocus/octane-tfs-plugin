@@ -85,14 +85,14 @@
     <Compile Include="Dto\Scm\ScmData.cs" />
     <Compile Include="Dto\Scm\ScmRepository.cs" />
     <Compile Include="Dto\Events\CiBuildResult.cs" />
-    <Compile Include="JsonHelper.cs" />
+    <Compile Include="Tools\JsonHelper.cs" />
     <Compile Include="OctaneManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestServer\RestBase.cs" />
     <Compile Include="RestServer\Server.cs" />
-    <Compile Include="TaskProcessor.cs" />
-    <Compile Include="TestResultUtils.cs" />
-    <Compile Include="TfsManager.cs" />
+    <Compile Include="Tools\TaskProcessor.cs" />
+    <Compile Include="Tools\TestResultUtils.cs" />
+    <Compile Include="Tools\TfsManager.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmCommitAuthor.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmCommitChange.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmRepository.cs" />
@@ -119,7 +119,6 @@
     <Compile Include="Tools\TfsHttpConnector.cs" />
     <Compile Include="Tools\HttpMethodEnum.cs" />
     <Compile Include="Tools\ToStringJsonConverter.cs" />
-    <Compile Include="Tools\UriHelper.cs" />
     <Compile Include="Tools\UriResolver.cs" />
   </ItemGroup>
   <ItemGroup>
