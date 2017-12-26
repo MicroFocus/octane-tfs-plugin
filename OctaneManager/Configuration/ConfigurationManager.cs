@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 using System;
 using System.IO;
 using System.Reflection;
@@ -67,10 +68,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 			var configText = JsonHelper.SerializeObject(config, true);
 
 			Log.Info($"Writing configuration : {configText}");
-			_watcher.EnableRaisingEvents = false;
 			File.WriteAllText(configFile, configText);
-			_watcher.EnableRaisingEvents = true;
-			Log.Info("Done");
+			Log.Info($"Writing configuration done");
 		}
 
 		private static void CreateConfigDirIfMissing()

@@ -1,7 +1,7 @@
-﻿using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
-using MicroFocus.Ci.Tfs.Octane.Dto;
+﻿using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 using System;
 using System.Linq;
 

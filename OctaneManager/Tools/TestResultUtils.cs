@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace MicroFocus.Ci.Tfs.Octane
+namespace MicroFocus.Ci.Tfs.Octane.Tools
 {
 	public static class TestResultUtils
 	{

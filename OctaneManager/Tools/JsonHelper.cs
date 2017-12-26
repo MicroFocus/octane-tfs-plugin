@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace MicroFocus.Ci.Tfs.Octane
+namespace MicroFocus.Ci.Tfs.Octane.Tools
 {
 	public static class JsonHelper
 	{

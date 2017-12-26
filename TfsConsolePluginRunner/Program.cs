@@ -5,6 +5,7 @@ using log4net.Config;
 using MicroFocus.Ci.Tfs.Octane;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Tools;
+using System.Threading;
 
 [assembly: XmlConfigurator(ConfigFile = @"agent-log-config.xml", Watch = true)]
 namespace TfsConsolePluginRunner
@@ -22,16 +23,15 @@ namespace TfsConsolePluginRunner
                 ConfigurationManager.WriteConfig(ConfigFileGenerator.GenerateConfig());
             }
 
-			MicroFocus.Ci.Tfs.Octane.RestServer.Server.GetInstance().Start();
-			var _octaneManager = new OctaneManager(PluginRunMode.ConsoleApp);
-            _octaneManager.Init();
-
-            Console.WriteLine("TFS plugin is running , press any key to exit...");
+			OctaneManagerInitializer octaneManagerInitializer = new OctaneManagerInitializer();
+			octaneManagerInitializer.Start(PluginRunMode.ConsoleApp);
+			Console.WriteLine("TFS plugin is running , press any key to exit...");
             Console.ReadLine();
 
-			MicroFocus.Ci.Tfs.Octane.RestServer.Server.GetInstance().Stop();
-			_octaneManager.ShutDown();
-            _octaneManager.WaitShutdown();
-        }
+			octaneManagerInitializer.ShutDown();
+			octaneManagerInitializer.WaitShutDown();
+			Console.WriteLine("TFS plugin is stopped. The window will close shortly.");
+			Thread.Sleep(5000);
+		}
     }
 }

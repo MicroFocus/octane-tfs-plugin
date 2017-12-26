@@ -1,6 +1,7 @@
 ﻿using log4net;
 using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 using Nancy;
 using Nancy.Extensions;
 using System;
