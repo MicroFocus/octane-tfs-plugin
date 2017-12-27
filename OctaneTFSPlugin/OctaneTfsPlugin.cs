@@ -24,12 +24,12 @@ namespace MicroFocus.Ci.Tfs.Core
 
 		
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-		private static OctaneManagerInitializer _octaneManagerInitializer = new OctaneManagerInitializer();
+		private static OctaneManagerInitializer _octaneManagerInitializer;
 
 		static OctaneTfsPlugin()
 		{
 			LogUtils.ConfigureLog4NetForPluginMode();
-			_octaneManagerInitializer = new OctaneManagerInitializer();
+			_octaneManagerInitializer = OctaneManagerInitializer.GetInstance();
 			_octaneManagerInitializer.Start(PluginRunMode.ServerPlugin);
 			Log.Info("OctaneTfsPlugin started");
 		}
