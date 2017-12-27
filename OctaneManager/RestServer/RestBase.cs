@@ -8,6 +8,7 @@ using Nancy.Responses;
 using System;
 using System.IO;
 using System.Reflection;
+using MicroFocus.Ci.Tfs.Octane.Configuration;
 
 namespace MicroFocus.Ci.Tfs.Octane.RestServer
 {
@@ -16,8 +17,10 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public static event EventHandler<CiEvent> BuildEvent;
+	    public static event EventHandler<EventArgs> StartPlugin;
+	    public static event EventHandler<EventArgs> StopPlugin;
 
-		public RestBase()
+        public RestBase()
 		{
 			Get["/"] = _ =>
 			{
@@ -35,12 +38,47 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 			};
 
 			Get["/logs/last"] = _ =>
-			{
+			{            
 				return HandleGetLastLogRequest();
 			};
-		}
 
-		private dynamic HandleGetLastLogRequest()
+            Post["/config"] = _ =>
+            {
+                var configStr = Context.Request.Body.AsString();
+                Log.Debug($"Recieved new config: \n {configStr}");
+                
+                var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
+                ConfigurationManager.WriteConfig(config);
+
+                return "Configuration changed";
+            };
+
+		    Get["/config"] = _ => JsonHelper.SerializeObject(ConfigurationManager.Read(), true);
+
+		    Post["/start"] = _ =>
+		    {
+		        if (OctaneManagerInitializer.GetInstance().IsOctaneInitialized())
+		            return "Octane manager is already running";
+
+                Log.Debug("plugin start requested");
+		        
+                StartPlugin?.Invoke(this,new EventArgs());
+		        return "Start requested";
+		    };
+		    Post["/stop"] = _ =>
+		    {
+		        if (!OctaneManagerInitializer.GetInstance().IsOctaneInitialized())
+		            return "Octane manager is already stopped";
+
+                Log.Debug("plugin stop requested");
+                StopPlugin?.Invoke(this,new EventArgs());
+		        return "Stop requested";
+		    };
+
+
+        }
+
+        private dynamic HandleGetLastLogRequest()
 		{
 			string path = LogUtils.GetLogFilePath();
 			if (path == null)

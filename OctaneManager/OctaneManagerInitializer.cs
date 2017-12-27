@@ -39,28 +39,43 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Info("OctaneManagerInitializer start");
 
 			Octane.RestServer.Server.GetInstance().Start();
-			if (_octaneInitializationThread == null)
-			{
-				_octaneInitializationThread =
-					Task.Factory.StartNew(() => InitializeOctaneManager(_cancellationTokenSource.Token),
-						TaskCreationOptions.LongRunning);
-			}
+            Octane.RestServer.RestBase.StartPlugin += RestBase_StartPlugin;
+            Octane.RestServer.RestBase.StopPlugin += RestBase_StopPlugin;
+            
+            InitializeOctane();
 		}
 
-		public OctaneManager OctaneManager
-		{
-			get
-			{
-				return _octaneManager;
-			}
-		}
+	    private void InitializeOctane()
+	    {
+	        if (_octaneInitializationThread == null)
+	        {
+	            _octaneInitializationThread =
+	                Task.Factory.StartNew(() => InitializeOctaneManager(_cancellationTokenSource.Token),
+	                    TaskCreationOptions.LongRunning);
+	        }
+        }
 
-		public void ShutDown()
+        private void RestBase_StopPlugin(object sender, EventArgs e)
+        {
+            _octaneManager.ShutDown();
+            WaitShutDown();
+            _octaneManager = null;
+            _octaneInitializationThread = null;
+        }
+
+        private void RestBase_StartPlugin(object sender, EventArgs e)
+        {
+            InitializeOctane();
+        }
+
+        public OctaneManager OctaneManager => _octaneManager;
+
+	    public void ShutDown()
 		{
 			_cancellationTokenSource.Cancel();
 			_octaneManager.ShutDown();
 			RestServer.Server.GetInstance().Stop();
-		}
+		}	  
 
 		public void WaitShutDown()
 		{
