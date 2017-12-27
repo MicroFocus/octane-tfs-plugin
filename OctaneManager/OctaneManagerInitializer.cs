@@ -16,6 +16,18 @@ namespace MicroFocus.Ci.Tfs.Octane
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private PluginRunMode _runMode;
 
+		private static OctaneManagerInitializer instance = new OctaneManagerInitializer();
+
+		private OctaneManagerInitializer()
+		{
+
+		}
+
+		public static OctaneManagerInitializer GetInstance()
+		{
+			return instance;
+		}
+
 		public void Start(PluginRunMode runMode)
 		{
 			if (_cancellationTokenSource.IsCancellationRequested)
