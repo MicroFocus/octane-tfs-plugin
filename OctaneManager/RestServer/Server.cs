@@ -48,6 +48,12 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 
 		public void Start()
 		{
+		    if (IsStarted())
+		    {
+		        Log.Debug("Server is already running...");
+                return;		       
+		    }
+
 			var hostConfigs = new HostConfiguration { UrlReservations = { CreateAutomatically = true } };
 			var serverUri = new Uri($"http://localhost:{_port}");
 			var host = new NancyHost(serverUri, new DefaultNancyBootstrapper(), hostConfigs);

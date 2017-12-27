@@ -60,6 +60,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
+
 			InitTaskPolling();
 
 			Log.Debug("Octane manager created...");
@@ -74,6 +75,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			RestBase.BuildEvent -= RestBase_BuildEvent;
 			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
 			IsInitialized = false;
+            Log.Debug("Octane manager shuted down");
 		}
 
 		public void WaitShutdown()
