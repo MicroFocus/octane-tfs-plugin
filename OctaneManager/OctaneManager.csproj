@@ -91,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestServer\RestBase.cs" />
     <Compile Include="RestServer\Server.cs" />
+    <Compile Include="Tools\LogManager.cs" />
     <Compile Include="Tools\TaskProcessor.cs" />
     <Compile Include="Tools\TestResultUtils.cs" />
     <Compile Include="Tools\TfsManager.cs" />

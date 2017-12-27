@@ -12,7 +12,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 
 		public static string SerializeObject(object value)
 		{
-			return JsonConvert.SerializeObject(value);
+			return SerializeObject(value, false);
 		}
 
 		public static string SerializeObject(object value, bool formatted)
