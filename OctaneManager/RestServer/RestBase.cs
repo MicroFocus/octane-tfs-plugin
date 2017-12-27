@@ -7,9 +7,7 @@ using Nancy.Extensions;
 using Nancy.Responses;
 using System;
 using System.IO;
-using System.IO.Compression;
 using System.Reflection;
-using System.Text;
 
 namespace MicroFocus.Ci.Tfs.Octane.RestServer
 {
@@ -32,20 +30,17 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 
 			Post["/build-event/"] = _ =>
 			{
-				var text = Context.Request.Body.AsString();
-				Log.Debug($"Received build event : {text}");
-				HandleBuildEvent(text);
+				HandleBuildEvent();
 				return "Received";
 			};
 
 			Get["/logs/last"] = _ =>
 			{
-				DynamicDictionaryValue format = ((DynamicDictionary)Request.Query)["format"];
-				return HandleGetLastLogRequestWIthString(format.HasValue ? format.ToString() : null);
+				return HandleGetLastLogRequest();
 			};
 		}
 
-		private dynamic HandleGetLastLogRequestWIthString(string format)
+		private dynamic HandleGetLastLogRequest()
 		{
 			string path = LogUtils.GetLogFilePath();
 			if (path == null)
@@ -66,49 +61,12 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 			return new TextResponse(contents);
 		}
 
-
-		private dynamic HandleGetLastLogRequest1(string format)
-		{
-			string path = LogUtils.GetLogFilePath();
-			if (path == null)
-			{
-				return "Log file is not defined";
-			}
-			if (!File.Exists(path))
-			{
-				return $"Log file <{path}> is not exist";
-			}
-
-			string gzipFilePath = CompressToFile(path);
-			var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-			var response = new StreamResponse(() => file, "text/plain");
-
-			//return response.WithHeader("Content-Encoding", "gzip");
-			return response;
-		}
-
-		public static string CompressToFile(string path)
-		{
-			string gzippedPath = path + ".gz";
-			// Get the stream of the source file.
-			using (FileStream inFile = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-			{
-				// Create the compressed file.
-				using (FileStream outFile = File.Create(gzippedPath))
-				{
-					using (GZipStream Compress = new GZipStream(outFile, CompressionMode.Compress))
-					{
-						inFile.CopyTo(Compress);
-					}
-				}
-			}
-			return gzippedPath;
-		}
-
-		private void HandleBuildEvent(string body)
+		private void HandleBuildEvent()
 		{
 			try
 			{
+				var body = Context.Request.Body.AsString();
+				Log.Debug($"Received build event : {body}");
 				var buildEvent = JsonHelper.DeserializeObject<TfsBuildEvent>(body);
 				var ciEvent = buildEvent.ToCiEvent();
 				BuildEvent?.Invoke(this, ciEvent);
