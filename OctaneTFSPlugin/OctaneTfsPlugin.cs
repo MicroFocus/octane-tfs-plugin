@@ -19,6 +19,7 @@ namespace MicroFocus.Ci.Tfs.Core
 		
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static OctaneManagerInitializer _octaneManagerInitializer;
+		private static int instanceCount;
 
 		static OctaneTfsPlugin()
 		{
@@ -27,6 +28,12 @@ namespace MicroFocus.Ci.Tfs.Core
 			_octaneManagerInitializer.RunMode = PluginRunMode.ServerPlugin;
 			_octaneManagerInitializer.Start();
 			Log.Info("OctaneTfsPlugin started");
+		}
+
+		public OctaneTfsPlugin()
+		{
+			instanceCount++;
+			Log.Debug($"OctaneTfsPlugin ctor, new instance count {instanceCount}");
 		}
 
 		public Type[] SubscribedTypes()
@@ -87,7 +94,12 @@ namespace MicroFocus.Ci.Tfs.Core
 
 		public void Dispose()
 		{
-			Octane.RestServer.Server.GetInstance().Stop();
+			instanceCount--;
+			Log.Debug($"OctaneTfsPlugin disposing, new instance count {instanceCount}");
+			if (instanceCount == 0)
+			{
+				Octane.RestServer.Server.GetInstance().Stop();
+			}
 		}
 	}
 }
