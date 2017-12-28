@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
+using System.Text;
 
 namespace MicroFocus.Ci.Tfs.Octane.RestServer
 {
@@ -17,10 +18,8 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public static event EventHandler<CiEvent> BuildEvent;
-	    public static event EventHandler<EventArgs> StartPlugin;
-	    public static event EventHandler<EventArgs> StopPlugin;
 
-        public RestBase()
+		public RestBase()
 		{
 			Get["/"] = _ =>
 			{
@@ -37,57 +36,103 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 				return "Received";
 			};
 
-			Get["/logs/last"] = _ =>
-			{            
-				return HandleGetLastLogRequest();
+			Get["/logs/{logId}"] = parameters =>
+			{
+				return HandleGetLogRequest(parameters.logId);
+			};
+			Get["/logs"] = _ =>
+			{
+				return HandleGetLogListRequest();
 			};
 
-            Post["/config"] = _ =>
-            {
-                var configStr = Context.Request.Body.AsString();
-                Log.Debug($"Recieved new config: \n {configStr}");
-                
-                var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
-                ConfigurationManager.WriteConfig(config);
+			//TODO add defence - sensitive action
+			Post["/config"] = _ =>
+			{
+				var configStr = Context.Request.Body.AsString();
+				Log.Debug($"Recieved new config: \n {configStr}");
 
-                return "Configuration changed";
-            };
+				var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
+				ConfigurationManager.WriteConfig(config);
 
-		    Get["/config"] = _ => JsonHelper.SerializeObject(ConfigurationManager.Read(), true);
+				return "Configuration changed";
+			};
 
-		    Post["/start"] = _ =>
-		    {
-		        if (OctaneManagerInitializer.GetInstance().IsOctaneInitialized())
-		            return "Octane manager is already running";
-
-                Log.Debug("plugin start requested");
-		        
-                StartPlugin?.Invoke(this,new EventArgs());
-		        return "Start requested";
-		    };
-		    Post["/stop"] = _ =>
-		    {
-		        if (!OctaneManagerInitializer.GetInstance().IsOctaneInitialized())
-		            return "Octane manager is already stopped";
-
-                Log.Debug("plugin stop requested");
-                StopPlugin?.Invoke(this,new EventArgs());
-		        return "Stop requested";
-		    };
+			Get["/config"] = _ =>
+			{
+				string config = JsonHelper.SerializeObject(ConfigurationManager.Read().RemoveSensitiveInfo(), true);
+				return new TextResponse(config);
+			};
 
 
-        }
+			//TODO add defence - sensitive action
+			Post["/start"] = _ =>
+			{
+				if (OctaneManagerInitializer.GetInstance().IsOctaneInitialized())
+					return "Octane manager is already running";
 
-        private dynamic HandleGetLastLogRequest()
+				Log.Debug("plugin start requested");
+
+				OctaneManagerInitializer.GetInstance().Start();
+				return "Start requested";
+			};
+
+			//TODO add defence - sensitive action
+			Post["/stop"] = _ =>
+			{
+				Log.Debug("plugin stop requested");
+				OctaneManagerInitializer.GetInstance().StopPlugin();
+				return "Stop requested";
+			};
+
+
+		}
+		private dynamic HandleGetLogListRequest()
+		{
+			string logfilePath = LogUtils.GetLogFilePath();
+			if (logfilePath == null)
+			{
+				return "Log file is not defined";
+			}
+			string logDirPath = Path.GetDirectoryName(logfilePath);
+			string logFileName = Path.GetFileName(logfilePath);
+			string[] foundFiles = Directory.GetFiles(logDirPath, logFileName + ".?");
+			StringBuilder sb = new StringBuilder();
+			sb.Append($"Found {foundFiles.Length} files");
+			foreach (string foundFile in foundFiles)
+			{
+				sb.Append("</br>").Append(Environment.NewLine);
+				string fileName = Path.GetFileName(foundFile);
+				if (logFileName.Equals(fileName))
+				{
+					sb.Append("/logs/last");
+				}
+				else
+				{
+					sb.Append("/logs/" + fileName.Replace(logFileName + ".", ""));
+				}
+			}
+			return sb.ToString();
+		}
+
+		private dynamic HandleGetLogRequest(string logId)
 		{
 			string path = LogUtils.GetLogFilePath();
 			if (path == null)
 			{
 				return "Log file is not defined";
 			}
+
+			if (logId != null && (logId.ToLower().Equals("last") || logId.Equals("0")))
+			{
+				//don't change path
+			}
+			else
+			{
+				path = path + "." + logId;
+			}
 			if (!File.Exists(path))
 			{
-				return $"Log file <{path}> is not exist";
+				return new TextResponse($"Log file with index {logId} is not exist").WithStatusCode(404); ;
 			}
 
 			var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);

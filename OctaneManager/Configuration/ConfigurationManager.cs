@@ -47,8 +47,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 			var text = File.ReadAllText(fullConfigFilePath);
 
 			ConnectionDetails resForLog = JsonHelper.DeserializeObject<ConnectionDetails>(text);
-			resForLog.ClientSecret = "***";
-			resForLog.Pat = "***";
+			resForLog.RemoveSensitiveInfo();
 			Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(resForLog,true)}");
 
 			ConnectionDetails res = JsonHelper.DeserializeObject<ConnectionDetails>(text);

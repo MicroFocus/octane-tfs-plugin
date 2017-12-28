@@ -63,5 +63,12 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
 		public Guid InstanceId { get; set; } = Guid.NewGuid();
 
+		public ConnectionDetails RemoveSensitiveInfo()
+		{
+			ClientSecret = "***";
+			Pat = "***";
+			return this;
+		}
+
 	}
 }
