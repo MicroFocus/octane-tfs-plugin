@@ -105,13 +105,18 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 					catch (Exception ex)
 					{
-						if (ex.InnerException != null && ex.InnerException is WebException && ((WebException)ex.InnerException).Status == WebExceptionStatus.Timeout)
+						Exception myEx = ex;
+						if (ex is AggregateException && ex.InnerException != null)
+						{
+							myEx = ex.InnerException;
+						}
+						if (myEx is WebException && ((WebException)myEx).Status == WebExceptionStatus.Timeout)
 						{
 							//known exception
 						}
 						else
 						{
-							Log.Error($"Task polling exception : {ex.Message}");
+							Log.Error($"Task polling exception : {myEx.Message}");
 						}
 					}
 					finally
