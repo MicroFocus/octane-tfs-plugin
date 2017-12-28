@@ -29,7 +29,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 		#region Const Definitions
 
 		private const int DEFAULT_POLLING_GET_TIMEOUT = 20 * 1000; //20 seconds
-		private const int DEFAULT_POLLING_INTERVAL = 5;
 
 		#endregion
 
@@ -39,7 +38,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private TfsManager _tfsManager;
 		private static ConnectionDetails _connectionConf;
 
-		private readonly TimeSpan _pollingInterval = TimeSpan.FromSeconds(DEFAULT_POLLING_INTERVAL);
 		private readonly int _pollingGetTimeout;
 		private Task _taskPollingThread;
 
@@ -113,10 +111,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 						if (myEx is WebException && ((WebException)myEx).Status == WebExceptionStatus.Timeout)
 						{
 							//known exception
+							//Log.Debug($"Task polling expected timeout");
 						}
 						else
 						{
 							Log.Error($"Task polling exception : {myEx.Message}");
+							Thread.Sleep(DEFAULT_POLLING_GET_TIMEOUT);//wait before next pool
 						}
 					}
 					finally
@@ -154,7 +154,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 					}
 				}
-				Thread.Sleep(_pollingInterval);
 			}
 		}
 

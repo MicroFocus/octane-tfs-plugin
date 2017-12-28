@@ -1,7 +1,5 @@
 ﻿using log4net;
-using log4net.Config;
 using MicroFocus.Ci.Tfs.Octane;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Dto;
 using MicroFocus.Ci.Tfs.Octane.Dto.Events;
 using MicroFocus.Ci.Tfs.Octane.Tools;
@@ -10,11 +8,7 @@ using Microsoft.TeamFoundation.Build.WebApi.Events;
 using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Core
 {

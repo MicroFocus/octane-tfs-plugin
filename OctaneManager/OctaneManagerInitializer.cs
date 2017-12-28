@@ -9,7 +9,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
 	public class OctaneManagerInitializer : IDisposable
 	{
-		private static readonly TimeSpan _initTimeout = new TimeSpan(0, 0, 0, 10);
+		private static readonly TimeSpan _initTimeout = new TimeSpan(0, 0, 0, 20);
 		private OctaneManager _octaneManager = null;
 		private Task _octaneInitializationThread = null;
 		private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
