@@ -14,7 +14,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private Task _octaneInitializationThread = null;
 		private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-		private PluginRunMode _runMode;
 
 		private static OctaneManagerInitializer instance = new OctaneManagerInitializer();
 
@@ -28,62 +27,57 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return instance;
 		}
 
-		public void Start(PluginRunMode runMode)
+		public PluginRunMode RunMode { get; set; } = PluginRunMode.ConsoleApp;
+
+		public void Start()
 		{
-			if (_cancellationTokenSource.IsCancellationRequested)
-			{
-				throw new InvalidOperationException("You cannot use the same initializer after it stopped");
-			}
-
-			this._runMode = runMode;
 			Log.Info("OctaneManagerInitializer start");
-
-			Octane.RestServer.Server.GetInstance().Start();
-            Octane.RestServer.RestBase.StartPlugin += RestBase_StartPlugin;
-            Octane.RestServer.RestBase.StopPlugin += RestBase_StopPlugin;
-            
-            InitializeOctane();
+			StartServer();
+			StartPlugin();
 		}
 
-	    private void InitializeOctane()
-	    {
-	        if (_octaneInitializationThread == null)
-	        {
-	            _octaneInitializationThread =
-	                Task.Factory.StartNew(() => InitializeOctaneManager(_cancellationTokenSource.Token),
-	                    TaskCreationOptions.LongRunning);
-	        }
-        }
+		public void Stop()
+		{
+			Log.Info("OctaneManagerInitializer stop");
+			StopServer();
+			StopPlugin();
+		}
 
-        private void RestBase_StopPlugin(object sender, EventArgs e)
+
+		public void StopPlugin()
         {
-            _octaneManager.ShutDown();
-            WaitShutDown();
+			if (_octaneManager != null)
+			{
+				_cancellationTokenSource.Cancel();
+				_octaneManager.ShutDown();
+			}
+
             _octaneManager = null;
-            _octaneInitializationThread = null;
+			_octaneInitializationThread = null;
         }
 
-        private void RestBase_StartPlugin(object sender, EventArgs e)
+        public void StartPlugin()
         {
-            InitializeOctane();
-        }
+			if (_octaneInitializationThread == null)
+			{
+				_cancellationTokenSource = new CancellationTokenSource();
+				_octaneInitializationThread =
+					Task.Factory.StartNew(() => InitializeOctaneManager(_cancellationTokenSource.Token),
+						TaskCreationOptions.LongRunning);
+			}
+		}
 
         public OctaneManager OctaneManager => _octaneManager;
 
-	    public void ShutDown()
+		public void StartServer()
 		{
-			_cancellationTokenSource.Cancel();
-			_octaneManager.ShutDown();
+			RestServer.Server.GetInstance().Start();
+		}
+
+		public void StopServer()
+		{
 			RestServer.Server.GetInstance().Stop();
 		}	  
-
-		public void WaitShutDown()
-		{
-			if (_octaneManager != null)
-			{
-				_octaneManager.WaitShutdown();
-			}
-		}
 
 		private void InitializeOctaneManager(CancellationToken token)
 		{
@@ -98,7 +92,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				{
 					if (_octaneManager == null)
 					{
-						_octaneManager = new OctaneManager(_runMode);
+						_octaneManager = new OctaneManager(RunMode);
 					}
 
 					_octaneManager.Init();
@@ -127,7 +121,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void Dispose()
 		{
-			ShutDown();
+			Stop();
 		}
 	}
 }

@@ -24,12 +24,12 @@ namespace TfsConsolePluginRunner
             }
 
 			OctaneManagerInitializer octaneManagerInitializer = OctaneManagerInitializer.GetInstance();
-			octaneManagerInitializer.Start(PluginRunMode.ConsoleApp);
+			octaneManagerInitializer.RunMode = PluginRunMode.ConsoleApp;
+			octaneManagerInitializer.Start();
 			Console.WriteLine("TFS plugin is running , press any key to exit...");
             Console.ReadLine();
 
-			octaneManagerInitializer.ShutDown();
-			octaneManagerInitializer.WaitShutDown();
+			octaneManagerInitializer.Stop();
 			Console.WriteLine("TFS plugin is stopped. The window will close shortly.");
 			Thread.Sleep(5000);
 		}
