@@ -100,7 +100,7 @@ namespace MicroFocus.Ci.Tfs.Core
 			Log.Debug($"OctaneTfsPlugin disposing, new instance count {instanceCount}");
 			if (instanceCount == 0)
 			{
-				Octane.RestServer.Server.GetInstance().Stop();
+				//_octaneManagerInitializer.Stop();
 			}
 		}
 	}
