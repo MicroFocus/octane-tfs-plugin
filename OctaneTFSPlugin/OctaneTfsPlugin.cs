@@ -27,7 +27,9 @@ namespace MicroFocus.Ci.Tfs.Core
 			_octaneManagerInitializer = OctaneManagerInitializer.GetInstance();
 			_octaneManagerInitializer.RunMode = PluginRunMode.ServerPlugin;
 			_octaneManagerInitializer.Start();
-			Log.Info("OctaneTfsPlugin started");
+			Log.Info("******************************************************************");
+			Log.Info("***************OctaneTfsPlugin started****************************");
+			Log.Info("******************************************************************");
 		}
 
 		public OctaneTfsPlugin()
