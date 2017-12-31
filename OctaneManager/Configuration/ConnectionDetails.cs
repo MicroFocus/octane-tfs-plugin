@@ -10,10 +10,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 		{
 			get
 			{
-				var index = WebAppUrl.IndexOf("/", WebAppUrl.LastIndexOf(":", StringComparison.Ordinal),
-					StringComparison.Ordinal);
-				var res = WebAppUrl.Substring(0, index + 1);
-				return res;
+				Uri uri = new Uri(WebAppUrl);
+				string host = $"{uri.Scheme}://{uri.Host}:{uri.Port}";
+				return host;
 			}
 		}
 
