@@ -43,21 +43,20 @@ namespace MicroFocus.Ci.Tfs.Octane
 			StopPlugin();
 		}
 
-
 		public void StopPlugin()
-        {
+		{
 			if (_octaneManager != null)
 			{
 				_cancellationTokenSource.Cancel();
 				_octaneManager.ShutDown();
 			}
 
-            _octaneManager = null;
+			_octaneManager = null;
 			_octaneInitializationThread = null;
-        }
+		}
 
-        public void StartPlugin()
-        {
+		public void StartPlugin()
+		{
 			if (_octaneInitializationThread == null)
 			{
 				_cancellationTokenSource = new CancellationTokenSource();
@@ -67,17 +66,17 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-        public OctaneManager OctaneManager => _octaneManager;
+		public OctaneManager OctaneManager => _octaneManager;
 
-		public void StartServer()
+		private void StartServer()
 		{
 			RestServer.Server.GetInstance().Start();
 		}
 
-		public void StopServer()
+		private void StopServer()
 		{
 			RestServer.Server.GetInstance().Stop();
-		}	  
+		}
 
 		private void InitializeOctaneManager(CancellationToken token)
 		{
@@ -108,7 +107,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				{
 					Log.Info($"Wait {_initTimeout.TotalSeconds} secs for next trial of initialization");
 				}
-				
+
 				Thread.Sleep(_initTimeout);
 
 			}

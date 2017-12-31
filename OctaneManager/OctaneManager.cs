@@ -64,15 +64,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Debug("Octane manager created...");
 		}
 
-
-
 		public void ShutDown()
 		{
+			IsInitialized = false;
 			_pollTasksCancellationToken.Cancel();
 			_octaneRestConnector.Disconnect();
 			RestBase.BuildEvent -= RestBase_BuildEvent;
 			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
-			IsInitialized = false;
             Log.Debug("Octane manager shuted down");
 		}
 
@@ -205,7 +203,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			{
 				DateTime start = DateTime.Now;
 				Log.Debug($"Validate connection to TFS  {_tfsServerUri.ToString()}");
-				//_tfsManager.GetProjectCollections();
+				_tfsManager.GetProjectCollections();
 				DateTime end = DateTime.Now;
 				Log.Debug($"Validate connection to TFS finished in {(long)((end-start).TotalMilliseconds)} ms");
 			}
