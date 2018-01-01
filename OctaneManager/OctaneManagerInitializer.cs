@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using System;
 using System.Reflection;
@@ -9,17 +10,20 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
 	public class OctaneManagerInitializer : IDisposable
 	{
-		private static readonly TimeSpan _initTimeout = new TimeSpan(0, 0, 0, 20);
+		private static readonly TimeSpan[] _initTimeoutArr = new TimeSpan[] { new TimeSpan(0, 0, 0, 30), new TimeSpan(0, 0, 2, 0), new TimeSpan(0, 0, 10, 0) };
+		private int _initFailCounter = 0;
 		private OctaneManager _octaneManager = null;
 		private Task _octaneInitializationThread = null;
 		private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static ConnectionDetails _connectionDetails;
 
 		private static OctaneManagerInitializer instance = new OctaneManagerInitializer();
 
 		private OctaneManagerInitializer()
 		{
-
+			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
+			_connectionDetails = ConfigurationManager.Read();
 		}
 
 		public static OctaneManagerInitializer GetInstance()
@@ -41,6 +45,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Info("OctaneManagerInitializer stop");
 			StopServer();
 			StopPlugin();
+			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
 		}
 
 		public void StopPlugin()
@@ -89,26 +94,30 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				try
 				{
-					if (_octaneManager == null)
-					{
-						_octaneManager = new OctaneManager(RunMode);
-					}
-
+					_octaneManager = new OctaneManager(RunMode, _connectionDetails);
 					_octaneManager.Init();
-
+					_initFailCounter = 0;
 				}
 				catch (Exception ex)
 				{
 					Log.Error($"Error initializing octane plugin : {ex.Message}", ex);
+					_octaneManager.ShutDown();
+					_octaneManager = null;
 				}
+
 
 				//Sleep till next retry
 				if (!IsOctaneInitialized())
 				{
-					Log.Info($"Wait {_initTimeout.TotalSeconds} secs for next trial of initialization");
+
+					int initTimeoutIndex = Math.Min(((int)_initFailCounter / 3), _initTimeoutArr.Length - 1);
+					TimeSpan initTimeout = _initTimeoutArr[initTimeoutIndex];
+					Log.Info($"Wait {initTimeout.TotalSeconds} secs for next trial of initialization");
+					Thread.Sleep(initTimeout);
+					_initFailCounter++;
 				}
 
-				Thread.Sleep(_initTimeout);
+
 
 			}
 		}
@@ -116,6 +125,18 @@ namespace MicroFocus.Ci.Tfs.Octane
 		public bool IsOctaneInitialized()
 		{
 			return _octaneManager != null && _octaneManager.IsInitialized;
+		}
+
+		private void OnConfigurationChanged(object sender, EventArgs e)
+		{
+			_connectionDetails = ConfigurationManager.Read();
+			RestartPlugin();
+		}
+
+		public void RestartPlugin()
+		{
+			StopPlugin();
+			StartPlugin();
 		}
 
 		public void Dispose()

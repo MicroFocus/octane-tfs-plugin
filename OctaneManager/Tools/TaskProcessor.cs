@@ -1,4 +1,4 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Tools;
+﻿
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -25,25 +25,33 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 		public string ProcessTask(HttpMethodEnum method, Uri taskUrl)
 		{
 			var taskType = ParseUriPath(taskUrl);
+			string result;
 			switch (taskType)
 			{
 				case TaskType.GetJobsList:
-					return JsonHelper.SerializeObject(_tfsManager.GetJobsList());
+					result= JsonHelper.SerializeObject(_tfsManager.GetJobsList());
+					break;
 				case TaskType.GetJobDetail:
 					var jobId = taskUrl.Segments[taskUrl.Segments.Length - 1];
-					return JsonHelper.SerializeObject(_tfsManager.GetJobDetail(jobId));
+					result= JsonHelper.SerializeObject(_tfsManager.GetJobDetail(jobId));
+					break;
 				case TaskType.ExecutePipelineRunRequest:
 					var joinedProjectName = taskUrl.Segments[taskUrl.Segments.Length - 2].Trim('/');
 					var buildParts = joinedProjectName.Split('.');
 					_tfsManager.QueueNewBuild(buildParts[0], buildParts[1], buildParts[2]);
-					return null;
+					result = "";
+					break;
 				case TaskType.Undefined:
 					Trace.WriteLine($"Undefined task : {taskUrl}");
-					return null;
+					result = "";
+					break;
 				default:
-					return null;
+					result = "";
+					break;
 
 			}
+			
+			return result;
 		}
 
 		private static TaskType ParseUriPath(Uri uriPath)

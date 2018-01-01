@@ -1,13 +1,15 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Tfs;
+﻿using log4net;
+using MicroFocus.Ci.Tfs.Octane.Tfs;
 using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Text;
-using log4net;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tools
 {
@@ -109,6 +111,10 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 				{
 					T result = JsonHelper.DeserializeObject<T>(content);
 					return result;
+				}
+				else if (response.StatusCode == HttpStatusCode.Unauthorized)
+				{
+					throw new InvalidCredentialException("Validate if TFS PAT is still valid.");
 				}
 				else
 				{
