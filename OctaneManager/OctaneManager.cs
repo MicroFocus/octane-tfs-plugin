@@ -86,6 +86,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private void PollOctaneTasks(CancellationToken token)
 		{
+			Log.Debug("Task polling - started");
 			while (!token.IsCancellationRequested)
 			{
 				if (_octaneRestConnector.IsConnected())
@@ -121,66 +122,46 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 					finally
 					{
-						if (res != null)
+						if (res != null && res.Data != null)
 						{
-							Log.Info($"Received Task:{res?.Data}");
-
-							try
+							Task task = Task.Factory.StartNew(() =>
 							{
-								var octaneTask = JsonHelper.DeserializeObject<OctaneTask>(res?.Data.TrimStart('[').TrimEnd(']'));
-								var start = DateTime.Now;
-								var taskOutput = _taskProcessor.ProcessTask(octaneTask.Method, octaneTask?.ResultUrl);
-								var end = DateTime.Now;
-								Log.Debug($"Task handled in {(long)((end - start).TotalMilliseconds)} ms");
-
-								int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
-								var response = new OctaneTaskResult(status, octaneTask.Id, taskOutput);
-
-								if (octaneTask == null)
-								{
-									Log.Error("Octane task was not json parsed , Nothing to send....");
-								}
-								else
-								{
-									if (!SendTaskResultToOctane(octaneTask.Id, response))
-									{
-										Log.Error("Error sending results!");
-									}
-								}
-
-							}
-							catch (Exception ex)
-							{
-								Log.Error("Failed to process task " + ex.Message, ex);
-							}
+								HandleTask(res.Data);
+							});
 						}
-
-
 					}
 				}
 			}
+			Log.Debug("Task polling - finished");
 		}
 
-		private bool SendTaskResultToOctane(Guid resultId, OctaneTaskResult task)
+		private void HandleTask(string taskData)
 		{
-			Log.Debug($"Sending result to octane :  { task.Body}");
+			Log.Info($"Received Task:{taskData}");
 			try
 			{
-				var res = _octaneRestConnector.ExecutePut(_uriResolver.PostTaskResultUri(resultId.ToString()), null, task.ToString());
-
-				if (res.StatusCode == HttpStatusCode.NoContent)
+				//process task
+				var octaneTask = JsonHelper.DeserializeObject<OctaneTask>(taskData.TrimStart('[').TrimEnd(']'));
+				if (octaneTask == null)
 				{
-					return true;
+					Log.Error("Octane task was not json parsed , nothing to handle....");
+					return;
 				}
+				var start = DateTime.Now;
+				var taskOutput = _taskProcessor.ProcessTask(octaneTask.Method, octaneTask?.ResultUrl);
+				var end = DateTime.Now;
+				Log.Debug($"Task processed in {(long)((end - start).TotalMilliseconds)} ms");
 
-				Log.Error($"Unexpected status code during sending task result {resultId} : {res?.StatusCode}");
+				//prepare response
+				int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
+				var taskResult = new OctaneTaskResult(status, octaneTask.Id, taskOutput);
+				Log.Debug($"Sending result to octane :  { taskResult.Body}");
+				_octaneRestConnector.ExecutePut(_uriResolver.PostTaskResultUri(taskResult.Id.ToString()), null, taskResult.ToString());
 			}
 			catch (Exception ex)
 			{
-				Log.Error($"Error sending task result {resultId} : {ex.Message}");
+				Log.Error("Failed to process task " + ex.Message, ex);
 			}
-
-			return false;
 		}
 
 		public void Init()
@@ -232,7 +213,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 			InitTaskPolling();
 			IsInitialized = true;
-			Log.Debug($"Initialized successfully");
+			Log.Debug($"Octane manager initialized successfully");
 		}
 
 		private void InitializeConnectionToOctane()
