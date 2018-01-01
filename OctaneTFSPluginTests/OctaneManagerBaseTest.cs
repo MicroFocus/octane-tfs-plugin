@@ -27,7 +27,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 			ConfigurationManager.WriteConfig(connectionDetails);
 
 
-			octaneManager = new OctaneManager(Octane.Tools.PluginRunMode.ConsoleApp, devTimeout);
+			octaneManager = new OctaneManager(Octane.Tools.PluginRunMode.ConsoleApp, ConfigurationManager.Read(), devTimeout);
 			_tfsManager = new TfsManager(Octane.Tools.PluginRunMode.ConsoleApp, new Uri(tfsLocation), connectionDetails.Pat);
 		}
 	}

@@ -6,6 +6,7 @@
 // See the License for the specific language governing permissions and limitations under the License.
 
 using Hpe.Nga.Api.Core.Connector;
+using Hpe.Nga.Api.Core.Connector.Exceptions;
 using log4net;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Dto;
@@ -36,7 +37,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private static readonly RestConnector _octaneRestConnector = new RestConnector();
 		private TfsManager _tfsManager;
-		private static ConnectionDetails _connectionConf;
+		private readonly ConnectionDetails _connectionConf;
 
 		private readonly int _pollingGetTimeout;
 		private Task _taskPollingThread;
@@ -47,8 +48,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private readonly PluginRunMode _runMode;
 		private TaskProcessor _taskProcessor;
 		private Uri _tfsServerUri;
-		public OctaneManager(PluginRunMode runMode, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
+		public OctaneManager(PluginRunMode runMode, ConnectionDetails connectionDetails, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
 		{
+			_connectionConf = connectionDetails;
 			_runMode = runMode;
 			_pollingGetTimeout = pollingTimeout;
 
@@ -56,10 +58,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 			{
 				RestBase.BuildEvent += RestBase_BuildEvent;
 			}
-
-			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
-
-			InitTaskPolling();
 
 			Log.Debug("Octane manager created...");
 		}
@@ -70,8 +68,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			_pollTasksCancellationToken.Cancel();
 			_octaneRestConnector.Disconnect();
 			RestBase.BuildEvent -= RestBase_BuildEvent;
-			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
-            Log.Debug("Octane manager shuted down");
+			Log.Debug("Octane manager shuted down");
 		}
 
 		public void WaitShutdown()
@@ -109,7 +106,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 						if (myEx is WebException && ((WebException)myEx).Status == WebExceptionStatus.Timeout)
 						{
 							//known exception
-							//Log.Debug($"Task polling expected timeout");
+							Log.Debug($"Task polling - no task received");
+						}
+						else if (myEx is ServerUnavailableException)
+						{
+							Log.Error($"Octane server is unavailable");
+							OctaneManagerInitializer.GetInstance().RestartPlugin();
 						}
 						else
 						{
@@ -126,7 +128,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 							try
 							{
 								var octaneTask = JsonHelper.DeserializeObject<OctaneTask>(res?.Data.TrimStart('[').TrimEnd(']'));
+								var start = DateTime.Now;
 								var taskOutput = _taskProcessor.ProcessTask(octaneTask.Method, octaneTask?.ResultUrl);
+								var end = DateTime.Now;
+								Log.Debug($"Task handled in {(long)((end - start).TotalMilliseconds)} ms");
+
 								int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
 								var response = new OctaneTaskResult(status, octaneTask.Id, taskOutput);
 
@@ -177,15 +183,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return false;
 		}
 
-		private void OnConfigurationChanged(object sender, EventArgs e)
-		{
-			Init();
-		}
-
 		public void Init()
 		{
 			IsInitialized = false;
-			_connectionConf = ConfigurationManager.Read();
 
 			var hostName = Dns.GetHostName();
 			var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
@@ -205,11 +205,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 				Log.Debug($"Validate connection to TFS  {_tfsServerUri.ToString()}");
 				_tfsManager.GetProjectCollections();
 				DateTime end = DateTime.Now;
-				Log.Debug($"Validate connection to TFS finished in {(long)((end-start).TotalMilliseconds)} ms");
+				Log.Debug($"Validate connection to TFS finished in {(long)((end - start).TotalMilliseconds)} ms");
 			}
 			catch (Exception e)
 			{
-				var msg = "Invalid connection to TFS :" + e.InnerException != null ? e.InnerException.Message : e.Message;
+				var msg = "Invalid connection to TFS :" + (e.InnerException != null ? e.InnerException.Message : e.Message);
 				Log.Error(msg);
 				throw new Exception(msg);
 			}
@@ -230,6 +230,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 
 
+			InitTaskPolling();
 			IsInitialized = true;
 			Log.Debug($"Initialized successfully");
 		}

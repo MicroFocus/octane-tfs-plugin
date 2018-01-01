@@ -36,7 +36,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
 		public static ConnectionDetails Read()
 		{
-			Log.Info("Loading configuration");
+			Log.Debug("Loading configuration");
 
 			var fullConfigFilePath = GetConfigFilePath();
 			if (!File.Exists(fullConfigFilePath))
@@ -48,7 +48,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
 			ConnectionDetails resForLog = JsonHelper.DeserializeObject<ConnectionDetails>(text);
 			resForLog.RemoveSensitiveInfo();
-			Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(resForLog,true)}");
+			Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(resForLog, true)}");
 
 			ConnectionDetails res = JsonHelper.DeserializeObject<ConnectionDetails>(text);
 			return res;
