@@ -72,8 +72,8 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 
 				Log.Debug("plugin start requested");
 
-				OctaneManagerInitializer.GetInstance().Start();
-				return "Start requested";
+				OctaneManagerInitializer.GetInstance().StartPlugin();
+				return "Start plugin requested";
 			};
 
 			//TODO add defence - sensitive action
@@ -81,7 +81,7 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 			{
 				Log.Debug("plugin stop requested");
 				OctaneManagerInitializer.GetInstance().StopPlugin();
-				return "Stop requested";
+				return "Stop plugin requested";
 			};
 
 
