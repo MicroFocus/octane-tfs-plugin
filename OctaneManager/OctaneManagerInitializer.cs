@@ -2,6 +2,7 @@
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using MicroFocus.Ci.Tfs.Octane.Tools;
 using System;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +24,20 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private OctaneManagerInitializer()
 		{
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
-			_connectionDetails = ConfigurationManager.Read();
+			ReadConfigurationFile();
+		}
+
+		private void ReadConfigurationFile()
+		{
+			try
+			{
+				_connectionDetails = ConfigurationManager.Read();
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Failed to load configuration file : {e.Message}");
+				_connectionDetails = null;
+			}
 		}
 
 		public static OctaneManagerInitializer GetInstance()
@@ -62,6 +76,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void StartPlugin()
 		{
+			if (_connectionDetails == null)
+			{
+				Log.Error("Cannot StartPlugin as configuration file is not loaded");
+				return;
+			}
+
 			if (_octaneInitializationThread == null)
 			{
 				_cancellationTokenSource = new CancellationTokenSource();
@@ -129,7 +149,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private void OnConfigurationChanged(object sender, EventArgs e)
 		{
-			_connectionDetails = ConfigurationManager.Read();
+			ReadConfigurationFile();
 			RestartPlugin();
 		}
 
