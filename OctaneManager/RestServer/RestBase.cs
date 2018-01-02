@@ -49,7 +49,7 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 			Post["/config"] = _ =>
 			{
 				var configStr = Context.Request.Body.AsString();
-				Log.Debug($"Recieved new config: \n {configStr}");
+				Log.Debug($"Received new config: \n {configStr}");
 
 				var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
 				ConfigurationManager.WriteConfig(config);

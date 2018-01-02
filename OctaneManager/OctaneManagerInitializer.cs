@@ -25,6 +25,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
 			ReadConfigurationFile();
+			StartRestServer();
 		}
 
 		private void ReadConfigurationFile()
@@ -47,19 +48,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public PluginRunMode RunMode { get; set; } = PluginRunMode.ConsoleApp;
 
-		public void Start()
+		public void Shutdown()
 		{
-			Log.Info("OctaneManagerInitializer start");
-			StartServer();
-			StartPlugin();
-		}
-
-		public void Stop()
-		{
-			Log.Info("OctaneManagerInitializer stop");
-			StopServer();
-			StopPlugin();
+			Log.Info("OctaneManagerInitializer Shutdown");
 			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
+			StopRestServer();
+			StopPlugin();
 		}
 
 		public void StopPlugin()
@@ -76,6 +70,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void StartPlugin()
 		{
+			Log.Info("StartPlugin");
 			if (_connectionDetails == null)
 			{
 				Log.Error("Cannot StartPlugin as configuration file is not loaded");
@@ -93,14 +88,28 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public OctaneManager OctaneManager => _octaneManager;
 
-		private void StartServer()
+		private void StartRestServer()
 		{
-			RestServer.Server.GetInstance().Start();
+			try
+			{
+				RestServer.Server.GetInstance().Start();
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Failed to start rest server : {e.Message}", e);
+			}
 		}
 
-		private void StopServer()
+		private void StopRestServer()
 		{
-			RestServer.Server.GetInstance().Stop();
+			try
+			{
+				RestServer.Server.GetInstance().Stop();
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Failed to stop rest server : {e.Message}", e);
+			}
 		}
 
 		private void InitializeOctaneManager(CancellationToken token)
@@ -136,9 +145,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 					Thread.Sleep(initTimeout);
 					_initFailCounter++;
 				}
-
-
-
 			}
 		}
 
@@ -161,7 +167,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void Dispose()
 		{
-			Stop();
+			Shutdown();
 		}
 	}
 }
