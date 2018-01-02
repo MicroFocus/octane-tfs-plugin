@@ -3,6 +3,8 @@ using MicroFocus.Ci.Tfs.Octane.Tools;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane.Configuration
 {
@@ -12,7 +14,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static string _configurationFile = "octane.conf.json";
 		private static FileSystemWatcher _watcher;
-		private static DateTime lastWriteTime;
+		private static Task configurationFileChangedTask;
 
 		public static event EventHandler ConfigurationChanged;
 
@@ -102,18 +104,19 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
 		private static void ConfigurationFileChanged(object sender, FileSystemEventArgs e)
 		{
-			DateTime newLastWriteTime = File.GetLastWriteTime(GetConfigFilePath());
-			if (lastWriteTime == null || lastWriteTime != newLastWriteTime)
+			//We want to delay invoking of event in 5 secs, why?
+			//1.FileSystemWatcher may call this method twice
+			//2.User click on save configuration more than once
+			if (configurationFileChangedTask == null)
 			{
-				Log.Info($"Configuration changed on FS : {e.ChangeType}");
-				lastWriteTime = newLastWriteTime;
-				ConfigurationChanged?.Invoke(sender, e);
+				configurationFileChangedTask = Task.Factory.StartNew(() =>
+				{
+					Thread.Sleep(5000);
+					configurationFileChangedTask = null;
+					Log.Info($"Configuration changed on FS : {e.ChangeType}");
+					ConfigurationChanged?.Invoke(sender, e);
+				});
 			}
 		}
-
-
-
-
-
 	}
 }
