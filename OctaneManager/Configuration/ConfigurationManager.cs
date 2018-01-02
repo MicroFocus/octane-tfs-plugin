@@ -36,9 +36,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
 		public static ConnectionDetails Read()
 		{
-			Log.Debug("Loading configuration");
-
 			var fullConfigFilePath = GetConfigFilePath();
+			Log.Debug($"Loading configuration from {fullConfigFilePath}");
 			if (!File.Exists(fullConfigFilePath))
 			{
 				throw new FileNotFoundException($"Configuration file {fullConfigFilePath} was not found!");
