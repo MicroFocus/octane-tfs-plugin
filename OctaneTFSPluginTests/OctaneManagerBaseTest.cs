@@ -19,7 +19,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 			var clientId = SystemConfigurationManager.AppSettings["clientId"];
 			var clientSecret = SystemConfigurationManager.AppSettings["clientSecret"];
 			var devTimeout = (int)TimeSpan.FromSeconds(int.Parse(SystemConfigurationManager.AppSettings["devTimeout"])).TotalMilliseconds;
-			var instanceId = Guid.Parse(SystemConfigurationManager.AppSettings["InstanceId"]);
+			var instanceId = SystemConfigurationManager.AppSettings["InstanceId"];
 			var pat = SystemConfigurationManager.AppSettings["pat"];
 			var tfsLocation = "http://localhost:8080/tfs";
 
