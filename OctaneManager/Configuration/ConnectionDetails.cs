@@ -51,16 +51,16 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
 		}
 
-		public ConnectionDetails(string webAppUrl, string clientId, string clientSecret, string tfsLocation, Guid? instanceId = null)
+		public ConnectionDetails(string webAppUrl, string clientId, string clientSecret, string tfsLocation, string instanceId)
 		{
 			WebAppUrl = webAppUrl;
 			ClientId = clientId;
 			ClientSecret = clientSecret;
-			InstanceId = instanceId ?? Guid.NewGuid();
+			InstanceId = (instanceId == null ? Guid.NewGuid().ToString() : instanceId);
 			TfsLocation = tfsLocation;
 		}
 
-		public Guid InstanceId { get; set; } = Guid.NewGuid();
+		public string InstanceId { get; set; } = Guid.NewGuid().ToString();
 
 		public ConnectionDetails RemoveSensitiveInfo()
 		{

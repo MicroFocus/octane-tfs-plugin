@@ -36,7 +36,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static readonly RestConnector _octaneRestConnector = new RestConnector();
+		private RestConnector _octaneRestConnector;
 		private TfsManager _tfsManager;
 		private readonly ConnectionDetails _connectionConf;
 
@@ -48,7 +48,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private readonly CancellationTokenSource _pollTasksCancellationToken = new CancellationTokenSource();
 		private readonly PluginRunMode _runMode;
 		private TaskProcessor _taskProcessor;
-		private Uri _tfsServerUri;
+
 		public OctaneManager(PluginRunMode runMode, ConnectionDetails connectionDetails, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
 		{
 			_connectionConf = connectionDetails;
@@ -67,7 +67,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			IsInitialized = false;
 			_pollTasksCancellationToken.Cancel();
-			_octaneRestConnector.Disconnect();
+			if (_octaneRestConnector != null)
+			{
+				_octaneRestConnector.Disconnect();
+			}
+			_octaneRestConnector = null;
 			RestBase.BuildEvent -= RestBase_BuildEvent;
 			Log.Debug("Octane manager shuted down");
 		}
@@ -90,7 +94,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Debug("Task polling - started");
 			while (!token.IsCancellationRequested)
 			{
-				if (_octaneRestConnector.IsConnected())
+				if (IsInitialized)
 				{
 					ResponseWrapper res = null;
 					try
@@ -127,7 +131,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 						{
 							Task task = Task.Factory.StartNew(() =>
 							{
-								HandleTask(res.Data);
+								if (IsInitialized)
+								{
+									HandleTask(res.Data);
+								}
 							});
 						}
 					}
@@ -174,51 +181,15 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			IsInitialized = false;
 
-			var hostName = Dns.GetHostName();
-			var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
-			var tfsServerUriStr = _connectionConf.TfsLocation == null ? $"http://{hostName}.{domainName}:8080/tfs/" : _connectionConf.TfsLocation;
-			tfsServerUriStr = tfsServerUriStr.EndsWith("/") ? tfsServerUriStr : tfsServerUriStr + "/";
-			_tfsServerUri = new Uri(tfsServerUriStr);
+			_tfsManager = ConnectionCreator.CreateTfsConnection(_runMode, _connectionConf);
+			_octaneRestConnector = ConnectionCreator.CreateOctaneConnection(_connectionConf);
 
-
-			var instanceDetails = new InstanceDetails(_connectionConf.InstanceId, _tfsServerUri.ToString());
+			var instanceDetails = new InstanceDetails(_connectionConf.InstanceId, _tfsManager.TfsUri.ToString());
 			_uriResolver = new UriResolver(_connectionConf.SharedSpace, instanceDetails, _connectionConf);
-			_tfsManager = new TfsManager(_runMode, _tfsServerUri, _connectionConf.Pat);
 			_taskProcessor = new TaskProcessor(_tfsManager);
-
-			try
-			{
-				DateTime start = DateTime.Now;
-				Log.Debug($"Validate connection to TFS  {_tfsServerUri.ToString()}");
-				_tfsManager.GetProjectCollections();
-				DateTime end = DateTime.Now;
-				Log.Debug($"Validate connection to TFS finished in {(long)((end - start).TotalMilliseconds)} ms");
-			}
-			catch (Exception e)
-			{
-				var msg = "Invalid connection to TFS :" + (e.InnerException != null ? e.InnerException.Message : e.Message);
-				Log.Error(msg);
-				throw new Exception(msg);
-			}
-
-			try
-			{
-				DateTime start = DateTime.Now;
-				Log.Debug($"Validate connection to Octane {_connectionConf.Host}");
-				var octaneConnected = _octaneRestConnector.Connect(_connectionConf.Host, new APIKeyConnectionInfo(_connectionConf.ClientId, _connectionConf.ClientSecret));
-				DateTime end = DateTime.Now;
-				Log.Debug($"Validate connection to Octane finished in {(long)((end - start).TotalMilliseconds)} ms");
-			}
-			catch (Exception e)
-			{
-				var msg = "Invalid connection to Octane :" + e.InnerException != null ? e.InnerException.Message : e.Message;
-				Log.Error(msg);
-				throw new Exception(msg);
-			}
-
-
-			InitTaskPolling();
+			
 			IsInitialized = true;
+			InitTaskPolling();//should be after IsInitialized = true
 			Log.Debug($"Octane manager initialized successfully");
 		}
 
@@ -292,10 +263,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 				}
 
-
 				list.Server = new CiServerInfo
 				{
-					Url = _tfsServerUri,
+					Url = _tfsManager.TfsUri,
 					InstanceId = _connectionConf.InstanceId,
 					SendingTime = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow),
 					InstanceIdFrom = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow)
@@ -325,8 +295,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 			catch (Exception e)
 			{
-				Log.Error($"ReportEvent failed : {e.Message}",  e);
-				
+				Log.Error($"ReportEvent failed : {e.Message}", e);
 			}
 		}
 

@@ -59,6 +59,7 @@
     <Compile Include="Configuration\ConnectionDetails.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Configuration\InstanceDetails.cs" />
+    <Compile Include="Tools\ConnectionCreator.cs" />
     <Compile Include="Dto\Events\CiEvent.cs" />
     <Compile Include="Dto\Connectivity\OctaneTask.cs" />
     <Compile Include="Dto\Connectivity\OctaneTaskBase.cs" />
@@ -138,6 +139,10 @@
       <Project>{344d2ea6-c3e6-4a67-95c1-51b5e7647e89}</Project>
       <Name>Hpe.Nga.Api.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\config.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
