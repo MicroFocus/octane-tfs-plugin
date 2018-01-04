@@ -15,20 +15,20 @@ body{
 }
 #header{
 	background-color: #0079ef;
-    height: 50px;
+    height: 60px;
     color: white;
 }
 
 #octanelogo{
 	float: left;
-	height: 50px;
-	width: 50px;
+	height: 60px;
+	width: 60px;
 }
 #title{
-    padding: 15px 15px 15px 60px;
-	font-size: 16px;
+    padding: 15px 15px 15px 80px;
 	line-height : 24px;
 	font-weight: bold;
+	font-size: 24px;
 }
 
 input[type=text], input[type=password]  {
@@ -37,20 +37,21 @@ input[type=text], input[type=password]  {
     border-radius: 4px;
 	padding: 5px;
     margin: 1px;
-	width:600px
+	width:800px;
+	font-size: 17px;
 }
 
 button {
 
 	float: right;
-    width: 200px;
+    width: 250px;
     background-color: #0079ef;
     color: white;
     border: none;
     height: 30px;
-    margin: 5px 0;
-	font-size: 14px;
+    margin: 10px 0;
 	border-radius: 4px;
+	font-size: 17px;
 }
 
 button:hover{
@@ -66,20 +67,19 @@ button:active {
 }
 
 table{
-	margin : 20px 0 0 20px;
+	margin : 18px 0 0 20px;
+	font-size: 17px;
 }
-table .item{
-	padding:10px 10px 10px 0;
+table .itemCaption{
+	padding:10px 10px 20px 0;
 
 }
 
 #testConnectionMessage{
 	float: left;
-    width: 400px;
-    margin: 0;
+    width: 500px;
+    margin: 10px 0 0 0;
 }
-
-
 </style>
 
 	<noscript>Sorry, your browser does not support JavaScript!</noscript>
@@ -93,17 +93,15 @@ table .item{
 		<div id="title">TFS Plugin for ALM Octane - Configuration</div>
 
 	</div>
-	<div id="nothead">
-		<p id="demo"></p>
-	</div>
+
 
 	<table>
-		<tr><td class="item">ALM Octane Location</td><td><input type="text" name="octaneLocation" placeholder=""></td></tr>
-		<tr><td class="item">ALM Octane Client ID</td><td><input type="text" name="octaneClientId"></td></tr>
-		<tr><td class="item">ALM Octane Client Secret</td><td><input type="password" name="octaneClientSecret"></td></tr>
-		<tr><td class="item">Tfs Location</td><td><input type="text" name="tfsLocation"></td></tr>
-		<tr><td class="item">Tfs PAT</td><td><input type="password" name="tfsPat"></td></tr>
-		<tr><td class="item">Instance Id</td><td><input type="text" name="instanceId"></td></tr>
+		<tr><td class="itemCaption">ALM Octane Location</td><td><div><input type="text" name="octaneLocation" title="Location of the HPE ALM Octane application. You can copy the URL from the address bar of the browser in which you opened ALM Octane."></div></td></tr>
+		<tr><td class="itemCaption">ALM Octane Client ID</td><td><input type="text" name="octaneClientId" title="Client ID used for logging into the ALM Octane server. Obtain a Client ID and Client secret from ALM Octane configuration."></td></tr>
+		<tr><td class="itemCaption">ALM Octane Client Secret</td><td><input type="password" name="octaneClientSecret" title="Client secret used for logging into the ALM Octane server"></td></tr>
+		<tr><td class="itemCaption">Tfs Location</td><td><input type="text" name="tfsLocation" title="HTTP address of the TFS, such as http://yourhost:8080/tfs/. This value is used to let plugin know how to refer to itself, for example to create links to build/run/etc. This is necessary because plugin cannot reliably detect such a URL from within itself."></td></tr>
+		<tr><td class="itemCaption">Tfs PAT</td><td><input type="password" name="tfsPat" title="Personal Acess Token To TFS."></td></tr>
+		<tr><td class="itemCaption">Instance Id</td><td><input type="text" name="instanceId" title="An ID to uniquely identify this instance of the plugin."></td></tr>
 		<tr><td></td><td><div><p id="testConnectionMessage"></p><button id="testConnection" type="button">Test Connection</button></div></td></tr>
 		<tr><td></td><td><div><button id="saveButton" type="button">Save</button></div></td></tr>
 	</table>
@@ -130,58 +128,45 @@ $(document).ready(function(){
 		$("input[name='tfsPat']").val(defaultConf.Pat);
 		$("input[name='instanceId']").val(defaultConf.InstanceId);
 	}
-    $("#testConnection").click(function(){
-		$("#testConnectionMessage").text("Validating...");
-		$("#testConnectionMessage").css('color', '#0079ef');
-		var confObj = {
-			"WebAppUrl": $("input[name='octaneLocation']").val(),
-			"ClientId": $("input[name='octaneClientId']").val(),
-			"ClientSecret": $("input[name='octaneClientSecret']").val(),
-			"TfsLocation": $("input[name='tfsLocation']").val(),
-			"Pat": $("input[name='tfsPat']").val(),
-            "InstanceId": $("input[name='instanceId']").val()
-        };
-		var confJson = JSON.stringify(confObj);
-		$("#testConnection").prop('disabled', true);
-		var jqxhr = $.post( "/config/test", confJson, function(a,b) {
-			//alert( "success" );
-			$("#testConnectionMessage").css('color', 'green');
-			$("#testConnectionMessage").text("Configuratin validated successfully");
-		})
-		  .fail(function(err) {
-			//alert( err.responseText );
-			$("#testConnectionMessage").css('color', 'red');
-			$("#testConnectionMessage").text(err.responseText);
-		  }).always(function() {
-			$("#testConnection").prop('disabled', false);
+
+	registerForButtonClick("#testConnection","/config/test","Validating...","Configuratin validated successfully");
+	registerForButtonClick("#saveButton","/config","Saving...","Configuration saved successfully");
+	
+	function registerForButtonClick(buttonName, postUrl, processMessage, successMessage){
+
+		$(buttonName).click(function(){
+			$("#testConnectionMessage").css('color', '#0079ef');
+			$("#testConnectionMessage").text(processMessage);
+			var confObj = {
+				"WebAppUrl": $("input[name='octaneLocation']").val(),
+				"ClientId": $("input[name='octaneClientId']").val(),
+				"ClientSecret": $("input[name='octaneClientSecret']").val(),
+				"TfsLocation": $("input[name='tfsLocation']").val(),
+				"Pat": $("input[name='tfsPat']").val(),
+				"InstanceId": $("input[name='instanceId']").val()
+			};
+			var confJson = JSON.stringify(confObj);
+			$(buttonName).prop('disabled', true);
+			var jqxhr = $.post(postUrl, confJson, function(a,b) {
+				//alert( "success" );
+				$("#testConnectionMessage").css('color', 'green');
+				$("#testConnectionMessage").text(successMessage);
+			})
+			  .fail(function(err) {
+				//alert( err.responseText );
+				$("#testConnectionMessage").css('color', 'red');
+				var errMsg = err.responseText;
+				var maxLength = 100;
+				if(errMsg.length > maxLength){
+					errMsg = errMsg.substr(0, maxLength-3) + "...";
+				}
+				$("#testConnectionMessage").text(errMsg);
+			  }).always(function() {
+				$(buttonName).prop('disabled', false);
+			});
 		});
-    });
-	$("#saveButton").click(function(){
-		$("#testConnectionMessage").text("Saving...");
-		$("#testConnectionMessage").css('color', '#0079ef');
-		var confObj = {
-			"WebAppUrl": $("input[name='octaneLocation']").val(),
-			"ClientId": $("input[name='octaneClientId']").val(),
-			"ClientSecret": $("input[name='octaneClientSecret']").val(),
-			"TfsLocation": $("input[name='tfsLocation']").val(),
-			"Pat": $("input[name='tfsPat']").val(),
-            "InstanceId": $("input[name='instanceId']").val()
-        };
-		var confJson = JSON.stringify(confObj);
-		$("#saveButton").prop('disabled', true);
-		var jqxhr = $.post( "/config", confJson, function(a,b) {
-			//alert( "success" );
-			$("#testConnectionMessage").css('color', 'green');
-			$("#testConnectionMessage").text("Configuration saved successfully");
-		})
-		  .fail(function(err) {
-			//alert( err.responseText );
-			$("#testConnectionMessage").css('color', 'red');
-			$("#testConnectionMessage").text(err.responseText);
-		  }).always(function() {
-			$("#saveButton").prop('disabled', false);
-		});
-    });
+	}
+	
 });
 </script>
 </html>

@@ -4,7 +4,7 @@ using MicroFocus.Ci.Tfs.Octane.Configuration;
 using System;
 using System.Net;
 using System.Reflection;
-
+using System.Web;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tools
 {
@@ -16,19 +16,35 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 		{
 			if (String.IsNullOrEmpty(connectionDetails.WebAppUrl))
 			{
-				throw new ArgumentException("WebAppUrl is empty");
+				throw new ArgumentException("WebAppUrl is missing");
+			}
+			if (!connectionDetails.WebAppUrl.Contains("p="))
+			{
+				throw new ArgumentException("WebAppUrl missing sharedspace id");
 			}
 			if (String.IsNullOrEmpty(connectionDetails.ClientId))
 			{
-				throw new ArgumentException("ClientId is empty");
+				throw new ArgumentException("ClientId is missing");
+			}
+			if (String.IsNullOrEmpty(connectionDetails.ClientSecret))
+			{
+				throw new ArgumentException("Client secret is missing");
 			}
 			if (String.IsNullOrEmpty(connectionDetails.Pat))
 			{
-				throw new ArgumentException("Pat is empty");
+				throw new ArgumentException("Pat is missing");
 			}
 			if (String.IsNullOrEmpty(connectionDetails.TfsLocation))
 			{
-				throw new ArgumentException("TfsLocation is empty");
+				throw new ArgumentException("TfsLocation is missing");
+			}
+			if (connectionDetails.TfsLocation.Contains("localhost"))
+			{
+				throw new ArgumentException("TfsLocation should contain external domain and not 'localhost'");
+			}
+			if (String.IsNullOrEmpty(connectionDetails.InstanceId))
+			{
+				throw new ArgumentException("InstanceId is missing");
 			}
 		}
 
@@ -56,7 +72,17 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 			}
 			catch (Exception e)
 			{
-				var msg = "Invalid connection to TFS : " + (e.InnerException != null ? e.InnerException.Message : e.Message);
+				string msgPrefix = "Invalid connection to TFS : ";
+				if (e is HttpException)
+				{
+					HttpException httpException = (HttpException)e;
+					if (httpException.GetHttpCode() == 404)
+					{
+						Log.Error("Tfs location is invalid");
+						throw new Exception(msgPrefix + "TFS location is invalid");
+					}
+				}
+				var msg = msgPrefix + (e.InnerException != null ? e.InnerException.Message : e.Message);
 				Log.Error(msg);
 				throw new Exception(msg);
 			}

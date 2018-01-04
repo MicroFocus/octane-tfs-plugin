@@ -53,8 +53,17 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 
 				var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
 
-				ConnectionCreator.CheckMissingValues(config);
-				ConfigurationManager.WriteConfig(config);
+				try
+				{
+					ConnectionCreator.CheckMissingValues(config);
+					ConfigurationManager.WriteConfig(config);
+				}
+				catch (Exception e)
+				{
+					string msg = "Failed to save configuration" + e.Message;
+					Log.Error(msg, e);
+					return new TextResponse(msg).WithStatusCode(400);
+				}
 
 				return "Configuration changed";
 			};
@@ -89,7 +98,7 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 					result = reader.ReadToEnd();
 				}
 
-				result = result.Replace("//{defaultConf}", "var defaultConf ="+ JsonHelper.SerializeObject(ConfigurationManager.Read()));
+				result = result.Replace("//{defaultConf}", "var defaultConf =" + JsonHelper.SerializeObject(ConfigurationManager.Read()));
 
 				return result;
 				//string config = JsonHelper.SerializeObject(ConfigurationManager.Read().RemoveSensitiveInfo(), true);

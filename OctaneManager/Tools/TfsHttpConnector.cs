@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Text;
+using System.Web;
 
 namespace MicroFocus.Ci.Tfs.Octane.Tools
 {
@@ -115,6 +116,10 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 				else if (response.StatusCode == HttpStatusCode.Unauthorized)
 				{
 					throw new InvalidCredentialException("Validate if TFS PAT is still valid.");
+				}
+				else if (response.StatusCode == HttpStatusCode.NotFound)
+				{
+					throw new HttpException(404, $"Url is not found : {_tfsConf.Uri.ToString()}{urlSuffix}");
 				}
 				else
 				{
