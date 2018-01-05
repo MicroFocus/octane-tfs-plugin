@@ -55,9 +55,12 @@ $input= Read-Host ("Continue?")
 if($input="y"){
   ForEach ($item In $filesToRemove)
   {
-
-    Write-Host ("Deleting : " + $item)
-    Remove-Item $item
+    try{
+          Write-Host ("Deleting : " + $item)
+          Remove-Item $item
+        }catch{
+          Write-Host ("Failed Deleting " + $item )
+        }
   }
 
 }
