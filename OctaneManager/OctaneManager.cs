@@ -112,7 +112,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 						if (myEx is WebException && ((WebException)myEx).Status == WebExceptionStatus.Timeout)
 						{
 							//known exception
-							Log.Debug($"Task polling - no task received");
+							//Log.Debug($"Task polling - no task received");
 						}
 						else if (myEx is ServerUnavailableException)
 						{

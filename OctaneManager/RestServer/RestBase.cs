@@ -100,8 +100,6 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 				}
 
 				string conf = JsonHelper.SerializeObject(ConfigurationManager.Read());
-				//conf = HttpUtility.JavaScriptStringEncode(conf);
-				//conf = HttpUtility.UrlEncode(conf);
 				result = result.Replace("//{defaultConf}", "var defaultConf =" + conf);
 
 				return result;
