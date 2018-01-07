@@ -52,15 +52,57 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 				Log.Debug($"Received new config: \n {configStr}");
 
 				var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
-				ConfigurationManager.WriteConfig(config);
+
+				try
+				{
+					ConnectionCreator.CheckMissingValues(config);
+					ConfigurationManager.WriteConfig(config);
+				}
+				catch (Exception e)
+				{
+					string msg = "Failed to save configuration" + e.Message;
+					Log.Error(msg, e);
+					return new TextResponse(msg).WithStatusCode(400);
+				}
 
 				return "Configuration changed";
 			};
 
+			Post["/config/test"] = _ =>
+			{
+				try
+				{
+					var configStr = Context.Request.Body.AsString();
+					var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
+
+					ConnectionCreator.CheckMissingValues(config);
+					ConnectionCreator.CreateTfsConnection(PluginRunMode.ServerPlugin, config);
+					ConnectionCreator.CreateOctaneConnection(config);
+				}
+				catch (Exception e)
+				{
+					return new TextResponse(e.Message).WithStatusCode(400);
+				}
+
+				return "";
+			};
+
 			Get["/config"] = _ =>
 			{
-				string config = JsonHelper.SerializeObject(ConfigurationManager.Read().RemoveSensitiveInfo(), true);
-				return new TextResponse(config);
+				var assembly = Assembly.GetExecutingAssembly();
+				var resourceName = "MicroFocus.Ci.Tfs.Octane.RestServer.Views.config.html";
+				string result;
+				using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+				using (StreamReader reader = new StreamReader(stream))
+				{
+					result = reader.ReadToEnd();
+				}
+
+				result = result.Replace("//{defaultConf}", "var defaultConf =" + JsonHelper.SerializeObject(ConfigurationManager.Read()));
+
+				return result;
+				//string config = JsonHelper.SerializeObject(ConfigurationManager.Read().RemoveSensitiveInfo(), true);
+				//return new TextResponse(config);
 			};
 
 

@@ -35,6 +35,14 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 			_subscriptionManager = new SubscriptionManager(_tfsConf);
 		}
 
+		public Uri TfsUri
+		{
+			get
+			{
+				return _tfsConf.Uri;
+			}
+		}
+
 		public IDtoBase GetJobsList()
 		{
 			var result = new CiJobList();

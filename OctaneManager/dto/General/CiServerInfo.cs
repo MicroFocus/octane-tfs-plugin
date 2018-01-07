@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace MicroFocus.Ci.Tfs.Octane.Dto.General
@@ -16,7 +12,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Dto.General
         [JsonProperty("url")]
         public Uri Url { get; set; }
         [JsonProperty("instanceId")]
-        public Guid InstanceId { get; set; }
+        public string InstanceId { get; set; }
 
         [JsonProperty("instanceIdFrom")]
         public long InstanceIdFrom { get; set; }
