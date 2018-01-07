@@ -23,8 +23,8 @@ namespace TfsConsolePluginRunner
                 ConfigurationManager.WriteConfig(ConfigFileGenerator.GenerateConfig());
             }
 
+			RunModeManager.GetInstance().RunMode = PluginRunMode.ConsoleApp;
 			OctaneManagerInitializer octaneManagerInitializer = OctaneManagerInitializer.GetInstance();
-			octaneManagerInitializer.RunMode = PluginRunMode.ConsoleApp;
 			octaneManagerInitializer.StartPlugin();
 			Console.WriteLine("TFS plugin is running , press any key to exit...");
             Console.ReadLine();

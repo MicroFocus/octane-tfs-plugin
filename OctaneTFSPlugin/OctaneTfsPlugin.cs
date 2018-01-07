@@ -25,7 +25,6 @@ namespace MicroFocus.Ci.Tfs.Core
 		{
 			LogUtils.ConfigureLog4NetForPluginMode();
 			_octaneManagerInitializer = OctaneManagerInitializer.GetInstance();
-			_octaneManagerInitializer.RunMode = PluginRunMode.ServerPlugin;
 			_octaneManagerInitializer.StartPlugin();
 			Log.Info("******************************************************************");
 			Log.Info("***************OctaneTfsPlugin started****************************");

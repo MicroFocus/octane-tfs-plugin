@@ -46,8 +46,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 			return instance;
 		}
 
-		public PluginRunMode RunMode { get; set; } = PluginRunMode.ConsoleApp;
-
 		public void Shutdown()
 		{
 			Log.Info("OctaneManagerInitializer Shutdown");
@@ -123,7 +121,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				try
 				{
-					_octaneManager = new OctaneManager(RunMode, _connectionDetails);
+					_octaneManager = new OctaneManager(_connectionDetails);
 					_octaneManager.Init();
 					_initFailCounter = 0;
 				}

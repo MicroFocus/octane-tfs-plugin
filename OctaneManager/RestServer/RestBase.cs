@@ -77,7 +77,7 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 					var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
 
 					ConnectionCreator.CheckMissingValues(config);
-					ConnectionCreator.CreateTfsConnection(PluginRunMode.ServerPlugin, config);
+					ConnectionCreator.CreateTfsConnection(config);
 					ConnectionCreator.CreateOctaneConnection(config);
 				}
 				catch (Exception e)

@@ -23,13 +23,11 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 		protected readonly SubscriptionManager _subscriptionManager;
 		private readonly TfsConfiguration _tfsConf;
 		private readonly TfsHttpConnector _tfsConnector;
-		private readonly PluginRunMode _runMode;
 
 		//private const string TfsUrl = "http://localhost:8080/tfs";
 
-		public TfsManager(PluginRunMode runMode, Uri tfsUri, string pat)
+		public TfsManager(Uri tfsUri, string pat)
 		{
-			_runMode = runMode;
 			_tfsConf = new TfsConfiguration(tfsUri, pat);
 			_tfsConnector = new TfsHttpConnector(_tfsConf);
 			_subscriptionManager = new SubscriptionManager(_tfsConf);
@@ -76,7 +74,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 				res = _cachedJobList[jobId];
 			}
 
-			if (_runMode == PluginRunMode.ConsoleApp)
+			if (RunModeManager.GetInstance().RunMode == PluginRunMode.ConsoleApp)
 			{
 				var tfsCiEntity = TestResultUtils.TranslateOctaneJobCiIdToObject(jobId);
 				if (!_subscriptionManager.SubscriptionExists(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId))

@@ -48,7 +48,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 			}
 		}
 
-		public static TfsManager CreateTfsConnection(PluginRunMode runMode, ConnectionDetails connectionDetails)
+		public static TfsManager CreateTfsConnection(ConnectionDetails connectionDetails)
 		{
 			var tfsServerUriStr = connectionDetails.TfsLocation;
 			if (tfsServerUriStr == null)
@@ -61,7 +61,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 			Uri tfsServerUri = new Uri(tfsServerUriStr);
 
 
-			TfsManager tfsManager = new TfsManager(runMode, tfsServerUri, connectionDetails.Pat);
+			TfsManager tfsManager = new TfsManager(tfsServerUri, connectionDetails.Pat);
 			try
 			{
 				DateTime start = DateTime.Now;
