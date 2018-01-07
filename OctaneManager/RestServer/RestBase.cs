@@ -11,6 +11,7 @@ using System.Reflection;
 using MicroFocus.Ci.Tfs.Octane.Configuration;
 using System.Text;
 
+
 namespace MicroFocus.Ci.Tfs.Octane.RestServer
 {
 	public class RestBase : NancyModule
@@ -40,13 +41,13 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 			{
 				return HandleGetLogRequest(parameters.logId);
 			};
+
 			Get["/logs"] = _ =>
 			{
 				return HandleGetLogListRequest();
 			};
 
-			//TODO add defence - sensitive action
-			Post["/config"] = _ =>
+			Post["/config", RestrictAccessFromLocalhost] = _ =>
 			{
 				var configStr = Context.Request.Body.AsString();
 				Log.Debug($"Received new config: \n {configStr}");
@@ -62,13 +63,13 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 				{
 					string msg = "Failed to save configuration" + e.Message;
 					Log.Error(msg, e);
-					return new TextResponse(msg).WithStatusCode(400);
+					return new TextResponse(msg).WithStatusCode(HttpStatusCode.BadRequest);
 				}
 
 				return "Configuration changed";
 			};
 
-			Post["/config/test"] = _ =>
+			Post["/config/test", RestrictAccessFromLocalhost] = _ =>
 			{
 				try
 				{
@@ -81,13 +82,13 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 				}
 				catch (Exception e)
 				{
-					return new TextResponse(e.Message).WithStatusCode(400);
+					return new TextResponse(e.Message).WithStatusCode(HttpStatusCode.BadRequest);
 				}
 
 				return "";
 			};
 
-			Get["/config"] = _ =>
+			Get["/config", RestrictAccessFromLocalhost] = _ =>
 			{
 				var assembly = Assembly.GetExecutingAssembly();
 				var resourceName = "MicroFocus.Ci.Tfs.Octane.RestServer.Views.config.html";
@@ -98,16 +99,31 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 					result = reader.ReadToEnd();
 				}
 
-				result = result.Replace("//{defaultConf}", "var defaultConf =" + JsonHelper.SerializeObject(ConfigurationManager.Read()));
+				string conf = JsonHelper.SerializeObject(ConfigurationManager.Read());
+				//conf = HttpUtility.JavaScriptStringEncode(conf);
+				//conf = HttpUtility.UrlEncode(conf);
+				result = result.Replace("//{defaultConf}", "var defaultConf =" + conf);
 
 				return result;
 				//string config = JsonHelper.SerializeObject(ConfigurationManager.Read().RemoveSensitiveInfo(), true);
 				//return new TextResponse(config);
 			};
 
+			Get["/resources/{resourceName}"] = parameters =>
+			{
+				var assembly = Assembly.GetExecutingAssembly();
+				var resourceName = $"MicroFocus.Ci.Tfs.Octane.RestServer.Views.Resources.{parameters.resourceName}";
+				Stream stream = assembly.GetManifestResourceStream(resourceName);
+				if (stream == null)
+				{
+					return new TextResponse("Resource not found").WithStatusCode(HttpStatusCode.NotFound);
+				}
 
-			//TODO add defence - sensitive action
-			Post["/start"] = _ =>
+				var response = new StreamResponse(() => stream, MimeTypes.GetMimeType(resourceName));
+				return response;
+			};
+
+			Post["/start", RestrictAccessFromLocalhost] = _ =>
 			{
 				if (OctaneManagerInitializer.GetInstance().IsOctaneInitialized())
 					return "Octane manager is already running";
@@ -118,16 +134,26 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 				return "Start plugin requested";
 			};
 
-			//TODO add defence - sensitive action
-			Post["/stop"] = _ =>
+			Post["/stop", RestrictAccessFromLocalhost] = _ =>
 			{
 				Log.Debug("plugin stop requested");
 				OctaneManagerInitializer.GetInstance().StopPlugin();
 				return "Stop plugin requested";
 			};
 
-
 		}
+
+		private bool RestrictAccessFromLocalhost(NancyContext ctx)
+		{
+
+			string host = ctx.Request.Url.HostName.ToLower();
+			if (!("localhost".Equals(host) || "127.0.0.1".Equals(host)))
+			{
+				return false;
+			}
+			return true;
+		}
+
 		private dynamic HandleGetLogListRequest()
 		{
 			string logfilePath = LogUtils.GetLogFilePath();
@@ -174,7 +200,7 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 			}
 			if (!File.Exists(path))
 			{
-				return new TextResponse($"Log file with index {logId} is not exist").WithStatusCode(404); ;
+				return new TextResponse($"Log file with index {logId} is not exist").WithStatusCode(HttpStatusCode.NotFound);
 			}
 
 			var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
