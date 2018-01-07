@@ -46,16 +46,14 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private UriResolver _uriResolver;
 
 		private readonly CancellationTokenSource _pollTasksCancellationToken = new CancellationTokenSource();
-		private readonly PluginRunMode _runMode;
 		private TaskProcessor _taskProcessor;
 
-		public OctaneManager(PluginRunMode runMode, ConnectionDetails connectionDetails, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
+		public OctaneManager(ConnectionDetails connectionDetails, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
 		{
 			_connectionConf = connectionDetails;
-			_runMode = runMode;
 			_pollingGetTimeout = pollingTimeout;
 
-			if (_runMode == PluginRunMode.ConsoleApp)
+			if (RunModeManager.GetInstance().RunMode == PluginRunMode.ConsoleApp)
 			{
 				RestBase.BuildEvent += RestBase_BuildEvent;
 			}
@@ -181,7 +179,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			IsInitialized = false;
 
-			_tfsManager = ConnectionCreator.CreateTfsConnection(_runMode, _connectionConf);
+			_tfsManager = ConnectionCreator.CreateTfsConnection(_connectionConf);
 			_octaneRestConnector = ConnectionCreator.CreateOctaneConnection(_connectionConf);
 
 			var instanceDetails = new InstanceDetails(_connectionConf.InstanceId, _tfsManager.TfsUri.ToString());
@@ -319,7 +317,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 						ResponseWrapper res = _octaneRestConnector.ExecutePost(_uriResolver.GetTestResults(), null, xml,
 							 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
-						Log.Debug($"Build {buildInfo} - testResults are sent");
+						Log.Debug($"Build {buildInfo} - testResults are sent ({octaneTestResult.TestRuns.Count} runs)");
 					}
 
 				}

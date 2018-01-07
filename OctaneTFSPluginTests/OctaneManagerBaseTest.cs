@@ -26,9 +26,9 @@ namespace MicroFocus.Ci.Tfs.Tests
 			var connectionDetails = new ConnectionDetails(webbAppUrl, clientId, clientSecret, tfsLocation, instanceId) { Pat = pat };
 			ConfigurationManager.WriteConfig(connectionDetails);
 
-
-			octaneManager = new OctaneManager(Octane.Tools.PluginRunMode.ConsoleApp, ConfigurationManager.Read(), devTimeout);
-			_tfsManager = new TfsManager(Octane.Tools.PluginRunMode.ConsoleApp, new Uri(tfsLocation), connectionDetails.Pat);
+			RunModeManager.GetInstance().RunMode = Octane.Tools.PluginRunMode.ConsoleApp;
+			octaneManager = new OctaneManager(ConfigurationManager.Read(), devTimeout);
+			_tfsManager = new TfsManager(new Uri(tfsLocation), connectionDetails.Pat);
 		}
 	}
 }
