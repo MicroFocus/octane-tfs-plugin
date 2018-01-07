@@ -68,7 +68,7 @@ namespace MicroFocus.Ci.Tfs.Octane.RestServer
 			return false;
 		}
 
-		private static readonly List<string> ValidMimes = new List<string> { "text/plain", "application/json" };
+		private static readonly List<string> ValidMimes = new List<string> { "text/plain", "application/json", "application/javascript" };
 
 		private static bool ResponseIsCompatibleMimeType(Response response)
 		{

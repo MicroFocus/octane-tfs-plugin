@@ -10,7 +10,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 		{
 			get
 			{
-				Uri uri = new Uri(WebAppUrl);
+				Uri uri = new Uri(ALMOctaneUrl);
 				string host = $"{uri.Scheme}://{uri.Host}:{uri.Port}";
 				return host;
 			}
@@ -23,8 +23,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 			{
 				try
 				{
-					var index = WebAppUrl.IndexOf("=", StringComparison.Ordinal);
-					var sharedSpaceStr = WebAppUrl.Substring(index + 1);
+					var index = ALMOctaneUrl.IndexOf("=", StringComparison.Ordinal);
+					var sharedSpaceStr = ALMOctaneUrl.Substring(index + 1);
 					var endIndex = sharedSpaceStr.IndexOf("/", StringComparison.Ordinal);
 					if (endIndex > -1)
 					{
@@ -35,12 +35,11 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 				}
 				catch (Exception)
 				{
-					throw new Exception($"Sharedspace id is expected, but not received in {WebAppUrl}");
+					throw new Exception($"Sharedspace id is expected, but not received in {ALMOctaneUrl}");
 				}
 			}
 		}
-        [JsonProperty("ALMOctaneUrl")]
-		public string WebAppUrl { get; set; }
+		public string ALMOctaneUrl { get; set; }
 		public string ClientId { get; set; }
 		public string ClientSecret { get; set; }
 
@@ -52,9 +51,9 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 
 		}
 
-		public ConnectionDetails(string webAppUrl, string clientId, string clientSecret, string tfsLocation, string instanceId)
+		public ConnectionDetails(string octaneUrl, string clientId, string clientSecret, string tfsLocation, string instanceId)
 		{
-			WebAppUrl = webAppUrl;
+			ALMOctaneUrl = octaneUrl;
 			ClientId = clientId;
 			ClientSecret = clientSecret;
 			InstanceId = (instanceId == null ? Guid.NewGuid().ToString() : instanceId);

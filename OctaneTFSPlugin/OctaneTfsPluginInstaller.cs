@@ -29,7 +29,7 @@ namespace MicroFocus.Ci.Tfs.Core
             var pat = Context.Parameters["PAT"];
             var tfsLocation = Context.Parameters["TfsLocation"];
             var conDetails =
-                new ConnectionDetails(octaneServerUrl, clientId, clientSecret, tfsLocation, Guid.Parse(instanceId))
+                new ConnectionDetails(octaneServerUrl, clientId, clientSecret, tfsLocation, instanceId)
                 {
                     Pat = pat
                 };

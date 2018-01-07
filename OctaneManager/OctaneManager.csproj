@@ -140,7 +140,9 @@
       <Name>Hpe.Nga.Api.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\Resources\jquery-3.2.1.min.js" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\config.html" />
   </ItemGroup>
