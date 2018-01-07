@@ -16,7 +16,8 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 			}
 		}
 
-		public int SharedSpace
+	    [JsonIgnore]
+        public int SharedSpace
 		{
 			get
 			{
@@ -38,7 +39,7 @@ namespace MicroFocus.Ci.Tfs.Octane.Configuration
 				}
 			}
 		}
-
+        [JsonProperty("ALMOctaneUrl")]
 		public string WebAppUrl { get; set; }
 		public string ClientId { get; set; }
 		public string ClientSecret { get; set; }

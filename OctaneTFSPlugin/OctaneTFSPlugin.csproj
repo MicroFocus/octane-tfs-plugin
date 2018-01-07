@@ -50,7 +50,11 @@
       <HintPath>..\tfs-server-dlls\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -58,6 +62,12 @@
   <ItemGroup>
     <Compile Include="CiEventUtils.cs" />
     <Compile Include="OctaneTfsPlugin.cs" />
+    <Compile Include="OctaneTfsPluginInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OctaneTfsPluginInstaller.Designer.cs">
+      <DependentUpon>OctaneTfsPluginInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +84,11 @@
     <Content Include="OctaneTFSPluginLogConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="OctaneTfsPluginInstaller.resx">
+      <DependentUpon>OctaneTfsPluginInstaller.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
