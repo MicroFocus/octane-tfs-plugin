@@ -18,7 +18,7 @@ namespace TfsConsolePluginRunner
             {
                 ClientId = clientId,
                 ClientSecret = clientSecret,
-                WebAppUrl = octaneUrl,
+                ALMOctaneUrl = octaneUrl,
                 TfsLocation = tfsLocation,
                 Pat = pat
             };

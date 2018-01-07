@@ -14,13 +14,13 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
 
 		public static void CheckMissingValues(ConnectionDetails connectionDetails)
 		{
-			if (String.IsNullOrEmpty(connectionDetails.WebAppUrl))
+			if (String.IsNullOrEmpty(connectionDetails.ALMOctaneUrl))
 			{
-				throw new ArgumentException("WebAppUrl is missing");
+				throw new ArgumentException("ALMOctaneUrl is missing");
 			}
-			if (!connectionDetails.WebAppUrl.Contains("p="))
+			if (!connectionDetails.ALMOctaneUrl.Contains("p="))
 			{
-				throw new ArgumentException("WebAppUrl missing sharedspace id");
+				throw new ArgumentException("ALMOctaneUrl missing sharedspace id");
 			}
 			if (String.IsNullOrEmpty(connectionDetails.ClientId))
 			{
