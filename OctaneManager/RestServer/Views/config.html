@@ -102,7 +102,7 @@ table .itemCaption{
 		<tr><td class="itemCaption">Tfs Location</td><td><input type="text" name="tfsLocation" title="HTTP address of the TFS, such as http://yourhost:8080/tfs/. This value is used to let plugin know how to refer to itself, for example to create links to build/run/etc. This is necessary because plugin cannot reliably detect such a URL from within itself."></td></tr>
 		<tr><td class="itemCaption">Tfs PAT</td><td><input type="password" name="tfsPat" title="Personal Acess Token To TFS."></td></tr>
 		<tr><td class="itemCaption">Instance Id</td><td><input type="text" name="instanceId" title="An ID to uniquely identify this instance of the plugin."></td></tr>
-		<tr><td></td><td><div><p id="testConnectionMessage"></p><button id="testConnection" type="button">Test Connection</button></div></td></tr>
+		<tr><td></td><td><div><p id="resultMessage"></p><button id="testConnection" type="button">Test Connection</button></div></td></tr>
 		<tr><td></td><td><div><button id="saveButton" type="button">Save</button></div></td></tr>
 	</table>
 
@@ -116,7 +116,7 @@ $(document).ready(function(){
 	//{defaultConf}
 
 	if(defaultConf){
-		$("input[name='octaneLocation']").val(defaultConf.WebAppUrl);
+		$("input[name='octaneLocation']").val(defaultConf.ALMOctaneUrl);
 		$("input[name='octaneClientId']").val(defaultConf.ClientId);
 		$("input[name='octaneClientSecret']").val(defaultConf.ClientSecret);
 		$("input[name='tfsLocation']").val(defaultConf.TfsLocation);
@@ -130,8 +130,8 @@ $(document).ready(function(){
 	function registerForButtonClick(buttonName, postUrl, processMessage, successMessage){
 
 		$(buttonName).click(function(){
-			$("#testConnectionMessage").css('color', '#0079ef');
-			$("#testConnectionMessage").text(processMessage);
+			$("#resultMessage").css('color', '#0079ef');
+			$("#resultMessage").text(processMessage);
 			var confObj = {
 				"ALMOctaneUrl": $("input[name='octaneLocation']").val(),
 				"ClientId": $("input[name='octaneClientId']").val(),
@@ -144,18 +144,18 @@ $(document).ready(function(){
 			$(buttonName).prop('disabled', true);
 			var jqxhr = $.post(postUrl, confJson, function(a,b) {
 				//alert( "success" );
-				$("#testConnectionMessage").css('color', 'green');
-				$("#testConnectionMessage").text(successMessage);
+				$("#resultMessage").css('color', 'green');
+				$("#resultMessage").text(successMessage);
 			})
 			  .fail(function(err) {
 				//alert( err.responseText );
-				$("#testConnectionMessage").css('color', 'red');
+				$("#resultMessage").css('color', 'red');
 				var errMsg = err.responseText;
 				var maxLength = 100;
 				if(errMsg.length > maxLength){
 					errMsg = errMsg.substr(0, maxLength-3) + "...";
 				}
-				$("#testConnectionMessage").text(errMsg);
+				$("#resultMessage").text(errMsg);
 			  }).always(function() {
 				$(buttonName).prop('disabled', false);
 			});
