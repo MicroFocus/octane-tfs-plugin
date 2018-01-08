@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TfsConsolePluginRunner")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Alm Octane Tfs plugin Console Runner")]
+[assembly: AssemblyDescription("Runs the Alm Octane TFS plugin as a console application")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TfsConsolePluginRunner")]
+[assembly: AssemblyCompany("MicroFocus")]
+[assembly: AssemblyProduct("ALM Octane Tfs Plugin")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
