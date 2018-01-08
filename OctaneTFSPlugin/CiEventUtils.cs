@@ -1,9 +1,8 @@
-﻿using Microsoft.TeamFoundation.Build.WebApi;
-using System.Linq;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
-
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
+using Microsoft.TeamFoundation.Build.WebApi;
+using System.Linq;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
@@ -28,7 +27,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 			//start filling ciEvent
 			ciEvent.BuildId = buildInfo.BuildId + "." + buildInfo.BuildName;
 
-			ciEvent.Project = TestResultUtils.GenerateOctaneJobCiId(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildDefinitionId);
+			ciEvent.Project = OctaneUtils.GenerateOctaneJobCiId(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildDefinitionId);
 			ciEvent.BuildTitle = buildInfo.BuildName;
 			var cause = new CiEventCause();
 			switch (build.Reason)
@@ -49,7 +48,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
 			if (build.StartTime.HasValue)
 			{
-				ciEvent.StartTime = TestResultUtils.ConvertToOctaneTime(build.StartTime.Value);
+				ciEvent.StartTime = OctaneUtils.ConvertToOctaneTime(build.StartTime.Value);
 				if (build.FinishTime.HasValue)
 				{
 					ciEvent.Duration = (long)(build.FinishTime.Value - build.StartTime.Value).TotalMilliseconds;

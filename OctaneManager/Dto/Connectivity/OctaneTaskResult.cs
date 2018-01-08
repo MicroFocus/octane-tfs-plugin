@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity
 {
-    internal class OctaneTaskResult : OctaneTaskBase
+    public class OctaneTaskResult : OctaneTaskBase
     {
         [JsonProperty("status")]        
         public int Status { get; set; }

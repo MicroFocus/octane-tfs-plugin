@@ -12,7 +12,6 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
@@ -20,6 +19,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 using System.Security.Authentication;
@@ -38,14 +38,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private RestConnector _octaneRestConnector;
-		private TfsApis _tfsManager;
+		private OctaneApis _octaneApis;
+		private TfsApis _tfsApis;
 		private readonly ConnectionDetails _connectionConf;
 
 		private readonly int _pollingGetTimeout;
 		private Task _taskPollingThread;
-
-		private OctaneUriResolver _octaneUriResolver;
 
 		private readonly CancellationTokenSource _pollTasksCancellationToken = new CancellationTokenSource();
 		private TaskProcessor _taskProcessor;
@@ -67,11 +65,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			IsInitialized = false;
 			_pollTasksCancellationToken.Cancel();
-			if (_octaneRestConnector != null)
+			if (_octaneApis != null)
 			{
-				_octaneRestConnector.Disconnect();
+				_octaneApis.Disconnect();
 			}
-			_octaneRestConnector = null;
+
 			RestBase.BuildEvent -= RestBase_BuildEvent;
 			Log.Debug("Octane manager shuted down");
 		}
@@ -96,11 +94,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 			{
 				if (IsInitialized)
 				{
-					ResponseWrapper res = null;
+					string taskDef = null;
 					try
 					{
-						res = _octaneRestConnector.ExecuteGet(_octaneUriResolver.GetTasksUri(), _octaneUriResolver.GetTaskQueryParams(),
-								RequestConfiguration.Create().SetTimeout(_pollingGetTimeout));
+						taskDef = _octaneApis.GetTasks(_pollingGetTimeout);
 					}
 					catch (Exception ex)
 					{
@@ -127,13 +124,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 					finally
 					{
-						if (res != null && res.Data != null)
+						if (!string.IsNullOrEmpty(taskDef))
 						{
 							Task task = Task.Factory.StartNew(() =>
 							{
 								if (IsInitialized)
 								{
-									HandleTask(res.Data);
+									HandleTask(taskDef);
 								}
 							});
 						}
@@ -164,7 +161,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
 				var taskResult = new OctaneTaskResult(status, octaneTask.Id, taskOutput);
 				Log.Debug($"Sending result to octane :  { taskResult.Body}");
-				_octaneRestConnector.ExecutePut(_octaneUriResolver.PostTaskResultUri(taskResult.Id.ToString()), null, taskResult.ToString());
+				_octaneApis.SendTaskResult(taskResult.Id.ToString(), taskResult);
 			}
 			catch (InvalidCredentialException ex)
 			{
@@ -181,12 +178,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			IsInitialized = false;
 
-			_tfsManager = ConnectionCreator.CreateTfsConnection(_connectionConf);
-			_octaneRestConnector = ConnectionCreator.CreateOctaneConnection(_connectionConf);
+			_tfsApis = ConnectionCreator.CreateTfsConnection(_connectionConf);
+			_octaneApis = ConnectionCreator.CreateOctaneConnection(_connectionConf);
 
-			_octaneUriResolver = new OctaneUriResolver( _connectionConf);
-			_taskProcessor = new TaskProcessor(_tfsManager);
-			
+			_taskProcessor = new TaskProcessor(_tfsApis);
+
 			IsInitialized = true;
 			InitTaskPolling();//should be after IsInitialized = true
 			Log.Debug($"Octane manager initialized successfully");
@@ -235,16 +231,16 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Debug($"{ciEvent.BuildInfo} - handling {ciEvent.EventType.ToString()} event");
 			try
 			{
-				var list = new CiEventsList();
-				list.Events.Add(ciEvent);
+				var list = new List<CiEvent>();
+				list.Add(ciEvent);
 
 				bool isFinishEvent = ciEvent.EventType.Equals(CiEventType.Finished);
 				if (isFinishEvent)
 				{
-					var scmData = ScmEventHelper.GetScmData(_tfsManager, ciEvent.BuildInfo);
+					var scmData = ScmEventHelper.GetScmData(_tfsApis, ciEvent.BuildInfo);
 					if (scmData != null)
 					{
-						list.Events.Add(CreateScmEvent(ciEvent, scmData));
+						list.Add(CreateScmEvent(ciEvent, scmData));
 						Log.Debug($"{ciEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
 					}
 					else
@@ -253,29 +249,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 				}
 
-				list.Server = new CiServerInfo
-				{
-					Url = _tfsManager.TfsUri,
-					InstanceId = _connectionConf.InstanceId,
-					SendingTime = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow),
-					InstanceIdFrom = TestResultUtils.ConvertToOctaneTime(DateTime.UtcNow)
-				};
 
-				var body = JsonHelper.SerializeObject(list);
-				var res = _octaneRestConnector.ExecutePut(_octaneUriResolver.GetEventsUri(), null, body);
-
-				if (res.StatusCode == HttpStatusCode.OK)
+				_octaneApis.SendEvents(list);
+				Log.Debug($"{ciEvent.BuildInfo} - {list.Count} events succesfully sent");
+				if (isFinishEvent)
 				{
-					Log.Debug($"{ciEvent.BuildInfo} - {list.Events.Count} events succesfully sent");
-
-					if (isFinishEvent)
-					{
-						SendTestResults(ciEvent.BuildInfo, ciEvent.Project, ciEvent.BuildId);
-					}
-				}
-				else
-				{
-					Log.Error($"{ciEvent.BuildInfo} - events was not sent succesfully.");
+					SendTestResults(ciEvent.BuildInfo, ciEvent.Project, ciEvent.BuildId);
 				}
 			}
 			catch (InvalidCredentialException e)
@@ -293,25 +272,21 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			try
 			{
-				if (GetTestResultRelevant(projectCiId))
+				if (_octaneApis.IsTestResultRelevant(projectCiId))
 				{
-
-					var run = _tfsManager.GetRunForBuid(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
+					var run = _tfsApis.GetRunForBuid(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
 					if (run == null)
 					{
 						Log.Debug($"Build {buildInfo} - run was not created for build. No test results");
 					}
 					else
 					{
-						var testResults = _tfsManager.GetTestResultsForRun(buildInfo.CollectionName, buildInfo.Project, run.Id.ToString());
-						OctaneTestResult octaneTestResult = TestResultUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
-						String xml = TestResultUtils.SerializeToXml(octaneTestResult);
+						var testResults = _tfsApis.GetTestResultsForRun(buildInfo.CollectionName, buildInfo.Project, run.Id.ToString());
+						OctaneTestResult octaneTestResult = OctaneUtils.ConvertToOctaneTestResult(_connectionConf.InstanceId.ToString(), projectCiId, buildCiId, testResults, run.WebAccessUrl);
+						_octaneApis.SendTestResults(octaneTestResult);
 
-						ResponseWrapper res = _octaneRestConnector.ExecutePost(_octaneUriResolver.GetTestResults(), null, xml,
-							 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
-						Log.Debug($"Build {buildInfo} - testResults are sent ({octaneTestResult.TestRuns.Count} runs)");
+						Log.Debug($"Build {buildInfo} - testResults are sent ({octaneTestResult.TestRuns.Count} tests)");
 					}
-
 				}
 				else
 				{
@@ -324,18 +299,5 @@ namespace MicroFocus.Ci.Tfs.Octane
 				throw ex;
 			}
 		}
-
-		private bool GetTestResultRelevant(string jobName)
-		{
-			bool result = false;
-			ResponseWrapper res = _octaneRestConnector.ExecuteGet(_octaneUriResolver.GetTestResultRelevant(jobName), null);
-			if (res.StatusCode == HttpStatusCode.OK)
-			{
-				result = Boolean.Parse(res.Data);
-			}
-
-			return result;
-		}
-
 	}
 }

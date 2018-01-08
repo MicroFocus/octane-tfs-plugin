@@ -2,6 +2,7 @@
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.general;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
@@ -55,7 +56,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 					var buildDefinitions = GetBuildDefinitions(collection.Name, project.Id);
 					foreach (var buildDefinition in buildDefinitions)
 					{
-						var id = TestResultUtils.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
+						var id = OctaneUtils.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
 						result.Jobs.Add(new PipelineNode(id, buildDefinition.Name));
 					}
 				}
@@ -76,7 +77,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 
 			if (RunModeManager.GetInstance().RunMode == PluginRunMode.ConsoleApp)
 			{
-				var tfsCiEntity = TestResultUtils.TranslateOctaneJobCiIdToObject(jobId);
+				var tfsCiEntity = OctaneUtils.TranslateOctaneJobCiIdToObject(jobId);
 				if (!_subscriptionManager.SubscriptionExists(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId))
 				{
 					_subscriptionManager.AddSubscription(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId);

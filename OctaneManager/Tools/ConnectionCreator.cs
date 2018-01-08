@@ -1,6 +1,7 @@
 ﻿using Hpe.Nga.Api.Core.Connector;
 using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using System;
 using System.Net;
@@ -94,7 +95,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			var result = $"http://{hostName}.{domainName}:8080/tfs/";
 			return result;
 		}
-		public static RestConnector CreateOctaneConnection(ConnectionDetails connectionDetails)
+		public static OctaneApis CreateOctaneConnection(ConnectionDetails connectionDetails)
 		{
 			try
 			{
@@ -104,7 +105,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 				var octaneConnected = restConnector.Connect(connectionDetails.Host, new APIKeyConnectionInfo(connectionDetails.ClientId, connectionDetails.ClientSecret));
 				DateTime end = DateTime.Now;
 				Log.Debug($"Validate connection to Octane finished in {(long)((end - start).TotalMilliseconds)} ms");
-				return restConnector;
+				return new OctaneApis(restConnector, connectionDetails);
 			}
 			catch (Exception e)
 			{

@@ -1,5 +1,6 @@
 ﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
@@ -60,7 +61,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.Events
 			}
 
 			ciEvent.BuildId = buildInfo.BuildId + "." + buildInfo.BuildName;
-			ciEvent.Project = TestResultUtils.GenerateOctaneJobCiId(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildDefinitionId);
+			ciEvent.Project = OctaneUtils.GenerateOctaneJobCiId(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildDefinitionId);
 			ciEvent.BuildTitle = buildInfo.BuildName;
 			var cause = new CiEventCause();
 			switch (Resource.Reason)
@@ -74,7 +75,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.Events
 
 			}
 			ciEvent.Causes.Add(cause);
-			ciEvent.StartTime = TestResultUtils.ConvertToOctaneTime(Resource.StartTime);
+			ciEvent.StartTime = OctaneUtils.ConvertToOctaneTime(Resource.StartTime);
 			ciEvent.Duration = (long)(Resource.FinishTime - Resource.StartTime).TotalMilliseconds;
 			ciEvent.ProjectDisplayName = Resource.Definition.Name;
 			ciEvent.PhaseType = "post";
