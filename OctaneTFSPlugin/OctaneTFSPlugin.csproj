@@ -7,7 +7,7 @@
     <ProjectGuid>{DFFD273E-73EC-436D-8FD5-2786114A9762}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MicroFocus.Ci.Tfs.Core</RootNamespace>
+    <RootNamespace>MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin</RootNamespace>
     <AssemblyName>MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin.dll</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

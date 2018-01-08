@@ -5,7 +5,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 
-namespace MicroFocus.Ci.Tfs.Core
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
 	public static class CiEventUtils
 	{

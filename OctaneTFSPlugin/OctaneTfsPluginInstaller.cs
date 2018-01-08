@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 
-namespace MicroFocus.Ci.Tfs.Core
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
     [RunInstaller(true)]
     public partial class OctaneTfsPluginInstaller : System.Configuration.Install.Installer
