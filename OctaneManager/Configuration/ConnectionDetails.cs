@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Newtonsoft.Json;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
@@ -16,8 +17,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 			}
 		}
 
-	    [JsonIgnore]
-        public int SharedSpace
+		[JsonIgnore]
+		public int SharedSpace
 		{
 			get
 			{

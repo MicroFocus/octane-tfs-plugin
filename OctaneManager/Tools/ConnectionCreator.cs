@@ -1,6 +1,7 @@
 ﻿using Hpe.Nga.Api.Core.Connector;
 using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using System;
 using System.Net;
 using System.Reflection;
@@ -48,24 +49,20 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			}
 		}
 
-		public static TfsManager CreateTfsConnection(ConnectionDetails connectionDetails)
+		public static TfsApis CreateTfsConnection(ConnectionDetails connectionDetails)
 		{
 			var tfsServerUriStr = connectionDetails.TfsLocation;
 			if (tfsServerUriStr == null)
 			{
-				var hostName = Dns.GetHostName();
-				var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
-				tfsServerUriStr = $"http://{hostName}.{domainName}:8080/tfs/";
+				tfsServerUriStr = GetTfsLocationFromHostName();
 			}
 			tfsServerUriStr = tfsServerUriStr.EndsWith("/") ? tfsServerUriStr : tfsServerUriStr + "/";
-			Uri tfsServerUri = new Uri(tfsServerUriStr);
 
-
-			TfsManager tfsManager = new TfsManager(tfsServerUri, connectionDetails.Pat);
+			TfsApis tfsManager = new TfsApis(tfsServerUriStr, connectionDetails.Pat);
 			try
 			{
 				DateTime start = DateTime.Now;
-				Log.Debug($"Validate connection to TFS  {tfsServerUri.ToString()}");
+				Log.Debug($"Validate connection to TFS  {tfsServerUriStr}");
 				tfsManager.GetProjectCollections();
 				DateTime end = DateTime.Now;
 				Log.Debug($"Validate connection to TFS finished in {(long)((end - start).TotalMilliseconds)} ms");
@@ -90,6 +87,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			return tfsManager;
 		}
 
+		public static string GetTfsLocationFromHostName()
+		{
+			var hostName = Dns.GetHostName();
+			var domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
+			var result = $"http://{hostName}.{domainName}:8080/tfs/";
+			return result;
+		}
 		public static RestConnector CreateOctaneConnection(ConnectionDetails connectionDetails)
 		{
 			try

@@ -1,6 +1,6 @@
 ﻿using log4net;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,21 +12,17 @@ using System.Security.Authentication;
 using System.Text;
 using System.Web;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
-	public class TfsHttpConnector
+	public class TfsRestConnector
 	{
-	    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly TfsConfiguration _tfsConf;
+		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public TfsHttpConnector(TfsConfiguration tfsConfiguration)
-		{
-			_tfsConf = tfsConfiguration;
-		}
+		private readonly TfsConfiguration _tfsConfiguration;
 
-		public TfsHttpConnector Create(TfsConfiguration tfsConfiguration)
+		public TfsRestConnector(TfsConfiguration tfsConfiguration)
 		{
-			return new TfsHttpConnector(tfsConfiguration);
+			_tfsConfiguration = tfsConfiguration;
 		}
 
 		public T SendPost<T>(string urlSuffix, string data)
@@ -75,17 +71,17 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 
 		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data)
 		{
-            //Log.Debug($"Sending request : {httpType}  to {_tfsConf.Uri.ToString()}/{urlSuffix}");
-		    //Log.Debug($"Data : {data}");
+			//Log.Debug($"Sending request : {httpType}  to {_tfsConf.Uri.ToString()}/{urlSuffix}");
+			//Log.Debug($"Data : {data}");
 
-            //encode your personal access token                   
-            var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConf.Pat)));
+			//encode your personal access token                   
+			var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConfiguration.Pat)));
 
 
 			//use the httpclient
 			using (var client = new HttpClient())
 			{
-				client.BaseAddress = _tfsConf.Uri;
+				client.BaseAddress = _tfsConfiguration.Uri;
 				client.DefaultRequestHeaders.Accept.Clear();
 				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
@@ -119,7 +115,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 				}
 				else if (response.StatusCode == HttpStatusCode.NotFound)
 				{
-					throw new HttpException(404, $"Url is not found : {_tfsConf.Uri.ToString()}{urlSuffix}");
+					throw new HttpException(404, $"Url is not found : {_tfsConfiguration.Uri.ToString()}{urlSuffix}");
 				}
 				else
 				{

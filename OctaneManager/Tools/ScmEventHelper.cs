@@ -1,6 +1,7 @@
 ﻿using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 	{
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public static ScmData GetScmData(TfsManager tfsManager, TfsBuildInfo buildInfo)
+		public static ScmData GetScmData(TfsApis tfsManager, TfsBuildInfo buildInfo)
 		{
 			try
 			{
@@ -79,7 +80,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 		/// Tfs returns associated changes from last successful build. That mean, for failed build it can return change that was reported for previous failed build.
 		/// This method - clear previously reported changes of previous failed build
 		/// </summary>
-		private static ICollection<TfsScmChange> GetFilteredBuildChanges(TfsManager tfsManager, TfsBuildInfo buildInfo, TfsBuild build, ICollection<TfsScmChange> changes)
+		private static ICollection<TfsScmChange> GetFilteredBuildChanges(TfsApis tfsManager, TfsBuildInfo buildInfo, TfsBuild build, ICollection<TfsScmChange> changes)
 		{
 
 			//put changes in map

@@ -1,5 +1,11 @@
 ﻿namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
+	public enum PluginRunMode
+	{
+		ConsoleApp,
+		ServerPlugin
+	}
+
 	public class RunModeManager
 	{
 		private static RunModeManager instance = new RunModeManager();
