@@ -1,4 +1,4 @@
-﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General
 {
@@ -17,7 +17,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General
 
         public override string ToString()
         {
-            return TestResultUtils.GenerateOctaneJobCiId(CollectionName, ProjectId, BuildDefId);
+            return OctaneUtils.GenerateOctaneJobCiId(CollectionName, ProjectId, BuildDefId);
         }
         
     }

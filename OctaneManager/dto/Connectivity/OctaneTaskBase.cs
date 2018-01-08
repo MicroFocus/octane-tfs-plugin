@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity
 {
-	internal abstract class OctaneTaskBase : IDtoBase
+	public abstract class OctaneTaskBase : IDtoBase
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }

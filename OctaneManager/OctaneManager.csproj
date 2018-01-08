@@ -98,7 +98,7 @@
     <Compile Include="Tools\LogUtils.cs" />
     <Compile Include="Tools\RunModeManager.cs" />
     <Compile Include="Tools\TaskProcessor.cs" />
-    <Compile Include="Octane\TestResultUtils.cs" />
+    <Compile Include="Octane\OctaneUtils.cs" />
     <Compile Include="Tfs\TfsApis.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmCommitAuthor.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmCommitChange.cs" />
@@ -125,7 +125,6 @@
     <Compile Include="Tfs\TfsRestConnector.cs" />
     <Compile Include="Tools\HttpMethodEnum.cs" />
     <Compile Include="Dto\Events\ToStringJsonConverter.cs" />
-    <Compile Include="Octane\OctaneUriResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

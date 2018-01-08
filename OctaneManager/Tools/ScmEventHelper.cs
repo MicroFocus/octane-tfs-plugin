@@ -1,6 +1,7 @@
 ﻿using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
 using System;
@@ -41,7 +42,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 							scmData.Commits.Add(scmCommit);
 							scmCommit.User = tfsCommit.Committer.Name;
 							scmCommit.UserEmail = tfsCommit.Committer.Email;
-							scmCommit.Time = TestResultUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
+							scmCommit.Time = OctaneUtils.ConvertToOctaneTime(tfsCommit.Committer.Date);
 							scmCommit.RevId = tfsCommit.CommitId;
 							if (tfsCommit.Parents.Count > 0)
 							{
