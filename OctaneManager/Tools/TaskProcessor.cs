@@ -1,4 +1,4 @@
-﻿
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	internal class TaskProcessor
 	{
-		private readonly TfsManager _tfsManager;
+		private readonly TfsApis _tfsManager;
 		private enum TaskType
 		{
 			GetJobsList,
@@ -17,7 +17,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			Undefined
 
 		}
-		public TaskProcessor(TfsManager tfsManager)
+		public TaskProcessor(TfsApis tfsManager)
 		{
 			_tfsManager = tfsManager;
 		}

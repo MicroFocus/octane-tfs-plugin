@@ -4,12 +4,12 @@ using System;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
-	public class SubscriptionManager
+	public class TfsSubscriptionManager
 	{
-		private readonly TfsHttpConnector _tfsConnector;
-		public SubscriptionManager(TfsConfiguration tfsConnectionConf)
+		private readonly TfsRestConnector _tfsConnector;
+		public TfsSubscriptionManager(TfsConfiguration tfsConnectionConf)
 		{
-			_tfsConnector = new TfsHttpConnector(tfsConnectionConf);
+			_tfsConnector = new TfsRestConnector(tfsConnectionConf);
 		}
 
 		public void AddSubscription(string collectionName, string projectId)

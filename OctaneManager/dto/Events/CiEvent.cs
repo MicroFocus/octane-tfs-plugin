@@ -2,7 +2,6 @@
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.parameters;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

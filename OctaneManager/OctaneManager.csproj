@@ -58,7 +58,8 @@
   <ItemGroup>
     <Compile Include="Configuration\ConnectionDetails.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
-    <Compile Include="Configuration\InstanceDetails.cs" />
+    <Compile Include="Octane\OctaneApis.cs" />
+    <Compile Include="Queues\EventQueueManager.cs" />
     <Compile Include="Tools\ConnectionCreator.cs" />
     <Compile Include="Dto\Events\CiEvent.cs" />
     <Compile Include="Dto\Connectivity\OctaneTask.cs" />
@@ -97,8 +98,8 @@
     <Compile Include="Tools\LogUtils.cs" />
     <Compile Include="Tools\RunModeManager.cs" />
     <Compile Include="Tools\TaskProcessor.cs" />
-    <Compile Include="Tools\TestResultUtils.cs" />
-    <Compile Include="Tools\TfsManager.cs" />
+    <Compile Include="Octane\TestResultUtils.cs" />
+    <Compile Include="Tfs\TfsApis.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmCommitAuthor.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmCommitChange.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmRepository.cs" />
@@ -118,14 +119,13 @@
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmChange.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmChangeAuthor.cs" />
     <Compile Include="Tfs\Beans\v1\TfsTestResult.cs" />
-    <Compile Include="Tfs\SubscriptionManager.cs" />
+    <Compile Include="Tfs\TfsSubscriptionManager.cs" />
     <Compile Include="Tfs\TfsConfiguration.cs" />
-    <Compile Include="Tools\PluginRunMode.cs" />
     <Compile Include="Tools\ScmEventHelper.cs" />
-    <Compile Include="Tools\TfsHttpConnector.cs" />
+    <Compile Include="Tfs\TfsRestConnector.cs" />
     <Compile Include="Tools\HttpMethodEnum.cs" />
-    <Compile Include="Tools\ToStringJsonConverter.cs" />
-    <Compile Include="Tools\UriResolver.cs" />
+    <Compile Include="Dto\Events\ToStringJsonConverter.cs" />
+    <Compile Include="Octane\OctaneUriResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -147,5 +147,6 @@
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\config.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,6 +4,7 @@ using System;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using SystemConfigurationManager = System.Configuration.ConfigurationManager;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 
 namespace MicroFocus.Ci.Tfs.Tests
 {
@@ -11,7 +12,8 @@ namespace MicroFocus.Ci.Tfs.Tests
 	public class OctaneManagerBaseTest
 	{
 		protected static OctaneManager octaneManager;
-		protected static TfsManager _tfsManager;
+		protected static TfsApis _tfsManager;
+
 		[AssemblyInitialize]
 		public static void InitializeConfigs(TestContext context)
 		{
@@ -28,7 +30,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 
 			RunModeManager.GetInstance().RunMode = PluginRunMode.ConsoleApp;
 			octaneManager = new OctaneManager(ConfigurationManager.Read(), devTimeout);
-			_tfsManager = new TfsManager(new Uri(tfsLocation), connectionDetails.Pat);
+			_tfsManager = new TfsApis(tfsLocation, connectionDetails.Pat);
 		}
 	}
 }
