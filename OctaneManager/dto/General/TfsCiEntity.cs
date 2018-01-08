@@ -1,6 +1,6 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Tools;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.General
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General
 {
 	public class TfsCiEntity
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems
 {
     public class TfsRun
     {

@@ -1,9 +1,9 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Tools;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.Subscriptions
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1.Subscriptions
 {
 	public class SubscriptionRequest
     {

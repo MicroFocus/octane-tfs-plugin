@@ -1,7 +1,7 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
 using System;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems
 {
 	public class TfsScmChange
 	{

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel;
-using System.IO;
-using System.ServiceProcess;
-using System.Text;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 
 namespace MicroFocus.Ci.Tfs.Core
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 
 namespace TfsConsolePluginRunner
 {

@@ -1,6 +1,6 @@
 ﻿
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public enum PluginRunMode
 	{

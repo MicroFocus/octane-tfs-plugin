@@ -1,12 +1,12 @@
-﻿using MicroFocus.Ci.Tfs.Octane.dto;
-using MicroFocus.Ci.Tfs.Octane.dto.parameters;
-using MicroFocus.Ci.Tfs.Octane.Dto.Events;
-using MicroFocus.Ci.Tfs.Octane.Dto.Scm;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.parameters;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto
 {
 	public class CiEvent : IDtoBase
 	{

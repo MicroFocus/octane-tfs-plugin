@@ -1,12 +1,10 @@
 ﻿using log4net;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using System;
-using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer;
 namespace MicroFocus.Ci.Tfs.Octane
 {
 	public class OctaneManagerInitializer : IDisposable
@@ -90,7 +88,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			try
 			{
-				RestServer.Server.GetInstance().Start();
+				Server.GetInstance().Start();
 			}
 			catch (Exception e)
 			{
@@ -102,7 +100,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			try
 			{
-				RestServer.Server.GetInstance().Stop();
+				Server.GetInstance().Stop();
 			}
 			catch (Exception e)
 			{

@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.General
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General
 {
     public class CiServerInfo
     {

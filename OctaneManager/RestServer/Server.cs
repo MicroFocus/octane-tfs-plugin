@@ -4,7 +4,7 @@ using Nancy.Hosting.Self;
 using System;
 using System.Reflection;
 
-namespace MicroFocus.Ci.Tfs.Octane.RestServer
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 {
 	public class Server : IDisposable
 	{

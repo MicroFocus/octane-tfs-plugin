@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.TestResults
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults
 {
     [XmlRoot("test_result")]
     public class OctaneTestResult

@@ -5,10 +5,10 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines;
 using Newtonsoft.Json;
 
-namespace MicroFocus.Ci.Tfs.Octane.dto.general
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.general
 {
     internal class CiJobList : IDtoBase
     {

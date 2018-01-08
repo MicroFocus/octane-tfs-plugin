@@ -1,8 +1,8 @@
 ﻿using MicroFocus.Ci.Tfs.Octane;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
-using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using SystemConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace MicroFocus.Ci.Tfs.Tests
@@ -26,7 +26,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 			var connectionDetails = new ConnectionDetails(webbAppUrl, clientId, clientSecret, tfsLocation, instanceId) { Pat = pat };
 			ConfigurationManager.WriteConfig(connectionDetails);
 
-			RunModeManager.GetInstance().RunMode = Octane.Tools.PluginRunMode.ConsoleApp;
+			RunModeManager.GetInstance().RunMode = PluginRunMode.ConsoleApp;
 			octaneManager = new OctaneManager(ConfigurationManager.Read(), devTimeout);
 			_tfsManager = new TfsManager(new Uri(tfsLocation), connectionDetails.Pat);
 		}

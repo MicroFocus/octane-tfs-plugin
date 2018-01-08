@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MicroFocus.Ci.Tfs.Octane.Configuration
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
 	internal class InstanceDetails
 	{

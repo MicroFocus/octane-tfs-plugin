@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroFocus.Ci.Tfs.Octane.dto.pipelines
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines
 {
     internal class PipelinePhase
     {

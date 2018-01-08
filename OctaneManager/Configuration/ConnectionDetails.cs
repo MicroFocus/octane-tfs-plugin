@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace MicroFocus.Ci.Tfs.Octane.Configuration
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
 	public class ConnectionDetails
 	{

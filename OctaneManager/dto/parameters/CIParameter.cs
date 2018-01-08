@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace MicroFocus.Ci.Tfs.Octane.dto.parameters
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.parameters
 {
     public class CiParameter
     {

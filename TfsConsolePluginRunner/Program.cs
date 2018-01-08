@@ -3,9 +3,9 @@ using System.Reflection;
 using log4net;
 using log4net.Config;
 using MicroFocus.Ci.Tfs.Octane;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
-using MicroFocus.Ci.Tfs.Octane.Tools;
 using System.Threading;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 [assembly: XmlConfigurator(ConfigFile = @"agent-log-config.xml", Watch = true)]
 namespace TfsConsolePluginRunner

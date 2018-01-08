@@ -1,7 +1,7 @@
 ﻿
-using MicroFocus.Ci.Tfs.Octane.dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events
 {
     public class CiEventType : IDtoBase
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Connectivity
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity
 {
     internal class OctaneTaskResult : OctaneTaskBase
     {

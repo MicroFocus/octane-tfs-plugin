@@ -1,8 +1,8 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Dto.General;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events
 {
 	public class CiEventsList
 	{

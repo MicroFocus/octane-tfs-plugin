@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	internal class TaskProcessor
 	{

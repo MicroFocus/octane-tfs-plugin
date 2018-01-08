@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.SCM
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1.SCM
 {
 	public class TfsScmCommitAuthor
 	{

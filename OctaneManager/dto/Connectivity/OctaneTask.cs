@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net.Http;
 using Newtonsoft.Json;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Connectivity
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity
 {
     internal class OctaneTask : OctaneTaskBase
     {        

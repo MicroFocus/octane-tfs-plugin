@@ -1,8 +1,8 @@
-﻿using MicroFocus.Ci.Tfs.Octane.dto;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Scm
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm
 {
 	public class ScmData : IDtoBase
     {

@@ -1,11 +1,11 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Dto;
-using MicroFocus.Ci.Tfs.Octane.Dto.Events;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
 using System.Linq;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.Events
 {
 	public class TfsBuildEvent
 	{
