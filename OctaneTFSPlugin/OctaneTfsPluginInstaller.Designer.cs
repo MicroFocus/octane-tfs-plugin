@@ -1,4 +1,4 @@
-﻿namespace MicroFocus.Ci.Tfs.Core
+﻿namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
     partial class OctaneTfsPluginInstaller
     {

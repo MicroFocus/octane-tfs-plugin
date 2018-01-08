@@ -1,6 +1,6 @@
 ﻿
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events
 {
     internal class PhaseType
     {

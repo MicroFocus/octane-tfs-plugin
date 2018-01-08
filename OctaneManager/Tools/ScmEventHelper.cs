@@ -1,12 +1,12 @@
 ﻿using log4net;
-using MicroFocus.Ci.Tfs.Octane.Dto.Events;
-using MicroFocus.Ci.Tfs.Octane.Dto.Scm;
-using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public static class ScmEventHelper
 	{

@@ -1,7 +1,7 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
 using System;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1
 {
 	public class TfsBuildDefinition : TfsBaseItem
 	{

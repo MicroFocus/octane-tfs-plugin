@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using MicroFocus.Ci.Tfs.Octane.dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
 using Newtonsoft.Json;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events
 {
 	public class CiEventCause : IDtoBase
 	{

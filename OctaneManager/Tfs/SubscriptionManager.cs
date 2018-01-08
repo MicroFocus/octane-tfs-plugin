@@ -1,8 +1,8 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.Subscriptions;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1.Subscriptions;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
 	public class SubscriptionManager
 	{

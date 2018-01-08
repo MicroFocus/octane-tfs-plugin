@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.TestResults
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults
 {
     //<test_run module = "ui-tests" package="com.hp.devops.demoapp.tests.ui" class="TestA" name="testUIcaseA" duration="0" status="Skipped" started="1511441542659" />
     public class OctaneTestResultTestRun

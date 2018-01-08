@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.Subscriptions
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1.Subscriptions
 {
     public class SubscriptionsListResponse
     {

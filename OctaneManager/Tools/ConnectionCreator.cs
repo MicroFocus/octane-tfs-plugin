@@ -1,12 +1,12 @@
 ﻿using Hpe.Nga.Api.Core.Connector;
 using log4net;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using System;
 using System.Net;
 using System.Reflection;
 using System.Web;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public class ConnectionCreator
 	{

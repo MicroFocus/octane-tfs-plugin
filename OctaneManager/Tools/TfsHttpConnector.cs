@@ -1,6 +1,6 @@
 ﻿using log4net;
-using MicroFocus.Ci.Tfs.Octane.Tfs;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +12,7 @@ using System.Security.Authentication;
 using System.Text;
 using System.Web;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public class TfsHttpConnector
 	{

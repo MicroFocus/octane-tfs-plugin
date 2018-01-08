@@ -1,18 +1,18 @@
 ﻿using log4net;
-using MicroFocus.Ci.Tfs.Octane.dto;
-using MicroFocus.Ci.Tfs.Octane.dto.general;
-using MicroFocus.Ci.Tfs.Octane.dto.pipelines;
-using MicroFocus.Ci.Tfs.Octane.Tfs;
-using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.v1.SCM;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.general;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1.SCM;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public class TfsManager
 	{

@@ -1,13 +1,13 @@
 ﻿using log4net;
 using log4net.Config;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public class LogUtils
 	{

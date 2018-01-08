@@ -1,13 +1,13 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Dto.General;
-using MicroFocus.Ci.Tfs.Octane.Dto.TestResults;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public static class TestResultUtils
 	{

@@ -1,16 +1,16 @@
 ﻿using log4net;
 using MicroFocus.Ci.Tfs.Octane;
-using MicroFocus.Ci.Tfs.Octane.Dto;
-using MicroFocus.Ci.Tfs.Octane.Dto.Events;
-using MicroFocus.Ci.Tfs.Octane.Tools;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Build.WebApi.Events;
 using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
-namespace MicroFocus.Ci.Tfs.Core
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
 	public class OctaneTfsPlugin : ISubscriber, IDisposable
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.TestResults
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults
 {
     //  <test_field type="Framework" value="TestNG" />
     public class OctaneTestResultTestField

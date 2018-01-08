@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MicroFocus.Ci.Tfs.Octane.dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Events
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events
 {
     public class CiEventCauseType : IDtoBase
     {

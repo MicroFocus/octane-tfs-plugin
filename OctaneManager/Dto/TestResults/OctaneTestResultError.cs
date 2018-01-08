@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.TestResults
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults
 {
     public class OctaneTestResultError
     {

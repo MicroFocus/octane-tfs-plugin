@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{298597DA-2C68-418E-90D8-F73782AB10EC}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TfsConsolePluginRunner</RootNamespace>
+    <RootNamespace>MicroFocus.Adm.Octane.CiPlugins.Tfs.Console</RootNamespace>
     <AssemblyName>AlmOctaneTfsPluginConsoleRunner</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

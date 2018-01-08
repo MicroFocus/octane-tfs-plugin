@@ -1,10 +1,10 @@
-﻿using MicroFocus.Ci.Tfs.Octane.dto;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace MicroFocus.Ci.Tfs.Octane.Dto.Connectivity
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity
 {
 	internal abstract class OctaneTaskBase : IDtoBase
     {

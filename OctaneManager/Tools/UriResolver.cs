@@ -1,7 +1,7 @@
 ﻿using System.Web;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	internal class UriResolver
 	{

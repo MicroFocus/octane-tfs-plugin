@@ -1,12 +1,12 @@
 ﻿using log4net;
-using MicroFocus.Ci.Tfs.Octane.Tools;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
-namespace MicroFocus.Ci.Tfs.Octane.Configuration
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
 	public static class ConfigurationManager
 	{

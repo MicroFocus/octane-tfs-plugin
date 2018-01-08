@@ -1,4 +1,4 @@
-﻿using MicroFocus.Ci.Tfs.Octane.Tfs.ApiItems;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroFocus.Ci.Tfs.Octane.Tfs.Beans
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans
 {
     public class TfsTestResult
     {

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MicroFocus.Ci.Tfs.Octane.dto.parameters;
-using MicroFocus.Ci.Tfs.Octane.Dto.General;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.parameters;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General;
 using Newtonsoft.Json;
 
-namespace MicroFocus.Ci.Tfs.Octane.dto.pipelines
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines
 {
     internal class PipelineNode : IDtoBase
     {

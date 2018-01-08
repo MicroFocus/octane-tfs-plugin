@@ -1,18 +1,19 @@
 ﻿using log4net;
-using MicroFocus.Ci.Tfs.Octane.Dto;
-using MicroFocus.Ci.Tfs.Octane.Tfs.Beans.Events;
-using MicroFocus.Ci.Tfs.Octane.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.Events;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using Nancy;
 using Nancy.Extensions;
 using Nancy.Responses;
 using System;
 using System.IO;
 using System.Reflection;
-using MicroFocus.Ci.Tfs.Octane.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using System.Text;
+using MicroFocus.Ci.Tfs.Octane;
 
 
-namespace MicroFocus.Ci.Tfs.Octane.RestServer
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 {
 	public class RestBase : NancyModule
 	{

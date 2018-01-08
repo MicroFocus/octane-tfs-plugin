@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 
-namespace MicroFocus.Ci.Tfs.Octane.RestServer
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 {
 
 
