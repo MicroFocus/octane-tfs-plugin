@@ -100,8 +100,19 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 					result = reader.ReadToEnd();
 				}
 
-				string conf = JsonHelper.SerializeObject(ConfigurationManager.Read());
-				result = result.Replace("//{defaultConf}", "var defaultConf =" + conf);
+				ConnectionDetails conf = null;
+				try
+				{
+					conf = ConfigurationManager.Read();
+				}
+				catch (FileNotFoundException)
+				{
+					conf = new ConnectionDetails();
+					conf.TfsLocation = ConnectionCreator.GetTfsLocationFromHostName();
+				}
+
+				string confJson = JsonHelper.SerializeObject(conf);
+				result = result.Replace("//{defaultConf}", "var defaultConf =" + confJson);
 
 				return result;
 				//string config = JsonHelper.SerializeObject(ConfigurationManager.Read().RemoveSensitiveInfo(), true);

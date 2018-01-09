@@ -57,8 +57,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			{
 				tfsServerUriStr = GetTfsLocationFromHostName();
 			}
-			tfsServerUriStr = tfsServerUriStr.EndsWith("/") ? tfsServerUriStr : tfsServerUriStr + "/";
-
 			TfsApis tfsManager = new TfsApis(tfsServerUriStr, connectionDetails.Pat);
 			try
 			{
