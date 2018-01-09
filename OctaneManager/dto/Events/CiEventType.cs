@@ -1,6 +1,4 @@
 ﻿
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
-
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events
 {
     public class CiEventType : IDtoBase

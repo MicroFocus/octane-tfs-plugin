@@ -87,7 +87,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 					else if (myEx is ServerUnavailableException)
 					{
 						Log.Error($"Octane server is unavailable");
-						OctaneManagerInitializer.GetInstance().RestartPlugin();
+						PluginManager.GetInstance().RestartPlugin();
 					}
 					else
 					{
@@ -141,7 +141,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			catch (InvalidCredentialException ex)//if credentials in tfs has been changed
 			{
 				Log.Error("Failed to process task : " + ex.Message);
-				OctaneManagerInitializer.GetInstance().RestartPlugin();
+				PluginManager.GetInstance().RestartPlugin();
 			}
 			catch (Exception ex)
 			{

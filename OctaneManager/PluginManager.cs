@@ -11,21 +11,22 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
-	public class OctaneManagerInitializer : IDisposable
+	public class PluginManager : IDisposable
 	{
 		private static readonly TimeSpan[] _initTimeoutArr = new TimeSpan[] { new TimeSpan(0, 0, 0, 30), new TimeSpan(0, 0, 2, 0), new TimeSpan(0, 0, 10, 0) };
 		private int _initFailCounter = 0;
-		private TfsEventManager _octaneManager = null;
+
 		private Task _octaneInitializationThread = null;
 		private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConnectionDetails _connectionDetails;
 
-		OctaneTaskManager _octaneTaskManager;
+		private TfsEventManager _eventManager;
+		private OctaneTaskManager _taskManager;
 
-		private static OctaneManagerInitializer instance = new OctaneManagerInitializer();
+		private static PluginManager instance = new PluginManager();
 
-		private OctaneManagerInitializer()
+		private PluginManager()
 		{
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
 			ReadConfigurationFile();
@@ -45,14 +46,14 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		public static OctaneManagerInitializer GetInstance()
+		public static PluginManager GetInstance()
 		{
 			return instance;
 		}
 
 		public void Shutdown()
 		{
-			Log.Info("OctaneManagerInitializer Shutdown");
+			Log.Info("PluginManager Shutdown");
 			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
 			StopRestServer();
 			StopPlugin();
@@ -63,16 +64,16 @@ namespace MicroFocus.Ci.Tfs.Octane
 			_cancellationTokenSource.Cancel();
 			_octaneInitializationThread = null;
 
-			if (_octaneManager != null)
+			if (_eventManager != null)
 			{
-				_octaneManager.ShutDown();
-				_octaneManager = null;
+				_eventManager.ShutDown();
+				_eventManager = null;
 			}
 
-			if (_octaneTaskManager != null)
+			if (_taskManager != null)
 			{
-				_octaneTaskManager.ShutDown();
-				_octaneTaskManager = null;
+				_taskManager.ShutDown();
+				_taskManager = null;
 			}
 		}
 
@@ -88,13 +89,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 			if (_octaneInitializationThread == null)
 			{
 				_cancellationTokenSource = new CancellationTokenSource();
-				_octaneInitializationThread =
-					Task.Factory.StartNew(() => InitializeOctaneManager(_cancellationTokenSource.Token),
-						TaskCreationOptions.LongRunning);
+				_octaneInitializationThread = Task.Factory.StartNew(() => StartPluginInternal(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
 			}
 		}
 
-		public TfsEventManager OctaneManager => _octaneManager;
+		public TfsEventManager EventManager => _eventManager;
 
 		private void StartRestServer()
 		{
@@ -120,9 +119,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		private void InitializeOctaneManager(CancellationToken token)
+		private void StartPluginInternal(CancellationToken token)
 		{
-			while (!IsOctaneInitialized())
+			while (!IsInitialized())
 			{
 				if (token.IsCancellationRequested)
 				{
@@ -134,34 +133,31 @@ namespace MicroFocus.Ci.Tfs.Octane
 					TfsApis tfsApis = ConnectionCreator.CreateTfsConnection(_connectionDetails);
 					OctaneApis octaneApis = ConnectionCreator.CreateOctaneConnection(_connectionDetails);
 
-					_octaneTaskManager = new OctaneTaskManager(tfsApis, octaneApis);
-					_octaneManager = new TfsEventManager(tfsApis, octaneApis);
+					_taskManager = new OctaneTaskManager(tfsApis, octaneApis);
+					_eventManager = new TfsEventManager(tfsApis, octaneApis);
 
-					_octaneTaskManager.Start();
-					_octaneManager.Init();
+					_taskManager.Start();
+					_eventManager.Start();
 					_initFailCounter = 0;
 				}
 				catch (Exception ex)
 				{
 					Log.Error($"Error initializing octane plugin : {ex.Message}", ex);
-					if (_octaneManager != null)
+					if (_eventManager != null)
 					{
-						_octaneManager.ShutDown();
-						_octaneManager = null;
+						_eventManager.ShutDown();
+						_eventManager = null;
 					}
-					if (_octaneTaskManager != null)
+					if (_taskManager != null)
 					{
-						_octaneTaskManager.ShutDown();
-						_octaneTaskManager = null;
+						_taskManager.ShutDown();
+						_taskManager = null;
 					}
-
 				}
 
-
 				//Sleep till next retry
-				if (!IsOctaneInitialized())
+				if (!IsInitialized())
 				{
-
 					int initTimeoutIndex = Math.Min(((int)_initFailCounter / 3), _initTimeoutArr.Length - 1);
 					TimeSpan initTimeout = _initTimeoutArr[initTimeoutIndex];
 					Log.Info($"Wait {initTimeout.TotalSeconds} secs for next trial of initialization");
@@ -171,9 +167,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		public bool IsOctaneInitialized()
+		public bool IsInitialized()
 		{
-			return _octaneManager != null && _octaneManager.IsInitialized;
+			return _eventManager != null && _taskManager != null;
 		}
 
 		private void OnConfigurationChanged(object sender, EventArgs e)

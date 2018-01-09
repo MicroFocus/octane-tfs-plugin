@@ -1,4 +1,7 @@
 ﻿using log4net;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Ci.Tfs.Octane;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Build.WebApi.Events;
@@ -6,9 +9,6 @@ using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
@@ -18,14 +18,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
 		
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-		private static OctaneManagerInitializer _octaneManagerInitializer;
+		private static PluginManager _pluginManager;
 		private static int instanceCount;
 
 		static OctaneTfsPlugin()
 		{
 			LogUtils.ConfigureLog4NetForPluginMode();
-			_octaneManagerInitializer = OctaneManagerInitializer.GetInstance();
-			_octaneManagerInitializer.StartPlugin();
+			_pluginManager = PluginManager.GetInstance();
+			_pluginManager.StartPlugin();
 			Log.Info("******************************************************************");
 			Log.Info("***************OctaneTfsPlugin started****************************");
 			Log.Info("******************************************************************");
@@ -64,19 +64,19 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 				Build build = updatedEvent.Build;
 				Log.Info($"ProcessEvent \"{notificationEventArgs.GetType().Name}\" for build {updatedEvent.BuildId}");
 
-				if (_octaneManagerInitializer.IsOctaneInitialized())
+				if (_pluginManager.IsInitialized())
 				{
 					if (notificationEventArgs is BuildStartedEvent)
 					{
 						CiEvent startedEvent = CiEventUtils.ToCiEvent(build);
 						startedEvent.EventType = CiEventType.Started;
-						_octaneManagerInitializer.OctaneManager.ReportEventAsync(startedEvent);
+						_pluginManager.EventManager.ReportEventAsync(startedEvent);
 					}
 					else if (notificationEventArgs is BuildCompletedEvent)
 					{
 						CiEvent finishEvent = CiEventUtils.ToCiEvent(build);
 						finishEvent.EventType = CiEventType.Finished;
-						_octaneManagerInitializer.OctaneManager.ReportEventAsync(finishEvent);
+						_pluginManager.EventManager.ReportEventAsync(finishEvent);
 					}
 				}
 				else

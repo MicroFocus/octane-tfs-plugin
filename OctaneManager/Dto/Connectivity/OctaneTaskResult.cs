@@ -1,9 +1,9 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity
 {
-    public class OctaneTaskResult : OctaneTaskBase
+	public class OctaneTaskResult : OctaneTaskBase
     {
         [JsonProperty("status")]        
         public int Status { get; set; }

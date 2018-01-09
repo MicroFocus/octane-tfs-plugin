@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Pipelines;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.general
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General
 {
-    internal class CiJobList : IDtoBase
+	internal class CiJobList : IDtoBase
     {
         [JsonProperty("jobs")]
         public IList<PipelineNode> Jobs { get; set; }

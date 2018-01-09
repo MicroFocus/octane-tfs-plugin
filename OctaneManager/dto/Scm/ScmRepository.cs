@@ -1,9 +1,8 @@
-﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm
 {
-    public class ScmRepository : IDtoBase
+	public class ScmRepository : IDtoBase
 	{
 		[JsonProperty("type")]
 		public string Type { get; set; }
