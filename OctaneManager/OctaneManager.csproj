@@ -146,6 +146,8 @@
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\config.html" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\Resources\help.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

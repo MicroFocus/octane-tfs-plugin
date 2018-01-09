@@ -18,10 +18,10 @@ namespace TfsConsolePluginRunner
         {            
             Log.Info("Starting proccess...");
 
-            if (!ConfigurationManager.ConfigurationExists())
+            /*if (!ConfigurationManager.ConfigurationExists())
             {
                 ConfigurationManager.WriteConfig(ConfigFileGenerator.GenerateConfig());
-            }
+            }*/
 
 			RunModeManager.GetInstance().RunMode = PluginRunMode.ConsoleApp;
 			OctaneManagerInitializer octaneManagerInitializer = OctaneManagerInitializer.GetInstance();

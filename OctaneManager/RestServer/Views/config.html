@@ -75,11 +75,36 @@ table .itemCaption{
 
 }
 
-#testConnectionMessage{
+#resultMessage{
 	float: left;
     width: 500px;
     margin: 10px 0 0 0;
 }
+
+.helpButton{
+	margin: 5px 0 0 5px;
+    height: 20px;
+    width: 20px;
+}
+.helpButton:hover{
+	cursor: pointer;
+}
+
+.helpHidden{
+	display :none;
+}
+
+.helpVisible{
+	display :block;
+	border: solid #bbb 1px;
+    background-color: #f0f0f0;
+
+	padding: 5px;
+    margin: 1px;
+	width:800px;
+}
+
+
 </style>
 
 	<noscript>Sorry, your browser does not support JavaScript!</noscript>
@@ -96,14 +121,20 @@ table .itemCaption{
 
 
 	<table>
-		<tr><td class="itemCaption">ALM Octane Location</td><td><div><input type="text" name="octaneLocation" title="Location of the HPE ALM Octane application. You can copy the URL from the address bar of the browser in which you opened ALM Octane."></div></td></tr>
-		<tr><td class="itemCaption">ALM Octane Client ID</td><td><input type="text" name="octaneClientId" title="Client ID used for logging into the ALM Octane server. Obtain a Client ID and Client secret from ALM Octane configuration."></td></tr>
-		<tr><td class="itemCaption">ALM Octane Client Secret</td><td><input type="password" name="octaneClientSecret" title="Client secret used for logging into the ALM Octane server"></td></tr>
-		<tr><td class="itemCaption">Tfs Location</td><td><input type="text" name="tfsLocation" title="HTTP address of the TFS, such as http://yourhost:8080/tfs/. This value is used to let plugin know how to refer to itself, for example to create links to build/run/etc. This is necessary because plugin cannot reliably detect such a URL from within itself."></td></tr>
-		<tr><td class="itemCaption">Tfs PAT</td><td><input type="password" name="tfsPat" title="Personal Acess Token To TFS."></td></tr>
-		<tr><td class="itemCaption">Instance Id</td><td><input type="text" name="instanceId" title="An ID to uniquely identify this instance of the plugin."></td></tr>
-		<tr><td></td><td><div><p id="resultMessage"></p><button id="testConnection" type="button">Test Connection</button></div></td></tr>
-		<tr><td></td><td><div><button id="saveButton" type="button">Save</button></div></td></tr>
+		<tr><td class="itemCaption">ALM Octane Location</td><td><div><input type="text" name="octaneLocation"></div></td><td><img src="resources/help.png" class="helpButton" onclick="toggleHelp('#octaneLocationHelp')"/></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="octaneLocationHelp">Location of the HPE ALM Octane application. You can copy the URL from the address bar of the browser in which you opened ALM Octane.</div></td><td></td></tr>
+		<tr><td class="itemCaption">ALM Octane Client ID</td><td><input type="text" name="octaneClientId"></td><td><img src="resources/help.png" class="helpButton" onclick="toggleHelp('#octaneClientIdHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="octaneClientIdHelp">Client ID used for logging into the ALM Octane server. Obtain a Client ID and Client secret from ALM Octane configuration.</div></td><td></td></tr>
+		<tr><td class="itemCaption">ALM Octane Client Secret</td><td><input type="password" name="octaneClientSecret"></td><td><img src="resources/help.png" class="helpButton" onclick="toggleHelp('#octaneClientSecretHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="octaneClientSecretHelp">Client secret used for logging into the ALM Octane server.</div></td><td></td></tr>
+		<tr><td class="itemCaption">Tfs Location</td><td><input type="text" name="tfsLocation"></td><td><img src="resources/help.png" class="helpButton" onclick="toggleHelp('#tfsLocationHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="tfsLocationHelp">HTTP address of the TFS, such as http://yourhost:8080/tfs/. <br />This value is used to let plugin know how to refer to itself, for example to create links to build/run/etc. <br />This is necessary because plugin cannot reliably detect such a URL from within itself.</div></td><td></td></tr>
+		<tr><td class="itemCaption">Tfs PAT</td><td><input type="password" name="tfsPat"></td><td><img src="resources/help.png" class="helpButton" onclick="toggleHelp('#tfsPatHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="tfsPatHelp">Personal Acess Token To TFS.</div></td><td></td></tr>
+		<tr><td class="itemCaption">Instance Id</td><td><input type="text" name="instanceId"></td><td><img src="resources/help.png" class="helpButton" onclick="toggleHelp('#instanceIdHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="instanceIdHelp">An ID to uniquely identify this instance of the plugin.</div></td><td></td></tr>
+		<tr><td></td><td><div><p id="resultMessage"></p><button id="testConnection" type="button">Test Connection</button></div></td><td></td></tr>
+		<tr><td></td><td><div><button id="saveButton" type="button">Save</button></div></td><td></td></tr>
 	</table>
 
 </body>
@@ -124,7 +155,7 @@ $(document).ready(function(){
 		$("input[name='instanceId']").val(defaultConf.InstanceId);
 	}
 
-	registerForButtonClick("#testConnection","/config/test","Validating...","Configuratin validated successfully");
+	registerForButtonClick("#testConnection","/config/test","Validating...","Configuration validated successfully");
 	registerForButtonClick("#saveButton","/config","Saving...","Configuration saved successfully");
 	
 	function registerForButtonClick(buttonName, postUrl, processMessage, successMessage){
@@ -160,8 +191,12 @@ $(document).ready(function(){
 				$(buttonName).prop('disabled', false);
 			});
 		});
-	}
-	
+	}	
 });
+
+function toggleHelp(elId){
+	$(elId).toggleClass("helpHidden");
+	$(elId).toggleClass("helpVisible");
+}
 </script>
 </html>
