@@ -134,10 +134,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 					OctaneApis octaneApis = ConnectionCreator.CreateOctaneConnection(_connectionDetails);
 
 					_taskManager = new OctaneTaskManager(tfsApis, octaneApis);
-					_eventManager = new TfsEventManager(tfsApis, octaneApis);
-
 					_taskManager.Start();
+					_eventManager = new TfsEventManager(tfsApis, octaneApis);
 					_eventManager.Start();
+
 					_initFailCounter = 0;
 				}
 				catch (Exception ex)
