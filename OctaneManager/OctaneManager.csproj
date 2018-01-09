@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Configuration\ConnectionDetails.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
+    <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
     <Compile Include="Queues\EventQueueManager.cs" />
     <Compile Include="Tools\ConnectionCreator.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="RestServer\Server.cs" />
     <Compile Include="Tools\LogUtils.cs" />
     <Compile Include="Tools\RunModeManager.cs" />
-    <Compile Include="Tools\TaskProcessor.cs" />
     <Compile Include="Octane\OctaneUtils.cs" />
     <Compile Include="Tfs\TfsApis.cs" />
     <Compile Include="Tfs\Beans\v1\SCM\TfsScmCommitAuthor.cs" />

@@ -35,6 +35,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 			_connectionDetails = connectionDetails;
 		}
 
+		public string PluginInstanceId
+		{
+			get
+			{
+				return _connectionDetails.InstanceId;
+			}
+		}
+
 		public string GetTasks(int pollingTimeout)
 		{
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_SERVERS}{_connectionDetails.InstanceId}/tasks";
@@ -64,11 +72,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 				result = Boolean.Parse(res.Data);
 			}
 			return result;
-		}
-
-		public void Disconnect()
-		{
-			_restConnector.Disconnect();
 		}
 
 		public void SendEvents(IList<CiEvent> list)

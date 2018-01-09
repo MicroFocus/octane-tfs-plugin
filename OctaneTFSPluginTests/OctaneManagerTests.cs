@@ -20,7 +20,6 @@ namespace MicroFocus.Ci.Tfs.Tests
 		public void GetStatusTest()
 		{
 			octaneManager.Init();
-			octaneManager.WaitShutdown();
 		}
 
 		[TestMethod]

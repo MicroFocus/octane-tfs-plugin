@@ -11,7 +11,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 	[TestClass]
 	public class OctaneManagerBaseTest
 	{
-		protected static OctaneManager octaneManager;
+		protected static TfsEventManager octaneManager;
 		protected static TfsApis _tfsManager;
 
 		[AssemblyInitialize]
@@ -29,7 +29,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 			ConfigurationManager.WriteConfig(connectionDetails);
 
 			RunModeManager.GetInstance().RunMode = PluginRunMode.ConsoleApp;
-			octaneManager = new OctaneManager(ConfigurationManager.Read(), devTimeout);
+			//octaneManager = new OctaneManager(ConfigurationManager.Read());
 			_tfsManager = new TfsApis(tfsLocation, connectionDetails.Pat);
 		}
 	}
