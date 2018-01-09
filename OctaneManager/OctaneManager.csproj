@@ -60,7 +60,6 @@
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
-    <Compile Include="Queues\EventQueueManager.cs" />
     <Compile Include="TfsEventManager.cs" />
     <Compile Include="Tools\ConnectionCreator.cs" />
     <Compile Include="Dto\Events\CiEvent.cs" />

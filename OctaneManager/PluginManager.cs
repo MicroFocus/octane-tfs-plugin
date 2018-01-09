@@ -180,6 +180,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void RestartPlugin()
 		{
+			Log.Info($"Plugin restarted");
 			StopPlugin();
 			StartPlugin();
 		}
