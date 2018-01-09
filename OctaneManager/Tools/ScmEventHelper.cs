@@ -116,11 +116,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 				int removedCount = changes.Count - changesMap.Count;
 				if (removedCount == 0)
 				{
-					Log.Debug($"{buildInfo} - build {build.Id} contains {changes.Count} associated changes. No one of them was already reported in previous build {foundPreviousFailedBuild.Id}");
+					Log.Debug($"Build {buildInfo} - build {build.Id} contains {changes.Count} associated changes. No one of them was already reported in previous build {foundPreviousFailedBuild.Id}");
 				}
 				else
 				{
-					Log.Debug($"{buildInfo} - build {build.Id} contains {changes.Count} associated changes while {removedCount} changes were already reported in build {foundPreviousFailedBuild.Id}");
+					Log.Debug($"Build {buildInfo} - build {build.Id} contains {changes.Count} associated changes while {removedCount} changes were already reported in build {foundPreviousFailedBuild.Id}");
 				}
 			}
 

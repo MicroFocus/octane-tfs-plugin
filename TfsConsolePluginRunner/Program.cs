@@ -15,8 +15,10 @@ namespace TfsConsolePluginRunner
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         static void Main(string[] args)
-        {            
-            Log.Info("Starting proccess...");
+        {
+			Log.Info("******************************************************************");
+			Log.Info("***************OctaneTfsCConsolePlugin started********************");
+			Log.Info("******************************************************************");
 
             /*if (!ConfigurationManager.ConfigurationExists())
             {

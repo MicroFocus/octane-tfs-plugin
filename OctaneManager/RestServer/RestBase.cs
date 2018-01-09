@@ -27,9 +27,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			{
 				if (PluginManager.GetInstance().IsInitialized())
 				{
-					return "OctaneManager is initialized";
+					return "Plugin is active";
 				}
-				return "OctaneManager still is not initialized";
+				return "Plugin is not active";
 			};
 
 			Post["/build-event/"] = _ =>
@@ -138,17 +138,17 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				if (PluginManager.GetInstance().IsInitialized())
 					return "Octane manager is already running";
 
-				Log.Debug("plugin start requested");
+				Log.Debug("Plugin start requested");
 
 				PluginManager.GetInstance().StartPlugin();
-				return "Start plugin requested";
+				return "Started";
 			};
 
 			Post["/stop", RestrictAccessFromLocalhost] = _ =>
 			{
-				Log.Debug("plugin stop requested");
+				Log.Debug("Plugin stop requested");
 				PluginManager.GetInstance().StopPlugin();
-				return "Stop plugin requested";
+				return "Stopped";
 			};
 
 		}

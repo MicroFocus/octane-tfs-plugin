@@ -43,13 +43,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 			_tfsApis = tfsApis;
 			_octaneApis = octaneApis;
 			_pollingGetTimeout = pollingTimeout;
-			Log.Debug("OctaneTaskManager created...");
+			Log.Debug("OctaneTaskManager - created");
 		}
 
 		public void ShutDown()
 		{
 			_pollTasksCancellationToken.Cancel();
-			Log.Debug("OctaneTaskManager shuted down");
+			Log.Debug("OctaneTaskManager - stopped");
 		}
 
 		public void WaitShutdown()
@@ -134,7 +134,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 					//prepare response
 					int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
 					var taskResult = new OctaneTaskResult(status, octaneTask.Id, taskOutput);
-					Log.Debug($"Sending result to octane :  { taskResult.Body}");
+					Log.Debug($"Sending result to octane :  {taskResult.Status} - {taskResult.Body}");
 					_octaneApis.SendTaskResult(taskResult.Id.ToString(), taskResult);
 				}
 			}
@@ -166,7 +166,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 					var joinedProjectName = taskUrl.Segments[taskUrl.Segments.Length - 2].Trim('/');
 					var buildParts = joinedProjectName.Split('.');
 					_tfsApis.QueueNewBuild(buildParts[0], buildParts[1], buildParts[2]);
-					result = "";
+					result = "Job started";
 					break;
 				case TaskType.Undefined:
 					Log.Debug($"Undefined task : {taskUrl}");

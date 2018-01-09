@@ -50,17 +50,17 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 		{
 		    if (IsStarted())
 		    {
-		        Log.Debug("Server is already running...");
+		        Log.Debug("RestServer is already running");
                 return;		       
 		    }
 
 			var hostConfigs = new HostConfiguration { UrlReservations = { CreateAutomatically = true } };
 			var serverUri = new Uri($"http://localhost:{_port}");
-			var host = new NancyHost(serverUri, new DefaultNancyBootstrapper(), hostConfigs);
+			var myServer = new NancyHost(serverUri, new DefaultNancyBootstrapper(), hostConfigs);
 
-			host.Start();
-			Log.Info($"Running on {serverUri}");
-			_server = host;
+			myServer.Start();
+			Log.Info($"RestServer - started on {serverUri}");
+			_server = myServer;
 		}
 
 		public void Stop()
@@ -69,8 +69,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			{
 				_server.Stop();
 				_server = null;
-				Log.Info("Server stopped.");
 			}
+			Log.Info("RestServer - stopped");
 		}
 
 		private bool IsStarted()

@@ -29,7 +29,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 			
 
-			Log.Debug("TfsEventManager created...");
+			Log.Debug("TfsEventManager - created");
 		}
 
 		public void Start()
@@ -38,13 +38,14 @@ namespace MicroFocus.Ci.Tfs.Octane
 			{
 				RestBase.BuildEvent += HandleFinishEventFromWebHook;
 			}
+			Log.Debug("TfsEventManager - started");
 		}
 
 		public void ShutDown()
 		{
 
 			RestBase.BuildEvent -= HandleFinishEventFromWebHook;
-			Log.Debug("TfsEventManager shuted down");
+			Log.Debug("TfsEventManager - stopped");
 		}
 
 		private void HandleFinishEventFromWebHook(object sender, CiEvent finishEvent)
@@ -78,7 +79,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private void ReportEvent(CiEvent ciEvent)
 		{
-			Log.Debug($"{ciEvent.BuildInfo} - handling {ciEvent.EventType.ToString()} event");
+			Log.Debug($"Build {ciEvent.BuildInfo} - handling {ciEvent.EventType.ToString().ToUpper()} event");
 			try
 			{
 				var list = new List<CiEvent>();
@@ -91,16 +92,16 @@ namespace MicroFocus.Ci.Tfs.Octane
 					if (scmData != null)
 					{
 						list.Add(CreateScmEvent(ciEvent, scmData));
-						Log.Debug($"{ciEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
+						Log.Debug($"Build {ciEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
 					}
 					else
 					{
-						Log.Debug($"{ciEvent.BuildInfo} - scm data is empty");
+						Log.Debug($"Build {ciEvent.BuildInfo} - scm data is empty");
 					}
 				}
 
 				_octaneApis.SendEvents(list);
-				Log.Debug($"{ciEvent.BuildInfo} - {list.Count} events succesfully sent");
+				Log.Debug($"Build {ciEvent.BuildInfo} - {list.Count} events succesfully sent");
 				if (isFinishEvent)
 				{
 					SendTestResults(ciEvent.BuildInfo, ciEvent.Project, ciEvent.BuildId);
