@@ -16,7 +16,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 	{
 		private static string PLUGIN_DISPLAY_NAME = "OctaneTfsPlugin";
 
-		
+
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static PluginManager _pluginManager;
 		private static int instanceCount;
@@ -64,25 +64,16 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 				Build build = updatedEvent.Build;
 				Log.Info($"ProcessEvent \"{notificationEventArgs.GetType().Name}\" for build {updatedEvent.BuildId}");
 
-				if (_pluginManager.IsInitialized())
+				CiEvent ciEvent = CiEventUtils.ToCiEvent(build);
+				if (notificationEventArgs is BuildStartedEvent)
 				{
-					if (notificationEventArgs is BuildStartedEvent)
-					{
-						CiEvent startedEvent = CiEventUtils.ToCiEvent(build);
-						startedEvent.EventType = CiEventType.Started;
-						_pluginManager.EventManager.ReportEventAsync(startedEvent);
-					}
-					else if (notificationEventArgs is BuildCompletedEvent)
-					{
-						CiEvent finishEvent = CiEventUtils.ToCiEvent(build);
-						finishEvent.EventType = CiEventType.Finished;
-						_pluginManager.EventManager.ReportEventAsync(finishEvent);
-					}
+					ciEvent.EventType = CiEventType.Started;
 				}
-				else
+				else if (notificationEventArgs is BuildCompletedEvent)
 				{
-					Log.Info($"ProcessEvent cancelled as Octane is not configured.");
+					ciEvent.EventType = CiEventType.Finished;
 				}
+				_pluginManager.EventManager.AddEvent(ciEvent);
 			}
 			catch (Exception e)
 			{

@@ -151,6 +151,27 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				return "Stopped";
 			};
 
+			Post["/clear-event-queues", RestrictAccessFromLocalhost] = _ =>
+			{
+				Log.Debug("Clear event queues requested");
+				PluginManager.GetInstance().EventManager.ClearQueues();
+				return "Cleared";
+			};
+
+			Get["/event-queue-status"] = _ =>
+			{
+				if (PluginManager.GetInstance().IsInitialized())
+				{
+					var queueStatus = PluginManager.GetInstance().EventManager.GetQueueStatus();
+					string json = JsonHelper.SerializeObject(queueStatus, true);
+					return json;
+				}
+				else
+				{
+					return "Plugin is not active";
+				}
+			};
+
 		}
 
 		private bool RestrictAccessFromLocalhost(NancyContext ctx)

@@ -84,9 +84,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 						//known exception
 						//Log.Debug($"Task polling - no task received");
 					}
-					else if (myEx is ServerUnavailableException)
+					else if (myEx is ServerUnavailableException || myEx is InvalidCredentialException)
 					{
-						Log.Error($"Octane server is unavailable");
+						Log.Error($"Task polling exception with connection fail : {myEx.Message}");
 						PluginManager.GetInstance().RestartPlugin();
 					}
 					else
