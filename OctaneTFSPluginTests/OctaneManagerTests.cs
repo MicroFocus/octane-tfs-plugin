@@ -9,7 +9,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 		[TestMethod]
 		public void ConnectionTest()
 		{
-			octaneManager.Init();
+			octaneManager.Start();
 
 			Thread.Sleep(2000);
 
@@ -19,7 +19,7 @@ namespace MicroFocus.Ci.Tfs.Tests
 		[TestMethod]
 		public void GetStatusTest()
 		{
-			octaneManager.Init();
+			octaneManager.Start();
 		}
 
 		[TestMethod]

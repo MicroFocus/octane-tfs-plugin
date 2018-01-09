@@ -1,5 +1,4 @@
-﻿
-using log4net;
+﻿using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
@@ -16,63 +15,48 @@ using System.Threading.Tasks;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
-	public class OctaneManager
+	public class TfsEventManager
 	{
-
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private OctaneApis _octaneApis;
 		private TfsApis _tfsApis;
 
-		public OctaneManager(TfsApis tfsApis, OctaneApis octaneApis)
+		public TfsEventManager(TfsApis tfsApis, OctaneApis octaneApis)
 		{
 			_octaneApis = octaneApis;
 			_tfsApis = tfsApis;
 
+			
+
+			Log.Debug("TfsEventManager created...");
+		}
+
+		public void Start()
+		{
 			if (RunModeManager.GetInstance().RunMode == PluginRunMode.ConsoleApp)
 			{
-				RestBase.BuildEvent += RestBase_BuildEvent;
+				RestBase.BuildEvent += HandleFinishEventFromWebHook;
 			}
-
-			Log.Debug("Octane manager created...");
 		}
 
 		public void ShutDown()
 		{
-			IsInitialized = false;
 
-			RestBase.BuildEvent -= RestBase_BuildEvent;
-			Log.Debug("Octane manager shuted down");
+			RestBase.BuildEvent -= HandleFinishEventFromWebHook;
+			Log.Debug("TfsEventManager shuted down");
 		}
 
-		public bool IsInitialized { get; protected set; } = false;
-
-
-		public void Init()
-		{
-			IsInitialized = true;
-			Log.Debug($"Octane manager initialized successfully");
-		}
-
-		private void RestBase_BuildEvent(object sender, CiEvent finishEvent)
-		{
-			if (IsInitialized)
-			{
-				CiEvent startEvent = CreateStartEvent(finishEvent);
-				ReportEventAsync(startEvent).GetAwaiter().OnCompleted(() =>
-				{
-					ReportEventAsync(finishEvent);
-
-				});
-			}
-		}
-
-		private CiEvent CreateStartEvent(CiEvent finishEvent)
+		private void HandleFinishEventFromWebHook(object sender, CiEvent finishEvent)
 		{
 			var startEvent = finishEvent.Clone();
 			startEvent.EventType = CiEventType.Started;
 
-			return startEvent;
+			ReportEventAsync(startEvent).GetAwaiter().OnCompleted(() =>
+			{
+				ReportEventAsync(finishEvent);
+
+			});
 		}
 
 		private CiEvent CreateScmEvent(CiEvent finishEvent, ScmData scmData)
@@ -86,9 +70,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		public Task ReportEventAsync(CiEvent ciEvent)
 		{
 			Task task = Task.Factory.StartNew(() =>
-		   {
-			   ReportEvent(ciEvent);
-		   });
+			{
+				ReportEvent(ciEvent);
+			});
 			return task;
 		}
 
@@ -115,7 +99,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 				}
 
-
 				_octaneApis.SendEvents(list);
 				Log.Debug($"{ciEvent.BuildInfo} - {list.Count} events succesfully sent");
 				if (isFinishEvent)
@@ -126,7 +109,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			catch (InvalidCredentialException e)
 			{
 				Log.Error($"ReportEvent failed with TFS : {e.Message}");
-				OctaneManagerInitializer.GetInstance().RestartPlugin();
+				PluginManager.GetInstance().RestartPlugin();
 			}
 			catch (Exception e)
 			{

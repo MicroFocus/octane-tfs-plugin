@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
-
+﻿
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events
 {
-    public class CiEventCauseType : IDtoBase
+	public class CiEventCauseType : IDtoBase
     {
         private string _value;
         private CiEventCauseType(string type)

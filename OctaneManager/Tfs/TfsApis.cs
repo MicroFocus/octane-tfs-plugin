@@ -1,7 +1,7 @@
 ﻿using log4net;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.general;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Pipelines;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans;

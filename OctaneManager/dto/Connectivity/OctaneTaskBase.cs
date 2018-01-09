@@ -1,5 +1,4 @@
-﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.parameters;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General;
+﻿using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Parameters;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Pipelines
 {
-    internal class PipelineNode : IDtoBase
+	internal class PipelineNode : IDtoBase
     {
         [JsonProperty("jobCiId")]
         public string JobCiId { get; set; }

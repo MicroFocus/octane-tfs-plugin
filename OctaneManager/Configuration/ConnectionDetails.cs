@@ -1,6 +1,5 @@
-﻿using System;
-using System.Net;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {

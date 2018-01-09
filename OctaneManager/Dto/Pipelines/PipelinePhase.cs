@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dto.pipelines
+﻿namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Pipelines
 {
-    internal class PipelinePhase
+	internal class PipelinePhase
     {
     }
 }
