@@ -79,7 +79,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 					}
 				}
 				var msg = msgPrefix + (e.InnerException != null ? e.InnerException.Message : e.Message);
-				Log.Error(msg);
 				throw new Exception(msg);
 			}
 
@@ -93,6 +92,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			var result = $"http://{hostName}.{domainName}:8080/tfs/";
 			return result;
 		}
+
 		public static OctaneApis CreateOctaneConnection(ConnectionDetails connectionDetails)
 		{
 			try
@@ -108,7 +108,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			catch (Exception e)
 			{
 				var msg = "Invalid connection to Octane : " + (e.InnerException != null ? e.InnerException.Message : e.Message);
-				Log.Error(msg);
 				throw new Exception(msg);
 			}
 		}

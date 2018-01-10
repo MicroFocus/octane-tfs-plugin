@@ -67,12 +67,15 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 					}
 
 				}
+
+				int commitCount = (scmData == null) ? 0 : scmData.Commits.Count;
+				Log.Debug($"Build {buildInfo} - scm data contains {commitCount} commits");
 				return scmData;
 
 			}
 			catch (Exception e)
 			{
-				Log.Error($"{buildInfo} - Failed to create scm data : {e.Message}");
+				Log.Error($"Build {buildInfo} - failed to create scm data : {e.Message}");
 				return null;
 			}
 		}

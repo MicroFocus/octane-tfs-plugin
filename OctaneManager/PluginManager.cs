@@ -8,6 +8,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -21,6 +22,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConnectionDetails _connectionDetails;
 
+		GeneralEventsQueue _generalEventsQueue;
+		FinishedEventsQueue _finishedEventsQueue;
+
 		private TfsEventManager _eventManager;
 		private OctaneTaskManager _taskManager;
 
@@ -28,10 +32,17 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private PluginManager()
 		{
+			Thread.Sleep(5000);
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
 			ReadConfigurationFile();
 			StartRestServer();
+			_generalEventsQueue = new GeneralEventsQueue();
+			_finishedEventsQueue = new FinishedEventsQueue();
 		}
+
+		public GeneralEventsQueue GeneralEventsQueue => _generalEventsQueue;
+
+		public FinishedEventsQueue FinishedEventsQueue => _finishedEventsQueue;
 
 		private void ReadConfigurationFile()
 		{
@@ -93,8 +104,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		public TfsEventManager EventManager => _eventManager;
-
 		private void StartRestServer()
 		{
 			try
@@ -121,13 +130,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private void StartPluginInternal(CancellationToken token)
 		{
-			while (!IsInitialized())
+			while (!IsInitialized() && !token.IsCancellationRequested)
 			{
-				if (token.IsCancellationRequested)
-				{
-					Log.Info("Octane initialization thread was requested to quit!");
-					break;
-				}
 				try
 				{
 					TfsApis tfsApis = ConnectionCreator.CreateTfsConnection(_connectionDetails);
@@ -142,7 +146,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				catch (Exception ex)
 				{
-					Log.Error($"Error initializing octane plugin : {ex.Message}", ex);
+					Log.Error($"Error in StartPlugin : {ex.Message}", ex);
 					if (_eventManager != null)
 					{
 						_eventManager.ShutDown();

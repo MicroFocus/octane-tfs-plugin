@@ -120,7 +120,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 				{
 					Thread.Sleep(5000);
 					configurationFileChangedTask = null;
-					Log.Info($"Configuration changed on FS : {e.ChangeType}");
+					Log.Info($"Configuration changed on FileSystem");
 					ConfigurationChanged?.Invoke(sender, e);
 				});
 			}
