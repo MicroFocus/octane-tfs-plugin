@@ -11,6 +11,7 @@ using System.Reflection;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using System.Text;
 using MicroFocus.Ci.Tfs.Octane;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
@@ -150,6 +151,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				PluginManager.GetInstance().StopPlugin();
 				return "Stopped";
 			};
+
+		    Get["/version"] = _ => Helpers.GetPluginVersion();
 
 		}
 
