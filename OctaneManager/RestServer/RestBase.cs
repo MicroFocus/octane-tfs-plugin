@@ -1,17 +1,17 @@
 ﻿using log4net;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Ci.Tfs.Octane;
 using Nancy;
 using Nancy.Extensions;
 using Nancy.Responses;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using System.Text;
-using MicroFocus.Ci.Tfs.Octane;
-
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 {
@@ -19,7 +19,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 	{
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public static event EventHandler<CiEvent> BuildEvent;
+		private static string PATH_TO_RESOURCE = "MicroFocus.Adm.Octane.CiPlugins.Tfs.Core";
 
 		public RestBase()
 		{
@@ -34,7 +34,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 			Post["/build-event/"] = _ =>
 			{
-				HandleBuildEvent();
+				if (RunModeManager.GetInstance().RunMode == PluginRunMode.ConsoleApp)
+				{
+					HandleBuildEvent();
+				}
+
 				return "Received";
 			};
 
@@ -92,7 +96,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			Get["/config", RestrictAccessFromLocalhost] = _ =>
 			{
 				var assembly = Assembly.GetExecutingAssembly();
-				var resourceName = "MicroFocus.Ci.Tfs.Octane.RestServer.Views.config.html";
+				var resourceName = $"{PATH_TO_RESOURCE}.RestServer.Views.config.html";
 				string result;
 				using (Stream stream = assembly.GetManifestResourceStream(resourceName))
 				using (StreamReader reader = new StreamReader(stream))
@@ -122,7 +126,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			Get["/resources/{resourceName}"] = parameters =>
 			{
 				var assembly = Assembly.GetExecutingAssembly();
-				var resourceName = $"MicroFocus.Ci.Tfs.Octane.RestServer.Views.Resources.{parameters.resourceName}";
+				var resourceName = $"{PATH_TO_RESOURCE}.RestServer.Views.Resources.{parameters.resourceName}";
 				Stream stream = assembly.GetManifestResourceStream(resourceName);
 				if (stream == null)
 				{
@@ -151,27 +155,23 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				return "Stopped";
 			};
 
-			Post["/clear-event-queues", RestrictAccessFromLocalhost] = _ =>
+			Post["/queues/clear", RestrictAccessFromLocalhost] = _ =>
 			{
-				Log.Debug("Clear event queues requested");
-				PluginManager.GetInstance().EventManager.ClearQueues();
-				return "Cleared";
+				var queueStatus = GetQueueStatus();
+				string json = JsonHelper.SerializeObject(queueStatus, true);
+				Log.Debug($"Clear event queues requested : {json}");
+
+				PluginManager.GetInstance().GeneralEventsQueue.Clear();
+				PluginManager.GetInstance().FinishedEventsQueue.Clear();
+				return $"Cleared {json}";
 			};
 
-			Get["/event-queue-status"] = _ =>
+			Get["/queues/status"] = _ =>
 			{
-				if (PluginManager.GetInstance().IsInitialized())
-				{
-					var queueStatus = PluginManager.GetInstance().EventManager.GetQueueStatus();
-					string json = JsonHelper.SerializeObject(queueStatus, true);
-					return json;
-				}
-				else
-				{
-					return "Plugin is not active";
-				}
+				var queueStatus = GetQueueStatus();
+				string json = JsonHelper.SerializeObject(queueStatus, true);
+				return $"{DateTime.Now} : {json}";
 			};
-
 		}
 
 		private bool RestrictAccessFromLocalhost(NancyContext ctx)
@@ -250,13 +250,26 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				var body = Context.Request.Body.AsString();
 				Log.Debug($"Received build event : {body}");
 				var buildEvent = JsonHelper.DeserializeObject<TfsBuildEvent>(body);
-				var ciEvent = buildEvent.ToCiEvent();
-				BuildEvent?.Invoke(this, ciEvent);
+				var finishEvent = buildEvent.ToCiEvent();
+
+				var startEvent = finishEvent.Clone();
+				startEvent.EventType = CiEventType.Started;
+
+				PluginManager.GetInstance().GeneralEventsQueue.Add(startEvent);
+				PluginManager.GetInstance().GeneralEventsQueue.Add(finishEvent);
 			}
 			catch (Exception ex)
 			{
 				Log.Error($"Error parsing build event body", ex);
 			}
+		}
+
+		public Dictionary<string, int> GetQueueStatus()
+		{
+			Dictionary<string, int> map = new Dictionary<string, int>();
+			map["GeneralEventsQueue"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
+			map["FinishedEventsQueue"] = PluginManager.GetInstance().FinishedEventsQueue.Count;
+			return map;
 		}
 	}
 }

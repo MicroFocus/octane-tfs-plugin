@@ -1,23 +1,24 @@
-﻿using System;
-using System.Reflection;
-using log4net;
+﻿using log4net;
 using log4net.Config;
-using MicroFocus.Ci.Tfs.Octane;
-using System.Threading;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Ci.Tfs.Octane;
+using System;
+using System.Reflection;
+using System.Threading;
 
 [assembly: XmlConfigurator(ConfigFile = @"agent-log-config.xml", Watch = true)]
 namespace TfsConsolePluginRunner
 {
-    class Program
+	class Program
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         static void Main(string[] args)
         {
+			Log.Info("");
+			Log.Info("");
 			Log.Info("******************************************************************");
-			Log.Info("***************OctaneTfsCConsolePlugin started********************");
+			Log.Info("***************OctaneTfsConsolePlugin started********************");
 			Log.Info("******************************************************************");
 
             /*if (!ConfigurationManager.ConfigurationExists())

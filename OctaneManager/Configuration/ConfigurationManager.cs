@@ -45,13 +45,20 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 				throw new FileNotFoundException($"Configuration file {fullConfigFilePath} was not found!");
 			}
 
-			var text = File.ReadAllText(fullConfigFilePath);
+			string configJson = null;
+			using (FileStream fileStream = new FileStream(fullConfigFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+			{
+				using (StreamReader streamReader = new StreamReader(fileStream))
+				{
+					configJson = streamReader.ReadToEnd();
+				}
+			}
 
-			ConnectionDetails resForLog = JsonHelper.DeserializeObject<ConnectionDetails>(text);
+			ConnectionDetails resForLog = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
 			resForLog.RemoveSensitiveInfo();
 			Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(resForLog, true)}");
 
-			ConnectionDetails res = JsonHelper.DeserializeObject<ConnectionDetails>(text);
+			ConnectionDetails res = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
 			return res;
 		}
 
@@ -113,7 +120,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 				{
 					Thread.Sleep(5000);
 					configurationFileChangedTask = null;
-					Log.Info($"Configuration changed on FS : {e.ChangeType}");
+					Log.Info($"Configuration changed on FileSystem");
 					ConfigurationChanged?.Invoke(sender, e);
 				});
 			}

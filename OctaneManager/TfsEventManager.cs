@@ -5,6 +5,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
@@ -19,34 +20,29 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
 	public class TfsEventManager
 	{
-		private const int DEFAULT_SLEEP_time = 2 * 1000; //2 seconds
+		private const int DEFAULT_SLEEP_TIME = 2 * 1000; //2 seconds
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private OctaneApis _octaneApis;
 		private TfsApis _tfsApis;
 
-		private static List<CiEvent> _allEventList = new List<CiEvent>();
-		private static Queue<CiEvent> _finishEventQueue = new Queue<CiEvent>();
 		private CancellationTokenSource _cancellationToken = new CancellationTokenSource();
 		private Task _generalEventsThread;
 		private Task _finishEventsThread;
+		GeneralEventsQueue _generalEventsQueue;
+		FinishedEventsQueue _finishedEventsQueue;
 
 		public TfsEventManager(TfsApis tfsApis, OctaneApis octaneApis)
 		{
 			_octaneApis = octaneApis;
 			_tfsApis = tfsApis;
-
-
-
 			Log.Debug("TfsEventManager - created");
 		}
 
 		public void Start()
 		{
-			if (RunModeManager.GetInstance().RunMode == PluginRunMode.ConsoleApp)
-			{
-				RestBase.BuildEvent += HandleFinishEventFromWebHook;
-			}
+			_generalEventsQueue = PluginManager.GetInstance().GeneralEventsQueue;
+			_finishedEventsQueue = PluginManager.GetInstance().FinishedEventsQueue;
 
 			_generalEventsThread = Task.Factory.StartNew(() => ProcessGeneralEvents(_cancellationToken.Token), TaskCreationOptions.LongRunning);
 			_finishEventsThread = Task.Factory.StartNew(() => ProcessFinishEvents(_cancellationToken.Token), TaskCreationOptions.LongRunning);
@@ -60,53 +56,58 @@ namespace MicroFocus.Ci.Tfs.Octane
 			{
 				try
 				{
-					while (_finishEventQueue.Count > 0)
+					while (!_finishedEventsQueue.IsEmpty())
 					{
-						var ciEvent = _finishEventQueue.Dequeue();
+						var ciEvent = _finishedEventsQueue.Peek();
 						//handle scm event
 						var scmData = ScmEventHelper.GetScmData(_tfsApis, ciEvent.BuildInfo);
 						if (scmData != null)
 						{
-							var scmEvent = CreateScmEvent(ciEvent, scmData);
-							AddEvent(scmEvent);
 							Log.Debug($"Build {ciEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
+							var scmEvent = CreateScmEvent(ciEvent, scmData);
+							_generalEventsQueue.Add(scmEvent);
 						}
 						else
 						{
 							Log.Debug($"Build {ciEvent.BuildInfo} - scm data is empty");
 						}
 
-
-						//send test result
+						//handle test result
 						SendTestResults(ciEvent.BuildInfo, ciEvent.Project, ciEvent.BuildId);
+
+						//remove item from _finishedEventsQueue
+						_finishedEventsQueue.Dequeue();
 					}
-				}
-				catch (InvalidCredentialException e)
-				{
-					Log.Error($"ProcessFinishEvents failed : {e.Message}");
-					PluginManager.GetInstance().RestartPlugin();
 				}
 				catch (Exception e)
 				{
-					Log.Error($"ProcessFinishEvents failed : {e.Message}", e);
+					if (e is ServerUnavailableException || e is InvalidCredentialException)
+					{
+						Log.Error($"ProcessFinishEvents failed : {e.Message}");
+						PluginManager.GetInstance().RestartPlugin();
+					}
+					else
+					{
+						Log.Error($"ProcessFinishEvents failed : {e.Message}", e);
+					}
 				}
 
-
-				Thread.Sleep(DEFAULT_SLEEP_time);//wait before next loop
+				Thread.Sleep(DEFAULT_SLEEP_TIME);//wait before next loop
 			}
 			Log.Debug("FinishEvents task - finished");
 		}
 
 		private void ProcessGeneralEvents(CancellationToken token)
 		{
+
 			Log.Debug("GeneralEvent task - started");
 			while (!token.IsCancellationRequested)
 			{
 				try
 				{
-					if (_allEventList.Count > 0)
+					if (!_generalEventsQueue.IsEmpty())
 					{
-						List<CiEvent> snapshot = new List<CiEvent>(_allEventList);
+						IList<CiEvent> snapshot = _generalEventsQueue.GetSnapshot();
 						_octaneApis.SendEvents(snapshot);
 
 						//post-send treating
@@ -118,67 +119,46 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 							//2.Add finish events to special list for futher handling : scm event and test result sending
 							bool isFinishEvent = ciEvent.EventType.Equals(CiEventType.Finished);
-							_finishEventQueue.Enqueue(ciEvent);
-
+							if (isFinishEvent)
+							{
+								_finishedEventsQueue.Add(ciEvent);
+							}
+							
 							//3.Clear original list
-							_allEventList.Remove(ciEvent);
+							_generalEventsQueue.Remove(ciEvent);
 						}
 					}
 				}
 				catch (Exception e)
 				{
-					Log.Error($"ProcessGeneralEvents failed : {e.Message}", e);
 					if (e is ServerUnavailableException || e is InvalidCredentialException)
 					{
+						Log.Error($"ProcessGeneralEvents failed : {e.Message}");
 						PluginManager.GetInstance().RestartPlugin();
 						continue;
 					}
+					else
+					{
+						Log.Error($"ProcessGeneralEvents failed : {e.Message}", e);
+					}
 				}
 
-				Thread.Sleep(DEFAULT_SLEEP_time);//wait before next loop
+				Thread.Sleep(DEFAULT_SLEEP_TIME);//wait before next loop
 			}
 			Log.Debug("GeneralEvents task - finished");
 		}
 
-		public void AddEvent(CiEvent ciEvent)
-		{
-			_allEventList.Add(ciEvent);
-		}
-
-		public void ClearQueues()
-		{
-			_allEventList.Clear();
-			_finishEventQueue.Clear();
-		}
 
 		public void ShutDown()
 		{
-			RestBase.BuildEvent -= HandleFinishEventFromWebHook;
 			_cancellationToken.Cancel();
 			Log.Debug("TfsEventManager - stopped");
-		}
-
-		public dynamic GetQueueStatus()
-		{
-			Dictionary<string, int> map = new Dictionary<string, int>();
-			map["allEventList"] = _allEventList.Count;
-			map["finishEventQueue"] = _finishEventQueue.Count;
-			return map;
 		}
 
 		public void WaitShutdown()
 		{
 			_generalEventsThread.Wait();
 			_finishEventsThread.Wait();
-		}
-
-		private void HandleFinishEventFromWebHook(object sender, CiEvent finishEvent)
-		{
-			var startEvent = finishEvent.Clone();
-			startEvent.EventType = CiEventType.Started;
-
-			AddEvent(startEvent);
-			AddEvent(finishEvent);
 		}
 
 		private CiEvent CreateScmEvent(CiEvent finishEvent, ScmData scmData)
