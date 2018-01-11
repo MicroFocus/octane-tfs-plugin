@@ -21,12 +21,12 @@ namespace TfsConsolePluginRunner
 			Log.Info("***************OctaneTfsConsolePlugin started********************");
 			Log.Info("******************************************************************");
 
-            /*if (!ConfigurationManager.ConfigurationExists())
+            if (!ConfigurationManager.ConfigurationExists())
             {
                 ConfigurationManager.WriteConfig(ConfigFileGenerator.GenerateConfig());
-            }*/
+            }
 
-			RunModeManager.GetInstance().RunMode = PluginRunMode.ConsoleApp;
+            RunModeManager.GetInstance().RunMode = PluginRunMode.ConsoleApp;
 			PluginManager pluginManager = PluginManager.GetInstance();
 			pluginManager.StartPlugin();
 			Console.WriteLine("TFS plugin is running , press any key to exit...");

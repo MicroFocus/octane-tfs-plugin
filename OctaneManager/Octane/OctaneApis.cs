@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Web;
+using MicroFocus.Ci.Tfs.Octane.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 {
@@ -23,7 +24,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 		private const string API_VERSION = "1";
 		private const string SDK_VERSION = "1";
-		private const string PLUGIN_VERSION = "1";
+		private string PLUGIN_VERSION = "1";
 		private const string PLUGIN_TYPE = "TFS";
 
 		private RestConnector _restConnector;
@@ -33,7 +34,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 		{
 			_restConnector = restConnector;
 			_connectionDetails = connectionDetails;
-		}
+            PLUGIN_VERSION = Helpers.GetPluginVersion();
+        }
 
 		public string PluginInstanceId
 		{

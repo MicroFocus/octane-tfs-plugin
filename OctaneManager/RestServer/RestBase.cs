@@ -172,6 +172,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				string json = JsonHelper.SerializeObject(queueStatus, true);
 				return $"{DateTime.Now} : {json}";
 			};
+		    Get["/version"] = _ => Helpers.GetPluginVersion();
+
 		}
 
 		private bool RestrictAccessFromLocalhost(NancyContext ctx)
