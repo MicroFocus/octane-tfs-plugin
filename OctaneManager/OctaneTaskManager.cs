@@ -1,5 +1,5 @@
-﻿using Hpe.Nga.Api.Core.Connector.Exceptions;
-using log4net;
+﻿using log4net;
+using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;

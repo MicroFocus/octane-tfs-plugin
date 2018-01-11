@@ -1,12 +1,11 @@
-﻿using Hpe.Nga.Api.Core.Connector.Exceptions;
-using log4net;
+﻿using log4net;
+using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
