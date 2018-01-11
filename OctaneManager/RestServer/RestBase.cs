@@ -151,7 +151,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			Post["/stop", RestrictAccessFromLocalhost] = _ =>
 			{
 				Log.Debug("Plugin stop requested");
-				PluginManager.GetInstance().StopPlugin();
+				PluginManager.GetInstance().StopPlugin(false);
 				return "Stopped";
 			};
 
