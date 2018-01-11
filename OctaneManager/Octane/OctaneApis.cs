@@ -1,4 +1,4 @@
-﻿using Hpe.Nga.Api.Core.Connector;
+﻿using MicroFocus.Adm.Octane.Api.Core.Connector;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity;

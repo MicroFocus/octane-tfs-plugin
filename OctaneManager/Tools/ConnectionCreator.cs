@@ -1,5 +1,6 @@
-﻿using Hpe.Nga.Api.Core.Connector;
+﻿
 using log4net;
+using MicroFocus.Adm.Octane.Api.Core.Connector;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
