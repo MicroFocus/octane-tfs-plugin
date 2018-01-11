@@ -22,8 +22,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConnectionDetails _connectionDetails;
 
-		GeneralEventsQueue _generalEventsQueue;
-		FinishedEventsQueue _finishedEventsQueue;
+		private GeneralEventsQueue _generalEventsQueue;
+		private FinishedEventsQueue _finishedEventsQueue;
 
 		private TfsEventManager _eventManager;
 		private OctaneTaskManager _taskManager;
@@ -48,7 +48,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			try
 			{
-				_connectionDetails = ConfigurationManager.Read();
+				ConnectionDetails  tempConf = ConfigurationManager.Read();
+				ConnectionCreator.CheckMissingValues(tempConf);
+				_connectionDetails = tempConf;
 			}
 			catch (Exception e)
 			{
@@ -117,7 +119,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Info("StartPlugin");
 			if (_connectionDetails == null)
 			{
-				Log.Error("Cannot StartPlugin as configuration file is not loaded");
+				Log.Error("Cannot StartPlugin as configuration file is not loaded properly");
 				return;
 			}
 
