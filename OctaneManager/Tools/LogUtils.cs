@@ -53,7 +53,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			try
 			{
 				//find config file to load
-				var logConfigFileName = "OctaneTFSPluginLogConfig.xml";
+				var logConfigFileName = "MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin.log4net.config.xml";
 
 				var dllPath = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
 				var pluginsDirectory = Path.GetDirectoryName(dllPath);
