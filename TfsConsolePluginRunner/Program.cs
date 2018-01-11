@@ -1,5 +1,6 @@
 ﻿using log4net;
 using log4net.Config;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Ci.Tfs.Octane;
 using System;
