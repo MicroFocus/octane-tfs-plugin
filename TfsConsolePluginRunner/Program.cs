@@ -6,7 +6,7 @@ using System;
 using System.Reflection;
 using System.Threading;
 
-[assembly: XmlConfigurator(ConfigFile = @"agent-log-config.xml", Watch = true)]
+[assembly: XmlConfigurator(ConfigFile = @"AlmOctaneTfsPluginConsoleRunner.log4net.config.xml", Watch = true)]
 namespace TfsConsolePluginRunner
 {
 	class Program
