@@ -36,7 +36,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			_octaneApis = octaneApis;
 			_tfsApis = tfsApis;
-			Log.Debug("TfsEventManager - created");
 		}
 
 		public void Start()
@@ -151,8 +150,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void ShutDown()
 		{
-			_cancellationToken.Cancel();
-			Log.Debug("TfsEventManager - stopped");
+			if (!_cancellationToken.IsCancellationRequested)
+			{
+				_cancellationToken.Cancel();
+				Log.Debug("TfsEventManager - stopped");
+			}
 		}
 
 		public void WaitShutdown()

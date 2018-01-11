@@ -67,25 +67,49 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Info("PluginManager Shutdown");
 			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
 			StopRestServer();
-			StopPlugin();
+			StopPlugin(false);
 		}
 
-		public void StopPlugin()
+
+		private void StopAllThreads()
 		{
 			_cancellationTokenSource.Cancel();
-			_octaneInitializationThread = null;
 
 			if (_eventManager != null)
 			{
 				_eventManager.ShutDown();
-				_eventManager = null;
 			}
 
 			if (_taskManager != null)
 			{
 				_taskManager.ShutDown();
-				_taskManager = null;
 			}
+		}
+
+		public void StopPlugin(bool waitShutdown)
+		{
+			StopAllThreads();
+			if (waitShutdown)
+			{
+				if (_octaneInitializationThread != null)
+				{
+					_octaneInitializationThread.Wait();
+				}
+
+				if (_eventManager != null)
+				{
+					_eventManager.WaitShutdown();
+				}
+
+				if (_taskManager != null)
+				{
+					_taskManager.WaitShutdown();
+				}
+			}
+
+			_octaneInitializationThread = null;
+			_taskManager = null;
+			_eventManager = null;
 		}
 
 		public void StartPlugin()
@@ -185,8 +209,14 @@ namespace MicroFocus.Ci.Tfs.Octane
 		public void RestartPlugin()
 		{
 			Log.Info($"Plugin restarted");
-			StopPlugin();
-			StartPlugin();
+
+			StopAllThreads();
+			Task.Factory.StartNew(() =>
+			{
+				StopPlugin(true);
+				StartPlugin();
+			});
+			
 		}
 
 		public void Dispose()
