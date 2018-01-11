@@ -7,7 +7,7 @@
     <ProjectGuid>{9D6FDA4F-F77B-44DB-9895-8B020690EF12}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MicroFocus.Ci.Tfs.Octane</RootNamespace>
+    <RootNamespace>MicroFocus.Adm.Octane.CiPlugins.Tfs.Core</RootNamespace>
     <AssemblyName>MicroFocus.Adm.Octane.CiPlugins.Tfs.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -60,7 +60,8 @@
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
-    <Compile Include="Queues\EventQueueManager.cs" />
+    <Compile Include="Queue\FinishedEventsQueue.cs" />
+    <Compile Include="Queue\GeneralEventsQueue.cs" />
     <Compile Include="TfsEventManager.cs" />
     <Compile Include="Tools\ConnectionCreator.cs" />
     <Compile Include="Dto\Events\CiEvent.cs" />

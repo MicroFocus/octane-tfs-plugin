@@ -43,13 +43,15 @@ namespace MicroFocus.Ci.Tfs.Octane
 			_tfsApis = tfsApis;
 			_octaneApis = octaneApis;
 			_pollingGetTimeout = pollingTimeout;
-			Log.Debug("OctaneTaskManager - created");
 		}
 
 		public void ShutDown()
 		{
-			_pollTasksCancellationToken.Cancel();
-			Log.Debug("OctaneTaskManager - stopped");
+			if (!_pollTasksCancellationToken.IsCancellationRequested)
+			{
+				_pollTasksCancellationToken.Cancel();
+				Log.Debug("OctaneTaskManager - stopped");
+			}
 		}
 
 		public void WaitShutdown()
@@ -84,9 +86,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 						//known exception
 						//Log.Debug($"Task polling - no task received");
 					}
-					else if (myEx is ServerUnavailableException)
+					else if (myEx is ServerUnavailableException || myEx is InvalidCredentialException)
 					{
-						Log.Error($"Octane server is unavailable");
+						Log.Error($"Task polling exception with connection fail : {myEx.Message}");
 						PluginManager.GetInstance().RestartPlugin();
 					}
 					else
@@ -126,10 +128,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 				foreach (var octaneTask in octaneTasks)
 				{
-					var start = DateTime.Now;
 					var taskOutput = ExecuteTask(octaneTask?.ResultUrl);
-					var end = DateTime.Now;
-					Log.Debug($"Task executed in {(long)((end - start).TotalMilliseconds)} ms");
 
 					//prepare response
 					int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
@@ -151,6 +150,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public string ExecuteTask(Uri taskUrl)
 		{
+			var start = DateTime.Now;
 			var taskType = ParseTaskUriToTaskType(taskUrl);
 			string result;
 			switch (taskType)
@@ -177,6 +177,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 					break;
 			}
 
+			var end = DateTime.Now;
+			Log.Debug($"Task {taskType} executed in {(long)((end - start).TotalMilliseconds)} ms");
 			return result;
 		}
 

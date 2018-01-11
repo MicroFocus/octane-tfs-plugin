@@ -72,7 +72,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			}
 			catch (Exception e)
 			{
-				Log.Error($"{buildInfo} - Failed to create scm data : {e.Message}");
+				Log.Error($"Build {buildInfo} - failed to create scm data : {e.Message}");
 				return null;
 			}
 		}

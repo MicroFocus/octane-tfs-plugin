@@ -6,9 +6,7 @@ using System.Linq;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 {
-
-
-	public class NancyGzipCompression : IApplicationStartup
+	/*public class NancyGzipCompression : IApplicationStartup
 	{
 		public void Initialize(IPipelines pipelines)
 		{
@@ -68,7 +66,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			return false;
 		}
 
-		private static readonly List<string> ValidMimes = new List<string> { "text/plain", "application/json", "application/javascript" };
+		private static readonly List<string> ValidMimes = new List<string> {"application/json", "application/javascript" };// "text/plain", 
 
 		private static bool ResponseIsCompatibleMimeType(Response response)
 		{
@@ -79,5 +77,5 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 		{
 			return request.Headers.AcceptEncoding.Any(x => x.Contains("gzip"));
 		}
-	}
+	}*/
 }

@@ -8,6 +8,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -21,6 +22,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConnectionDetails _connectionDetails;
 
+		private GeneralEventsQueue _generalEventsQueue;
+		private FinishedEventsQueue _finishedEventsQueue;
+
 		private TfsEventManager _eventManager;
 		private OctaneTaskManager _taskManager;
 
@@ -28,16 +32,25 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private PluginManager()
 		{
+			Thread.Sleep(5000);
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
 			ReadConfigurationFile();
 			StartRestServer();
+			_generalEventsQueue = new GeneralEventsQueue();
+			_finishedEventsQueue = new FinishedEventsQueue();
 		}
+
+		public GeneralEventsQueue GeneralEventsQueue => _generalEventsQueue;
+
+		public FinishedEventsQueue FinishedEventsQueue => _finishedEventsQueue;
 
 		private void ReadConfigurationFile()
 		{
 			try
 			{
-				_connectionDetails = ConfigurationManager.Read();
+				ConnectionDetails  tempConf = ConfigurationManager.Read();
+				ConnectionCreator.CheckMissingValues(tempConf);
+				_connectionDetails = tempConf;
 			}
 			catch (Exception e)
 			{
@@ -56,25 +69,49 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Info("PluginManager Shutdown");
 			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
 			StopRestServer();
-			StopPlugin();
+			StopPlugin(false);
 		}
 
-		public void StopPlugin()
+
+		private void StopAllThreads()
 		{
 			_cancellationTokenSource.Cancel();
-			_octaneInitializationThread = null;
 
 			if (_eventManager != null)
 			{
 				_eventManager.ShutDown();
-				_eventManager = null;
 			}
 
 			if (_taskManager != null)
 			{
 				_taskManager.ShutDown();
-				_taskManager = null;
 			}
+		}
+
+		public void StopPlugin(bool waitShutdown)
+		{
+			StopAllThreads();
+			if (waitShutdown)
+			{
+				if (_octaneInitializationThread != null)
+				{
+					_octaneInitializationThread.Wait();
+				}
+
+				if (_eventManager != null)
+				{
+					_eventManager.WaitShutdown();
+				}
+
+				if (_taskManager != null)
+				{
+					_taskManager.WaitShutdown();
+				}
+			}
+
+			_octaneInitializationThread = null;
+			_taskManager = null;
+			_eventManager = null;
 		}
 
 		public void StartPlugin()
@@ -82,7 +119,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Info("StartPlugin");
 			if (_connectionDetails == null)
 			{
-				Log.Error("Cannot StartPlugin as configuration file is not loaded");
+				Log.Error("Cannot StartPlugin as configuration file is not loaded properly");
 				return;
 			}
 
@@ -92,8 +129,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 				_octaneInitializationThread = Task.Factory.StartNew(() => StartPluginInternal(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
 			}
 		}
-
-		public TfsEventManager EventManager => _eventManager;
 
 		private void StartRestServer()
 		{
@@ -121,13 +156,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private void StartPluginInternal(CancellationToken token)
 		{
-			while (!IsInitialized())
+			while (!IsInitialized() && !token.IsCancellationRequested)
 			{
-				if (token.IsCancellationRequested)
-				{
-					Log.Info("Octane initialization thread was requested to quit!");
-					break;
-				}
 				try
 				{
 					TfsApis tfsApis = ConnectionCreator.CreateTfsConnection(_connectionDetails);
@@ -142,7 +172,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				catch (Exception ex)
 				{
-					Log.Error($"Error initializing octane plugin : {ex.Message}", ex);
+					Log.Error($"Error in StartPlugin : {ex.Message}", ex);
 					if (_eventManager != null)
 					{
 						_eventManager.ShutDown();
@@ -180,8 +210,15 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void RestartPlugin()
 		{
-			StopPlugin();
-			StartPlugin();
+			Log.Info($"Plugin restarted");
+
+			StopAllThreads();
+			Task.Factory.StartNew(() =>
+			{
+				StopPlugin(true);
+				StartPlugin();
+			});
+			
 		}
 
 		public void Dispose()

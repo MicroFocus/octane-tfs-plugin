@@ -90,7 +90,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 		public static string GenerateOctaneJobCiId(string collectionName, string projectId, string buildDefId)
 		{
-			var id = $"{collectionName.Replace(" ", "-")}.{projectId}.{buildDefId}";
+			var id = $"{collectionName.Replace(" ", "-")}.{projectId}.{buildDefId}".ToLower();
 			return id;
 		}
 

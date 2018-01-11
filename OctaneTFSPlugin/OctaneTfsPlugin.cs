@@ -12,29 +12,24 @@ using System.Reflection;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
-	public class OctaneTfsPlugin : ISubscriber, IDisposable
+	public class OctaneTfsPlugin : ISubscriber
 	{
 		private static string PLUGIN_DISPLAY_NAME = "OctaneTfsPlugin";
 
-		
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static PluginManager _pluginManager;
-		private static int instanceCount;
 
 		static OctaneTfsPlugin()
 		{
 			LogUtils.ConfigureLog4NetForPluginMode();
-			_pluginManager = PluginManager.GetInstance();
-			_pluginManager.StartPlugin();
+			Log.Info("");
+			Log.Info("");
 			Log.Info("******************************************************************");
 			Log.Info("***************OctaneTfsPlugin started****************************");
 			Log.Info("******************************************************************");
-		}
 
-		public OctaneTfsPlugin()
-		{
-			instanceCount++;
-			Log.Debug($"OctaneTfsPlugin ctor, new instance count {instanceCount}");
+			_pluginManager = PluginManager.GetInstance();
+			_pluginManager.StartPlugin();
 		}
 
 		public Type[] SubscribedTypes()
@@ -49,6 +44,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 		}
 
 		public string Name => PLUGIN_DISPLAY_NAME;
+
 		public SubscriberPriority Priority => SubscriberPriority.Normal;
 
 		public EventNotificationStatus ProcessEvent(IVssRequestContext requestContext, NotificationType notificationType,
@@ -62,45 +58,27 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 			{
 				BuildUpdatedEvent updatedEvent = (BuildUpdatedEvent)notificationEventArgs;
 				Build build = updatedEvent.Build;
-				Log.Info($"ProcessEvent \"{notificationEventArgs.GetType().Name}\" for build {updatedEvent.BuildId}");
+				Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for build {updatedEvent.BuildId}");
 
-				if (_pluginManager.IsInitialized())
+				CiEvent ciEvent = CiEventUtils.ToCiEvent(build);
+				if (notificationEventArgs is BuildStartedEvent)
 				{
-					if (notificationEventArgs is BuildStartedEvent)
-					{
-						CiEvent startedEvent = CiEventUtils.ToCiEvent(build);
-						startedEvent.EventType = CiEventType.Started;
-						_pluginManager.EventManager.ReportEventAsync(startedEvent);
-					}
-					else if (notificationEventArgs is BuildCompletedEvent)
-					{
-						CiEvent finishEvent = CiEventUtils.ToCiEvent(build);
-						finishEvent.EventType = CiEventType.Finished;
-						_pluginManager.EventManager.ReportEventAsync(finishEvent);
-					}
+					ciEvent.EventType = CiEventType.Started;
 				}
-				else
+				else if (notificationEventArgs is BuildCompletedEvent)
 				{
-					Log.Info($"ProcessEvent cancelled as Octane is not configured.");
+					ciEvent.EventType = CiEventType.Finished;
 				}
+
+				_pluginManager.GeneralEventsQueue.Add(ciEvent);
 			}
 			catch (Exception e)
 			{
-				var msg = $"ProcessEvent \"{notificationEventArgs.GetType().ToString()}\" failed {e.Message}";
+				var msg = $"ProcessEvent {notificationEventArgs.GetType().Name} failed {e.Message}";
 				Log.Error(msg, e);
 				TeamFoundationApplicationCore.LogException(requestContext, msg, e);
 			}
 			return EventNotificationStatus.ActionPermitted;
-		}
-
-		public void Dispose()
-		{
-			instanceCount--;
-			Log.Debug($"OctaneTfsPlugin disposing, new instance count {instanceCount}");
-			if (instanceCount == 0)
-			{
-				//_octaneManagerInitializer.Stop();
-			}
 		}
 	}
 }
