@@ -11,7 +11,11 @@ namespace MicroFocus.Ci.Tfs.Octane.Tools
     {
         public static string GetPluginVersion()
         {
-            return Assembly.GetEntryAssembly().GetName().Version.ToString();            
+            var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+
+            return $"{assemblyName}<br>{version}";
         }
     }
 }
