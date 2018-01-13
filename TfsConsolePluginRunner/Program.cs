@@ -5,6 +5,7 @@ using MicroFocus.Ci.Tfs.Octane;
 using System;
 using System.Reflection;
 using System.Threading;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 
 [assembly: XmlConfigurator(ConfigFile = @"agent-log-config.xml", Watch = true)]
 namespace TfsConsolePluginRunner

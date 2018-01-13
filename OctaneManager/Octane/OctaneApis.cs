@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Web;
-using MicroFocus.Ci.Tfs.Octane.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 {
