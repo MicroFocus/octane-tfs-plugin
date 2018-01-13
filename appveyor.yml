@@ -19,6 +19,8 @@ install:
 build:
   project: OctaneTFSPlugin.sln
   verbosity: minimal
+after_build:
+- cmd: C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe" OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj /Build Release
 test: off
 artifacts:
 - path: .\TfsConsolePluginRunner\bin\
