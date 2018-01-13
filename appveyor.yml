@@ -13,7 +13,7 @@ install:
 
     Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
 
-    git submodule -q update --init --recursive
+    git submodule update --init --force --remote
 
     nuget restore OctaneTFSPlugin.sln
 build:
