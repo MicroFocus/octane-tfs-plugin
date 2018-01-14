@@ -6,6 +6,7 @@ using MicroFocus.Ci.Tfs.Octane;
 using System;
 using System.Reflection;
 using System.Threading;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 
 [assembly: XmlConfigurator(ConfigFile = @"AlmOctaneTfsPluginConsoleRunner.log4net.config.xml", Watch = true)]
 namespace TfsConsolePluginRunner

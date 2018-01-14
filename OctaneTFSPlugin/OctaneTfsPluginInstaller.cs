@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
@@ -16,13 +17,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         {
             base.Install(stateSaver);
 
+            
 
             var octaneServerUrl = Context.Parameters["OctaneServerUrl"];
             var clientId = Context.Parameters["ClientId"];
             var clientSecret = Context.Parameters["ClientSecret"];
             var instanceId = Context.Parameters["InstanceId"];
             var pat = Context.Parameters["PAT"];
-            var tfsLocation = Context.Parameters["TfsLocation"];
+            var tfsLocation = ConnectionCreator.GetTfsLocationFromHostName();
             var conDetails =
                 new ConnectionDetails(octaneServerUrl, clientId, clientSecret, tfsLocation, instanceId)
                 {
