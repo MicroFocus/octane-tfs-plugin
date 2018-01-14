@@ -24,7 +24,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 		private const string API_VERSION = "1";
 		private const string SDK_VERSION = "1";
 		private string PLUGIN_VERSION = "1";
-		private const string PLUGIN_TYPE = "TFS";
+		private const string PLUGIN_TYPE = "tfs";
 
 		private RestConnector _restConnector;
 		private ConnectionDetails _connectionDetails;
