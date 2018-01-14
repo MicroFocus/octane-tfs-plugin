@@ -1,4 +1,4 @@
-![HPE LOGO](https://www.microfocus.com/brandcentral/microfocus/img/mf-logo-download.png)
+![HPE LOGO](https://upload.wikimedia.org/wikipedia/commons/4/4e/MicroFocus_logo_blue.png)
 
 # ALM Octane plugin for Microsoft Team Foundation Server CI                        
 
