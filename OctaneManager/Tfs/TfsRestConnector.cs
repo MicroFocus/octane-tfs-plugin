@@ -8,7 +8,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Security.Authentication;
 using System.Text;
 using System.Web;
 
@@ -111,7 +110,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 				}
 				else if (response.StatusCode == HttpStatusCode.Unauthorized)
 				{
-					throw new InvalidCredentialException("Validate if TFS PAT is still valid.");
+					throw new UnauthorizedAccessException("TFS PAT is not valid or does not have required permissions.");
 				}
 				else if (response.StatusCode == HttpStatusCode.NotFound)
 				{

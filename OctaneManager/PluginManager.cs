@@ -14,7 +14,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
 	public class PluginManager : IDisposable
 	{
-		private static readonly TimeSpan[] _initTimeoutArr = new TimeSpan[] { new TimeSpan(0, 0, 0, 30), new TimeSpan(0, 0, 2, 0), new TimeSpan(0, 0, 10, 0) };
+		private static readonly int[] _initTimeoutInMinutesArr = new int[] { 1, 3, 10 };
 		private int _initFailCounter = 0;
 
 		private Task _octaneInitializationThread = null;
@@ -48,7 +48,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			try
 			{
-				ConnectionDetails  tempConf = ConfigurationManager.Read();
+				ConnectionDetails tempConf = ConfigurationManager.Read();
 				ConnectionCreator.CheckMissingValues(tempConf);
 				_connectionDetails = tempConf;
 			}
@@ -188,10 +188,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 				//Sleep till next retry
 				if (!IsInitialized())
 				{
-					int initTimeoutIndex = Math.Min(((int)_initFailCounter / 3), _initTimeoutArr.Length - 1);
-					TimeSpan initTimeout = _initTimeoutArr[initTimeoutIndex];
-					Log.Info($"Wait {initTimeout.TotalSeconds} secs for next trial of initialization");
-					Thread.Sleep(initTimeout);
+					int initTimeoutIndex = Math.Min(((int)_initFailCounter / 3), _initTimeoutInMinutesArr.Length - 1);
+					int initTimeoutMinutes = _initTimeoutInMinutesArr[initTimeoutIndex];
+					Log.Info($"Wait {initTimeoutMinutes} minute(s) for next trial of initialization");
+					Thread.Sleep(initTimeoutMinutes*1000*60);
 					_initFailCounter++;
 				}
 			}
@@ -218,7 +218,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 				StopPlugin(true);
 				StartPlugin();
 			});
-			
 		}
 
 		public void Dispose()

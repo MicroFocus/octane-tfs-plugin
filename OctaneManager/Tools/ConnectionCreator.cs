@@ -96,21 +96,38 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 
 		public static OctaneApis CreateOctaneConnection(ConnectionDetails connectionDetails)
 		{
+
+			Log.Debug($"Validate connection to Octane {connectionDetails.Host} and sharedspace {connectionDetails.SharedSpace}");
+			DateTime start = DateTime.Now;
+			RestConnector restConnector = new RestConnector();
+
+			//1.validate connectivity
 			try
 			{
-				RestConnector restConnector = new RestConnector();
-				DateTime start = DateTime.Now;
-				Log.Debug($"Validate connection to Octane {connectionDetails.Host}");
-				var octaneConnected = restConnector.Connect(connectionDetails.Host, new APIKeyConnectionInfo(connectionDetails.ClientId, connectionDetails.ClientSecret));
-				DateTime end = DateTime.Now;
-				Log.Debug($"Validate connection to Octane finished in {(long)((end - start).TotalMilliseconds)} ms");
-				return new OctaneApis(restConnector, connectionDetails);
+				restConnector.Connect(connectionDetails.Host, new APIKeyConnectionInfo(connectionDetails.ClientId, connectionDetails.ClientSecret));
 			}
 			catch (Exception e)
 			{
-				var msg = "Invalid connection to Octane : " + (e.InnerException != null ? e.InnerException.Message : e.Message);
+				Exception innerException = ExceptionHelper.GetMostInnerException(e);
+				var msg = $"Invalid connection to Octane : {innerException.Message}";
 				throw new Exception(msg);
 			}
+
+			//2.validate sharedspace exist
+			try
+			{
+				string workspacesUrl = $"/api/shared_spaces/{connectionDetails.SharedSpace}/workspaces?limit=1";
+				restConnector.ExecuteGet(workspacesUrl, null);
+			}
+			catch (Exception)
+			{
+				var msg = $"Invalid connection to Octane : sharedspace {connectionDetails.SharedSpace} does not exist";
+				throw new Exception(msg);
+			}
+
+			DateTime end = DateTime.Now;
+			Log.Debug($"Validate connection to Octane finished in {(long)((end - start).TotalMilliseconds)} ms");
+			return new OctaneApis(restConnector, connectionDetails);
 		}
 	}
 }
