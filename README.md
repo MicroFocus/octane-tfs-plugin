@@ -43,7 +43,7 @@ For example, in this URL, the shared space ID is 1002:  http://myServer.myCompan
 **Team foundation server location URL**: [Machine]:8080\tfs
   This is default TFS configuration, unless was changed during TFS Installation
 
-**PAT** (TFS Personal access token)**: The token should be configured by TFS admin (see [PAT](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate) )
+**PAT (TFS Personal access token)**: The token should be configured by TFS admin (see [PAT](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate) )
 
 **After the connection is set up**, open ALM Octane, define a CI server and create pipelines.
 For details, see Integrate with your CI server in the ALM Octane Help.
