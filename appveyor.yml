@@ -25,3 +25,7 @@ test: off
 artifacts:
 - path: .\TfsConsolePluginRunner\bin\
   name: octane-tfs-plugin.$(appveyor_build_version)
+- path: .\OctaneTfsPluginSetup\Debug\
+  name: octane-tfs-plugin-setup-debug.$(appveyor_build_version)
+- path: .\OctaneTfsPluginSetup\Release\
+  name: octane-tfs-plugin-setup-release.$(appveyor_build_version)
