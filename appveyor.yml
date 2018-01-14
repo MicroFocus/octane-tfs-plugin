@@ -23,8 +23,10 @@ after_build:
 - cmd: '"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe" OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj /Build Release'
 test: off
 artifacts:
-- path: .\TfsConsolePluginRunner\bin\
+- path: .\OctaneTFSPlugin\bin\
   name: octane-tfs-plugin.$(appveyor_build_version)
+- path: .\TfsConsolePluginRunner\bin\
+  name: octane-tfs-plugin-console.$(appveyor_build_version)
 - path: .\OctaneTfsPluginSetup\Debug\
   name: octane-tfs-plugin-setup-debug.$(appveyor_build_version)
 - path: .\OctaneTfsPluginSetup\Release\
