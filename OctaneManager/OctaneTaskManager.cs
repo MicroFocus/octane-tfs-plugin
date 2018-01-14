@@ -109,6 +109,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private void HandleTasks(string taskData)
 		{
 			Log.Info($"Received tasks : {taskData}");
+			OctaneTaskResult taskResult = null;
+			OctaneTask octaneTask = null;
 			try
 			{
 				//process task
@@ -119,61 +121,91 @@ namespace MicroFocus.Ci.Tfs.Octane
 					Log.Error("Received data does not contains any valid task.");
 					return;
 				}
+				octaneTask = octaneTasks[0];
 
-				foreach (var octaneTask in octaneTasks)
-				{
-					var taskOutput = ExecuteTask(octaneTask?.ResultUrl);
-
-					//prepare response
-					int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
-					var taskResult = new OctaneTaskResult(status, octaneTask.Id, taskOutput);
-					Log.Debug($"Sending result to octane :  {taskResult.Status} - {taskResult.Body}");
-					_octaneApis.SendTaskResult(taskResult.Id.ToString(), taskResult);
-				}
-			}
-			catch (InvalidCredentialException ex)//if credentials in tfs has been changed
-			{
-				Log.Error("Failed to process task : " + ex.Message);
-				PluginManager.GetInstance().RestartPlugin();
+				int status = HttpMethodEnum.POST.Equals(octaneTask.Method) ? 201 : 200;
+				taskResult = new OctaneTaskResult(status, octaneTask.Id, "");
+				ExecuteTask(octaneTask?.ResultUrl, taskResult);
+				Log.Debug($"Sending result to octane :  {taskResult.Status} - {taskResult.Body}");
 			}
 			catch (Exception ex)
 			{
-				Log.Error("Failed to process task " + ex.Message, ex);
+
+				if (octaneTask != null)
+				{
+					taskResult.Status = 500;
+					taskResult.Body = "failed to process";
+				}
+
+
+				ExceptionHelper.HandleExceptionAndRestartIfRequired(ex, Log, "HandleTask");
+
+			}
+			finally
+			{
+				if (taskResult != null)
+				{
+					_octaneApis.SendTaskResult(taskResult.Id.ToString(), taskResult);
+				}
+
 			}
 		}
 
-		public string ExecuteTask(Uri taskUrl)
+		private void ExecuteTask(Uri taskUrl, OctaneTaskResult taskResult)
 		{
 			var start = DateTime.Now;
 			var taskType = ParseTaskUriToTaskType(taskUrl);
-			string result;
 			switch (taskType)
 			{
 				case TaskType.GetJobsList:
-					result = JsonHelper.SerializeObject(_tfsApis.GetJobsList());
+					taskResult.Body = JsonHelper.SerializeObject(_tfsApis.GetJobsList());
 					break;
 				case TaskType.GetJobDetail:
 					var jobId = taskUrl.Segments[taskUrl.Segments.Length - 1];
-					result = JsonHelper.SerializeObject(_tfsApis.GetJobDetail(jobId));
+					taskResult.Body = JsonHelper.SerializeObject(_tfsApis.GetJobDetail(jobId));
 					break;
 				case TaskType.ExecutePipelineRunRequest:
 					var joinedProjectName = taskUrl.Segments[taskUrl.Segments.Length - 2].Trim('/');
 					var buildParts = joinedProjectName.Split('.');
-					_tfsApis.QueueNewBuild(buildParts[0], buildParts[1], buildParts[2]);
-					result = "Job started";
+					QueueNewBuild(taskResult, buildParts[0], buildParts[1], buildParts[2]);
 					break;
 				case TaskType.Undefined:
 					Log.Debug($"Undefined task : {taskUrl}");
-					result = "";
 					break;
 				default:
-					result = "";
 					break;
 			}
 
 			var end = DateTime.Now;
 			Log.Debug($"Task {taskType} executed in {(long)((end - start).TotalMilliseconds)} ms");
-			return result;
+		}
+
+		private void QueueNewBuild(OctaneTaskResult taskResult, string collectionName, string projectId, string buildDefinitionId)
+		{
+			try
+			{
+				_tfsApis.QueueNewBuild(collectionName, projectId, buildDefinitionId);
+				taskResult.Body = "Job started";
+			}
+			catch (Exception e)
+			{
+				Log.Error("Failed to QueueNewBuild :" + e.Message, e);
+				if (e is UnauthorizedAccessException)
+				{
+					taskResult.Status = 403;//qc:pipeline-management-run-pipeline-failed-no-permission
+					taskResult.Body = "No permissions";
+				}
+				else if (e.Message.Contains("BuildRequestValidationFailedException") && e.Message.Contains("Could not queue the build"))
+				{
+					taskResult.Status = 503;//qc:pipeline-management-ci-is-down
+					taskResult.Body = "Agent is down";
+				}
+				else
+				{
+					taskResult.Status = 500;
+					taskResult.Body = "Failed to queue job";
+				}
+			}
 		}
 
 		private static TaskType ParseTaskUriToTaskType(Uri uriPath)

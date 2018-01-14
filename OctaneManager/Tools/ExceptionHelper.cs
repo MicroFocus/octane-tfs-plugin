@@ -13,7 +13,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 		/// <returns>True if restart was done</returns>
 		public static bool HandleExceptionAndRestartIfRequired(Exception e, ILog log, string methodName)
 		{
-			if (e is ServerUnavailableException || e is InvalidCredentialException)
+			if (e is ServerUnavailableException || e is InvalidCredentialException || e is UnauthorizedAccessException)
 			{
 				log.Error($"{methodName} failed : {e.Message}");
 				PluginManager.GetInstance().RestartPlugin();
