@@ -73,6 +73,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 				try
 				{
 					taskDef = _octaneApis.GetTasks(_pollingGetTimeout);
+					if (!string.IsNullOrEmpty(taskDef))
+					{
+						Task task = Task.Factory.StartNew(() =>
+						{
+							HandleTasks(taskDef);
+						});
+					}
 				}
 				catch (Exception ex)
 				{
@@ -86,25 +93,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 						//known exception
 						//Log.Debug($"Task polling - no task received");
 					}
-					else if (myEx is ServerUnavailableException || myEx is InvalidCredentialException)
-					{
-						Log.Error($"Task polling exception with connection fail : {myEx.Message}");
-						PluginManager.GetInstance().RestartPlugin();
-					}
 					else
 					{
-						Log.Error($"Task polling exception : {myEx.Message}");
-						Thread.Sleep(DEFAULT_POLLING_GET_TIMEOUT);//wait before next pool
-					}
-				}
-				finally
-				{
-					if (!string.IsNullOrEmpty(taskDef))
-					{
-						Task task = Task.Factory.StartNew(() =>
+						if (!ExceptionHelper.HandleExceptionAndRestartIfRequired(myEx, Log, "Task polling"))
 						{
-							HandleTasks(taskDef);
-						});
+							Thread.Sleep(DEFAULT_POLLING_GET_TIMEOUT);//wait before next pool
+						}
 					}
 				}
 			}

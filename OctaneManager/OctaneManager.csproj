@@ -94,6 +94,7 @@
     <Compile Include="PluginManager.cs" />
     <Compile Include="RestServer\NancyGzipCompression.cs" />
     <Compile Include="Tools\Helpers.cs" />
+    <Compile Include="Tools\ExceptionHelper.cs" />
     <Compile Include="Tools\JsonHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestServer\RestBase.cs" />

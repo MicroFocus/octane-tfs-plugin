@@ -79,15 +79,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				catch (Exception e)
 				{
-					if (e is ServerUnavailableException || e is InvalidCredentialException)
-					{
-						Log.Error($"ProcessFinishEvents failed : {e.Message}");
-						PluginManager.GetInstance().RestartPlugin();
-					}
-					else
-					{
-						Log.Error($"ProcessFinishEvents failed : {e.Message}", e);
-					}
+					ExceptionHelper.HandleExceptionAndRestartIfRequired(e, Log, "ProcessFinishEvents");
 				}
 
 				Thread.Sleep(DEFAULT_SLEEP_TIME);//wait before next loop
@@ -121,7 +113,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 							{
 								_finishedEventsQueue.Add(ciEvent);
 							}
-							
+
 							//3.Clear original list
 							_generalEventsQueue.Remove(ciEvent);
 						}
@@ -129,16 +121,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				catch (Exception e)
 				{
-					if (e is ServerUnavailableException || e is InvalidCredentialException)
-					{
-						Log.Error($"ProcessGeneralEvents failed : {e.Message}");
-						PluginManager.GetInstance().RestartPlugin();
-						continue;
-					}
-					else
-					{
-						Log.Error($"ProcessGeneralEvents failed : {e.Message}", e);
-					}
+					ExceptionHelper.HandleExceptionAndRestartIfRequired(e, Log, "ProcessGeneralEvents");
 				}
 
 				Thread.Sleep(DEFAULT_SLEEP_TIME);//wait before next loop
