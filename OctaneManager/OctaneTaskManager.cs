@@ -75,7 +75,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 					taskDef = _octaneApis.GetTasks(_pollingGetTimeout);
 					if (!string.IsNullOrEmpty(taskDef))
 					{
-						Task task = Task.Factory.StartNew(() =>
+						Task.Factory.StartNew(() =>
 						{
 							HandleTasks(taskDef);
 						});

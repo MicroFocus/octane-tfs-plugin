@@ -2,7 +2,7 @@
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
-	public class Helpers
+	public static class Helpers
     {
         public static string GetPluginVersion()
         {

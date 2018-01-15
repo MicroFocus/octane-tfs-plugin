@@ -6,7 +6,7 @@ using System.Security.Authentication;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
-	public class ExceptionHelper
+	public static class ExceptionHelper
 	{
 		/// <summary>
 		/// Check if exception related to communication issues and restart plugin to obtaine new connections

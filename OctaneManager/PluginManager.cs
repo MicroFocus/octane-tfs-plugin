@@ -14,7 +14,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
 	public class PluginManager : IDisposable
 	{
-		private static readonly int[] _initTimeoutInMinutesArr = new int[] { 1, 3, 10 };
+		private static readonly int[] _initTimeoutInMinutesArr = new [] { 1, 3, 10 };
 		private int _initFailCounter = 0;
 
 		private Task _octaneInitializationThread = null;
@@ -188,7 +188,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				//Sleep till next retry
 				if (!IsInitialized())
 				{
-					int initTimeoutIndex = Math.Min(((int)_initFailCounter / 3), _initTimeoutInMinutesArr.Length - 1);
+					int initTimeoutIndex = Math.Min((_initFailCounter / 3), _initTimeoutInMinutesArr.Length - 1);
 					int initTimeoutMinutes = _initTimeoutInMinutesArr[initTimeoutIndex];
 					Log.Info($"Wait {initTimeoutMinutes} minute(s) for next trial of initialization");
 					Thread.Sleep(initTimeoutMinutes*1000*60);
