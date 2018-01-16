@@ -48,7 +48,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 		{
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_SERVERS}{_connectionDetails.InstanceId}/tasks";
 			var queryParams =
-				$"self-type={PLUGIN_TYPE}&self-url={HttpUtility.UrlEncode(_connectionDetails.TfsLocation)}" +
+				$"self-type={PLUGIN_TYPE}&self-url={HttpUtility.UrlEncode(_connectionDetails.TfsLocation.TrimEnd('/'))}" +
 				$"&api-version={API_VERSION}&sdk-version={SDK_VERSION}" +
 				$"&plugin-version={PLUGIN_VERSION}" +
 				$"&client-id={_connectionDetails.ClientId}";
