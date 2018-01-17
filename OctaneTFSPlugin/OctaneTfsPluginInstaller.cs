@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.ComponentModel;
+using System.Windows.Forms;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
@@ -13,16 +15,21 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             InitializeComponent();
         }
 
+        protected override void OnBeforeInstall(IDictionary savedState)
+        {                        
+            base.OnBeforeInstall(savedState);
+
+        }
+
+        
         public override void Install(IDictionary stateSaver)
         {
             base.Install(stateSaver);
-
-            
-
+          
             var octaneServerUrl = Context.Parameters["OctaneServerUrl"];
             var clientId = Context.Parameters["ClientId"];
             var clientSecret = Context.Parameters["ClientSecret"];
-            var instanceId = Context.Parameters["InstanceId"];
+            var instanceId = Guid.NewGuid().ToString(); //Context.Parameters["InstanceId"];
             var pat = Context.Parameters["PAT"];
             var tfsLocation = ConnectionCreator.GetTfsLocationFromHostName();
             var conDetails =
