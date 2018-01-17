@@ -36,10 +36,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 			WatchForConfigFileChanges();
 		}
 
-		public static ConnectionDetails Read()
+		public static ConnectionDetails Read(bool printLogs)
 		{
 			var fullConfigFilePath = GetConfigFilePath();
-			Log.Debug($"Loading configuration from {fullConfigFilePath}");
+			if (printLogs)
+			{
+				Log.Debug($"Loading configuration from {fullConfigFilePath}");
+			}
+			
 			if (!File.Exists(fullConfigFilePath))
 			{
 				throw new FileNotFoundException($"Configuration file {fullConfigFilePath} was not found!");
@@ -54,9 +58,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 				}
 			}
 
-			ConnectionDetails resForLog = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
-			resForLog.RemoveSensitiveInfo();
-			Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(resForLog, true)}");
+			if (printLogs)
+			{
+				ConnectionDetails resForLog = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
+				resForLog.RemoveSensitiveInfo();
+				Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(resForLog, true)}");
+			}
 
 			ConnectionDetails res = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
 			return res;

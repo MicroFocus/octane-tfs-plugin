@@ -48,7 +48,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			try
 			{
-				ConnectionDetails tempConf = ConfigurationManager.Read();
+				ConnectionDetails tempConf = ConfigurationManager.Read(true);
 				ConnectionCreator.CheckMissingValues(tempConf);
 				_connectionDetails = tempConf;
 			}
