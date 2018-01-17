@@ -28,7 +28,7 @@ artifacts:
   name: octane-tfs-plugin.$(appveyor_build_version)
 - path: .\TfsConsolePluginRunner\bin\
   name: octane-tfs-plugin-console.$(appveyor_build_version)
-- path: .\OctaneTfsPluginSetup\Debug\
+- path: .\OctaneTfsPluginSetup\PackageDebug\
   name: octane-tfs-plugin-setup-debug.$(appveyor_build_version)
-- path: .\OctaneTfsPluginSetup\Release\
+- path: .\OctaneTfsPluginSetup\PackageRelease\
   name: octane-tfs-plugin-setup-release.$(appveyor_build_version)
