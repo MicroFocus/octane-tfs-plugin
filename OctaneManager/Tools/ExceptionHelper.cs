@@ -2,6 +2,7 @@
 using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 using MicroFocus.Ci.Tfs.Octane;
 using System;
+using System.Net;
 using System.Security.Authentication;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
@@ -13,15 +14,27 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 		/// <returns>True if restart was done</returns>
 		public static bool HandleExceptionAndRestartIfRequired(Exception e, ILog log, string methodName)
 		{
-			if (e is ServerUnavailableException || e is InvalidCredentialException || e is UnauthorizedAccessException)
+
+			Exception myEx = e;
+			if (e is AggregateException && e.InnerException != null)
 			{
-				log.Error($"{methodName} failed : {e.Message}");
+				myEx = e.InnerException;
+			}
+			if (myEx is ServerUnavailableException || myEx is InvalidCredentialException || myEx is UnauthorizedAccessException)
+			{
+				log.Error($"{methodName} failed with {myEx.GetType().Name} : {myEx.Message}");
 				PluginManager.GetInstance().RestartPlugin();
 				return true;
 			}
+			else if (myEx is GeneralHttpException)
+			{
+				HttpStatusCode status = ((GeneralHttpException)myEx).StatusCode;
+				log.Error($"{methodName} failed with {myEx.GetType().Name} : {(int)status} {status} - {myEx.Message}");
+				return false;
+			}
 			else
 			{
-				log.Error($"{methodName} failed : {e.Message}", e);
+				log.Error($"{methodName} failed with {myEx.GetType().ToString()} : {myEx.Message}", myEx);
 				return false;
 			}
 

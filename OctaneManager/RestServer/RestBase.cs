@@ -107,7 +107,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				ConnectionDetails conf = null;
 				try
 				{
-					conf = ConfigurationManager.Read();
+					conf = ConfigurationManager.Read(false);
 				}
 				catch (FileNotFoundException)
 				{
