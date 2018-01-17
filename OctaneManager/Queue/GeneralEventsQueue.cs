@@ -7,10 +7,17 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 	public class GeneralEventsQueue
 	{
 		private List<CiEvent> list = new List<CiEvent>();
+		private int QUEUE_LIMIT = 10000;
 
 		public void Add(CiEvent ciEvent)
 		{
 			list.Add(ciEvent);
+
+			//if exceed limit, remove the oldest event
+			if (list.Count > QUEUE_LIMIT)
+			{
+				list.RemoveAt(0);
+			}
 		}
 
 		public bool IsEmpty()

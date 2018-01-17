@@ -14,7 +14,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
 	public class PluginManager : IDisposable
 	{
-		private static readonly int[] _initTimeoutInMinutesArr = new[] { 1, 3, 10, 30 };
+		private static readonly int[] _initTimeoutInMinutesArr = new[] { 1, 3, 10 };
 		private int _initFailCounter = 0;
 
 		private Task _octaneInitializationThread = null;
