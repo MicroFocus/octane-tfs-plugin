@@ -51,7 +51,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			}
 			if (connectionDetails.InstanceId.Length > 40)
 			{
-				//throw new ArgumentException("InstanceId length must be less than or equal to 40 characters");
+				throw new ArgumentException("InstanceId length must be less than or equal to 40 characters");
 			}
 		}
 
