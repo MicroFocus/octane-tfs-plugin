@@ -43,7 +43,7 @@ namespace OctaneTFSPluginConfiguratorUI
             ClientId.Text = connectionDetails.ClientId;
             ClientSecret.Password = connectionDetails.ClientSecret;
             TfsLocation.Text = connectionDetails.TfsLocation;
-            Pat.Text = connectionDetails.Pat;
+            Pat.Password = connectionDetails.Pat;
             _instanceId= connectionDetails.InstanceId;            
         }
 
@@ -87,7 +87,7 @@ namespace OctaneTFSPluginConfiguratorUI
             var octaneServerUrl = Location.Text;
             var clientId = ClientId.Text;
             var clientSecret = ClientSecret.Password;            
-            var pat = Pat.Text;
+            var pat = Pat.Password;
             var tfsLocation = TfsLocation.Text;
 
             var conDetails =

@@ -27,7 +27,7 @@
             <TextBox x:Name="ClientId" Padding="5,5,5,5"></TextBox>
             <PasswordBox x:Name="ClientSecret" Padding="5,5,5,5"></PasswordBox>
             <TextBox x:Name="TfsLocation" Padding="5,5,5,5"></TextBox>
-            <TextBox x:Name="Pat" Padding="5,5,5,5"></TextBox>
+            <PasswordBox x:Name="Pat" Padding="5,5,5,5"></PasswordBox>
             <Button Click="TestConnectionButton_OnClick" x:Name="TestConnectionButton" Margin="5,5,5,5">Test Connection</Button>
             <Button Click="SaveButton_OnClick" x:Name="SaveButton" Margin="5,5,5,5">Save</Button>
         </StackPanel>
