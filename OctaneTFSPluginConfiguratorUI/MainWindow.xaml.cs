@@ -24,16 +24,15 @@ namespace OctaneTFSPluginConfiguratorUI
     public partial class MainWindow : Window
     {
         ConnectionDetails _conDetails = new ConnectionDetails();
-
+        private readonly string _instanceId = Guid.NewGuid().ToString();
         public MainWindow()
         {
             Helper.CheckedConnection = false;
             InitializeComponent();
 
             if (!ConfigurationManager.ConfigurationExists())
-            {
-                InstanceId.Text = Guid.NewGuid().ToString();
-                TfsLocation.Text = ConnectionCreator.GetTfsLocationFromHostName();
+            {                
+                TfsLocation.Text = ConnectionCreator.GetTfsLocationFromHostName();                
                 return;                
             }
 
@@ -44,7 +43,7 @@ namespace OctaneTFSPluginConfiguratorUI
             ClientSecret.Text = connectionDetails.ClientSecret;
             TfsLocation.Text = connectionDetails.TfsLocation;
             Pat.Text = connectionDetails.Pat;
-            InstanceId.Text = connectionDetails.InstanceId;            
+            _instanceId= connectionDetails.InstanceId;            
         }
 
         private void TestConnectionButton_OnClick(object sender, RoutedEventArgs e)
@@ -82,13 +81,12 @@ namespace OctaneTFSPluginConfiguratorUI
         {
             var octaneServerUrl = Location.Text;
             var clientId = ClientId.Text;
-            var clientSecret = ClientSecret.Text;
-            var instanceId = InstanceId.Text;
+            var clientSecret = ClientSecret.Text;            
             var pat = Pat.Text;
             var tfsLocation = TfsLocation.Text;
 
             var conDetails =
-                new ConnectionDetails(octaneServerUrl, clientId, clientSecret, tfsLocation, instanceId)
+                new ConnectionDetails(octaneServerUrl, clientId, clientSecret, tfsLocation, _instanceId)
                 {
                     Pat = pat
                 };

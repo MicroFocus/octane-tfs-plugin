@@ -21,8 +21,6 @@
             <Label Padding="5,7,5,5">ALM Octane Client Secret</Label>
             <Label Padding="5,5,5,5">TFS Location</Label>
             <Label Padding="5,5,5,5">TFS Pat</Label>
-            <Label Padding="5,5,5,5">Instance Id</Label>
-
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="0,0,0.4,-0.2">
             <TextBox x:Name="Location" Padding="5,5,5,5"></TextBox>
@@ -30,7 +28,6 @@
             <TextBox x:Name="ClientSecret" Padding="5,5,5,5"></TextBox>
             <TextBox x:Name="TfsLocation" Padding="5,5,5,5"></TextBox>
             <TextBox x:Name="Pat" Padding="5,5,5,5"></TextBox>
-            <TextBox x:Name="InstanceId" Padding="5,5,5,5"></TextBox>
             <Button Click="TestConnectionButton_OnClick" x:Name="TestConnectionButton" Margin="5,5,5,5">Test Connection</Button>
             <Button Click="SaveButton_OnClick" x:Name="SaveButton" Margin="5,5,5,5">Save</Button>
         </StackPanel>
