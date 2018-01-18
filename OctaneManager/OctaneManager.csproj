@@ -170,5 +170,21 @@
       <Name>OctaneSdk</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\Resources\octane.png" />
+    <EmbeddedResource Include="RestServer\Views\Resources\style.css" />
+    <EmbeddedResource Include="RestServer\Views\status.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\Resources\configuration.svg" />
+    <EmbeddedResource Include="RestServer\Views\Resources\document-configuration.svg" />
+    <EmbeddedResource Include="RestServer\Views\Resources\f-delete-circle.svg" />
+    <EmbeddedResource Include="RestServer\Views\Resources\f-status-run.svg" />
+    <EmbeddedResource Include="RestServer\Views\Resources\f-status-stopped.svg" />
+    <EmbeddedResource Include="RestServer\Views\Resources\f-step-simple.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\Resources\home.svg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

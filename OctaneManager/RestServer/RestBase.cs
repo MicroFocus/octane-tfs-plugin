@@ -25,11 +25,26 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 		{
 			Get["/"] = _ =>
 			{
-				if (PluginManager.GetInstance().IsInitialized())
+				String view = GetView("status.html");
+				return view;
+				/*if (PluginManager.GetInstance().IsInitialized())
 				{
 					return "Plugin is active";
 				}
-				return "Plugin is not active";
+				return "Plugin is not active";*/
+			};
+
+			Get["/status"] = _ =>
+			{
+				Dictionary<string, object> map = new Dictionary<string, object>();
+				map["pluginStatus"] = PluginManager.GetInstance().Status.ToString();
+				map["pluginVersion"] = Helpers.GetPluginVersion();
+				map["generalQueueSize"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
+				map["finishQueueSize"] = PluginManager.GetInstance().FinishedEventsQueue.Count;
+
+				map["isLocal"] = IsLocal(Request);
+
+				return map;
 			};
 
 			Post["/build-event/"] = _ =>
@@ -93,34 +108,33 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				return "";
 			};
 
-			Get["/config", RestrictAccessFromLocalhost] = _ =>
+			Get["/config"] = _ =>
 			{
-				var assembly = Assembly.GetExecutingAssembly();
-				var resourceName = $"{PATH_TO_RESOURCE}.RestServer.Views.config.html";
-				string result;
-				using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-				using (StreamReader reader = new StreamReader(stream))
+				if (IsLocal(Request))
 				{
-					result = reader.ReadToEnd();
+					String view = GetView("config.html");
+					ConnectionDetails conf = null;
+					try
+					{
+						conf = ConfigurationManager.Read(false);
+					}
+					catch (FileNotFoundException)
+					{
+						conf = new ConnectionDetails();
+						conf.TfsLocation = ConnectionCreator.GetTfsLocationFromHostName();
+					}
+
+					string confJson = JsonHelper.SerializeObject(conf);
+					view = view.Replace("//{defaultConf}", "var defaultConf =" + confJson);
+
+					return view;
+				}
+				else
+				{
+					string config = JsonHelper.SerializeObject(ConfigurationManager.Read(false).RemoveSensitiveInfo(), true);
+					return new TextResponse(config);
 				}
 
-				ConnectionDetails conf = null;
-				try
-				{
-					conf = ConfigurationManager.Read(false);
-				}
-				catch (FileNotFoundException)
-				{
-					conf = new ConnectionDetails();
-					conf.TfsLocation = ConnectionCreator.GetTfsLocationFromHostName();
-				}
-
-				string confJson = JsonHelper.SerializeObject(conf);
-				result = result.Replace("//{defaultConf}", "var defaultConf =" + confJson);
-
-				return result;
-				//string config = JsonHelper.SerializeObject(ConfigurationManager.Read().RemoveSensitiveInfo(), true);
-				//return new TextResponse(config);
 			};
 
 			Get["/resources/{resourceName}"] = parameters =>
@@ -139,7 +153,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 			Post["/start", RestrictAccessFromLocalhost] = _ =>
 			{
-				if (PluginManager.GetInstance().IsInitialized())
+				if (PluginManager.GetInstance().Status == PluginManager.StatusEnum.Connected)
 					return "Octane manager is already running";
 
 				Log.Debug("Plugin start requested");
@@ -157,7 +171,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 			Post["/queues/clear", RestrictAccessFromLocalhost] = _ =>
 			{
-				var queueStatus = GetQueueStatus();
+				Dictionary<string, object> queueStatus = new Dictionary<string, object>();
+				queueStatus["generalQueueSize"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
+				queueStatus["finishQueueSize"] = PluginManager.GetInstance().FinishedEventsQueue.Count;
+
 				string json = JsonHelper.SerializeObject(queueStatus, true);
 				Log.Debug($"Clear event queues requested : {json}");
 
@@ -166,25 +183,30 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				return $"Cleared {json}";
 			};
 
-			Get["/queues/status"] = _ =>
-			{
-				var queueStatus = GetQueueStatus();
-				string json = JsonHelper.SerializeObject(queueStatus, true);
-				return $"{DateTime.Now} : {json}";
-			};
-		    Get["/version"] = _ => Helpers.GetPluginVersion();
+		}
 
+		private string GetView(string viewName)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var resourceName = $"{PATH_TO_RESOURCE}.RestServer.Views.{viewName}";
+			string view = "";
+			using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+			using (StreamReader reader = new StreamReader(stream))
+			{
+				view = reader.ReadToEnd();
+			}
+			return view;
 		}
 
 		private bool RestrictAccessFromLocalhost(NancyContext ctx)
 		{
+			return IsLocal(ctx.Request);
+		}
 
-			string host = ctx.Request.Url.HostName.ToLower();
-			if (!("localhost".Equals(host) || "127.0.0.1".Equals(host)))
-			{
-				return false;
-			}
-			return true;
+		private bool IsLocal(Request request)
+		{
+			string host = request.Url.HostName.ToLower();
+			return "localhost".Equals(host) || "127.0.0.1".Equals(host);
 		}
 
 		private dynamic HandleGetLogListRequest()
@@ -264,14 +286,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			{
 				Log.Error($"Error parsing build event body", ex);
 			}
-		}
-
-		public Dictionary<string, int> GetQueueStatus()
-		{
-			Dictionary<string, int> map = new Dictionary<string, int>();
-			map["GeneralEventsQueue"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
-			map["FinishedEventsQueue"] = PluginManager.GetInstance().FinishedEventsQueue.Count;
-			return map;
 		}
 	}
 }
