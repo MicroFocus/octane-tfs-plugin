@@ -200,7 +200,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 		}
 
-		private string GetView(string viewName)
+		private static string GetView(string viewName)
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var resourceName = $"{PATH_TO_RESOURCE}.RestServer.Views.{viewName}";
@@ -218,7 +218,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			return IsLocal(ctx.Request);
 		}
 
-		private bool IsLocal(Request request)
+		private static bool IsLocal(Request request)
 		{
 			string host = request.Url.HostName.ToLower();
 			return "localhost".Equals(host) || "127.0.0.1".Equals(host);
