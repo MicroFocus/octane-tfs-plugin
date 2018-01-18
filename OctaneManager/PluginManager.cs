@@ -30,6 +30,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private static PluginManager instance = new PluginManager();
 
+		public enum StatusEnum { Stopped, Connected, Connecting, Stopping }
+
+
 		private PluginManager()
 		{
 			Thread.Sleep(5000);
@@ -43,6 +46,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 		public GeneralEventsQueue GeneralEventsQueue => _generalEventsQueue;
 
 		public FinishedEventsQueue FinishedEventsQueue => _finishedEventsQueue;
+
+		public StatusEnum Status { get; internal set; } = StatusEnum.Stopped;
 
 		private void ReadConfigurationFile()
 		{
@@ -90,6 +95,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void StopPlugin(bool waitShutdown)
 		{
+			Status = StatusEnum.Stopping;
 			StopAllThreads();
 			if (waitShutdown)
 			{
@@ -112,6 +118,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 			_octaneInitializationThread = null;
 			_taskManager = null;
 			_eventManager = null;
+			Status = StatusEnum.Stopped;
 		}
 
 		public void StartPlugin()
@@ -156,7 +163,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private void StartPluginInternal(CancellationToken token)
 		{
-			while (!IsInitialized() && !token.IsCancellationRequested)
+			Status = StatusEnum.Connecting;
+			while (Status != StatusEnum.Connected && !token.IsCancellationRequested)
 			{
 				try
 				{
@@ -169,6 +177,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 					_eventManager.Start();
 
 					_initFailCounter = 0;
+					Status = StatusEnum.Connected;
 				}
 				catch (Exception ex)
 				{
@@ -186,7 +195,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 
 				//Sleep till next retry
-				if (!IsInitialized())
+				if (Status != StatusEnum.Connected)
 				{
 					int initTimeoutIndex = Math.Min((_initFailCounter / 3), _initTimeoutInMinutesArr.Length - 1);
 					int initTimeoutMinutes = _initTimeoutInMinutesArr[initTimeoutIndex];
@@ -195,11 +204,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 					_initFailCounter++;
 				}
 			}
-		}
-
-		public bool IsInitialized()
-		{
-			return _eventManager != null && _taskManager != null;
 		}
 
 		private void OnConfigurationChanged(object sender, EventArgs e)

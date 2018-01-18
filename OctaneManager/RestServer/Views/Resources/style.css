@@ -1,0 +1,55 @@
+body{
+	padding :0;
+	margin :0;
+    font-family: MetricWeb-Medium,Calibri,sans-serif;
+}
+#header{
+	background-color: #0079ef;
+    height: 60px;
+    color: white;
+	background-image: url("octane.png");
+	background-size : 60px;
+	background-repeat: no-repeat;
+}
+
+#title{
+    padding: 15px 15px 15px 80px;
+	line-height : 24px;
+	font-weight: bold;
+	font-size: 24px;
+}
+
+
+
+
+#links{
+		float: right;
+		width: 200px;
+}
+
+#links h2{
+	margin: 20px 0 10px 0; 
+}
+#links .linkIcon{
+	height: 16px;
+    width: 16px;
+	margin-bottom: -2px;
+}
+#links .linkText{
+	margin-left:5px;
+}
+
+#links a{
+	color:#000;
+	display: block;
+	margin-bottom: 5px;
+}
+#links a:not(:hover) {
+    text-decoration: none;
+}
+#links a:hover {
+    text-decoration: none;
+	color: #948D9D;
+	cursor: pointer;
+
+}
