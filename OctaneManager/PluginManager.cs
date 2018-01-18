@@ -43,6 +43,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private TfsEventManager _eventManager;
 		private OctaneTaskManager _taskManager;
 
+		private StatusEnum _pluginStatus = StatusEnum.Stopped;
+
 		private static PluginManager instance = new PluginManager();
 
 		public enum StatusEnum { Stopped, Connected, Connecting, Stopping }
@@ -62,7 +64,16 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public FinishedEventsQueue FinishedEventsQueue => _finishedEventsQueue;
 
-		public StatusEnum Status { get; internal set; } = StatusEnum.Stopped;
+		public StatusEnum Status
+		{
+			get { return _pluginStatus; }
+
+			internal set
+			{
+				_pluginStatus = value;
+				Log.Info($"Plugin status set to : {_pluginStatus.ToString()}");
+			}
+		}
 
 		private void ReadConfigurationFile()
 		{
