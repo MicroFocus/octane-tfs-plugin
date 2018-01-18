@@ -210,7 +210,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		public void RestartPlugin()
 		{
-			Log.Info($"Plugin restarted");
+			Log.Info($"Plugin is restarting");
 
 			StopAllThreads();
 			Task.Factory.StartNew(() =>
