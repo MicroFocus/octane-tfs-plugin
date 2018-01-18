@@ -25,14 +25,14 @@ after_build:
 test: off
 artifacts:
 - path: .\OctaneTFSPlugin\bin\Debug
-  name: octane-tfs-plugin-debug.$(appveyor_build_version)
+  name: alm-octane-tfs-plugin-debug.$(appveyor_build_version)
 - path: .\OctaneTFSPlugin\bin\Release
-  name: octane-tfs-plugin-release.$(appveyor_build_version)
+  name: alm-octane-tfs-plugin-release.$(appveyor_build_version)
 - path: .\TfsConsolePluginRunner\bin\Debug
-  name: octane-tfs-plugin-console-debug.$(appveyor_build_version)
+  name: alm-octane-tfs-plugin-console-debug.$(appveyor_build_version)
 - path: .\TfsConsolePluginRunner\bin\Release
-  name: octane-tfs-plugin-console-release.$(appveyor_build_version)
+  name: alm-octane-tfs-plugin-console-release.$(appveyor_build_version)
 - path: .\OctaneTfsPluginSetup\PackageDebug\
-  name: octane-tfs-plugin-setup-debug.$(appveyor_build_version)
+  name: alm-octane-tfs-plugin-setup-debug.$(appveyor_build_version)
 - path: .\OctaneTfsPluginSetup\PackageRelease\
-  name: octane-tfs-plugin-setup-release.$(appveyor_build_version)
+  name: alm-octane-tfs-plugin-setup-release.$(appveyor_build_version)
