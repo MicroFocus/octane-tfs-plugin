@@ -1,2 +1,2 @@
-"%DEVENV_LOCATION%" OctaneTFSPlugin.sln /build PackageDebug
-"%DEVENV_LOCATION%" OctaneTFSPlugin.sln /build PackageRelease
+"%DEVENV_LOCATION%" .\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj /build PackageDebug
+"%DEVENV_LOCATION%" .\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj /build PackageRelease
