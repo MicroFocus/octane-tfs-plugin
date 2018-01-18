@@ -1,5 +1,4 @@
 ﻿using log4net;
-using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
@@ -11,7 +10,6 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +17,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 {
 	public class TfsEventManager
 	{
-		private const int DEFAULT_SLEEP_TIME = 2 * 1000; //2 seconds
+		private const int DEFAULT_SLEEP_TIME = 2; //2 seconds
+		private const int MAX_SLEEP_TIME = 120; //120 seconds
+
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private OctaneApis _octaneApis;
@@ -28,8 +28,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private CancellationTokenSource _cancellationToken = new CancellationTokenSource();
 		private Task _generalEventsThread;
 		private Task _finishEventsThread;
-		GeneralEventsQueue _generalEventsQueue;
-		FinishedEventsQueue _finishedEventsQueue;
+		private GeneralEventsQueue _generalEventsQueue;
+		private FinishedEventsQueue _finishedEventsQueue;
+
+		private int _generalEventsSleepTime = DEFAULT_SLEEP_TIME;
+		private int _finishedEventsSleepTime = DEFAULT_SLEEP_TIME;
+
 
 		public TfsEventManager(TfsApis tfsApis, OctaneApis octaneApis)
 		{
@@ -75,14 +79,23 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 						//remove item from _finishedEventsQueue
 						_finishedEventsQueue.Dequeue();
+						_finishedEventsSleepTime = DEFAULT_SLEEP_TIME;
 					}
 				}
 				catch (Exception e)
 				{
 					ExceptionHelper.HandleExceptionAndRestartIfRequired(e, Log, "ProcessFinishEvents");
+
+					_finishedEventsSleepTime = _finishedEventsSleepTime * 2;
+					if (_finishedEventsSleepTime > MAX_SLEEP_TIME)
+					{
+						CiEvent ciEvent = _finishedEventsQueue.Dequeue();
+						Log.Error($"Build {ciEvent.BuildInfo} - Impossible to handle finish event. Event is removed from queue.");
+						_finishedEventsSleepTime = DEFAULT_SLEEP_TIME;
+					}
 				}
 
-				Thread.Sleep(DEFAULT_SLEEP_TIME);//wait before next loop
+				Thread.Sleep(_finishedEventsSleepTime * 1000);//wait before next loop
 			}
 			Log.Debug("FinishEvents task - finished");
 		}
@@ -118,13 +131,22 @@ namespace MicroFocus.Ci.Tfs.Octane
 							_generalEventsQueue.Remove(ciEvent);
 						}
 					}
+					_generalEventsSleepTime = DEFAULT_SLEEP_TIME;
 				}
 				catch (Exception e)
 				{
 					ExceptionHelper.HandleExceptionAndRestartIfRequired(e, Log, "ProcessGeneralEvents");
+
+					_generalEventsSleepTime = _generalEventsSleepTime * 2;
+					if (_generalEventsSleepTime > MAX_SLEEP_TIME)
+					{
+						_generalEventsQueue.Clear();
+						Log.Error($"Impossible to handle general events. Event queue is cleared.");
+						_generalEventsSleepTime = DEFAULT_SLEEP_TIME;
+					}
 				}
 
-				Thread.Sleep(DEFAULT_SLEEP_TIME);//wait before next loop
+				Thread.Sleep(_generalEventsSleepTime * 1000);//wait before next loop
 			}
 			Log.Debug("GeneralEvents task - finished");
 		}
@@ -175,7 +197,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 				else
 				{
-					Log.Debug($"Build {buildInfo} - GetTestResultRelevant=false for project {projectCiId}");
+					Log.Debug($"Build {buildInfo} - GetTestResultRelevant=false");
 				}
 			}
 			catch (Exception ex)
