@@ -7,9 +7,6 @@ body{
 	background-color: #0079ef;
     height: 60px;
     color: white;
-	background-image: url("octane.png");
-	background-size : 60px;
-	background-repeat: no-repeat;
 }
 
 #title{
@@ -19,6 +16,13 @@ body{
 	font-size: 24px;
 }
 
+#octaneIcon{
+	width: 40px;
+    height: 40px;
+    background-color: #014272;
+    padding: 10px;
+	float: left;
+}
 
 
 

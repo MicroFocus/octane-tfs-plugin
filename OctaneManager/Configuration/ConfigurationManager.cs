@@ -98,8 +98,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 		{
 			var configFile = GetConfigFilePath();
 			var configText = JsonHelper.SerializeObject(config, true);
-
-			Log.Info($"Writing configuration : {configText}");
 			File.WriteAllText(configFile, configText);
 			Log.Info($"Writing configuration done");
 		}

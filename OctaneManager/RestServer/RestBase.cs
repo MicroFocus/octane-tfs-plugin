@@ -42,11 +42,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			{
 				String view = GetView("status.html");
 				return view;
-				/*if (PluginManager.GetInstance().IsInitialized())
-				{
-					return "Plugin is active";
-				}
-				return "Plugin is not active";*/
 			};
 
 			Get["/status"] = _ =>
