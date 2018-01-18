@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Forms;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
@@ -15,43 +16,15 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             InitializeComponent();
         }
 
-        protected override void OnBeforeInstall(IDictionary savedState)
-        {                        
-            base.OnBeforeInstall(savedState);
 
-        }
-
-        
-        public override void Install(IDictionary stateSaver)
+        protected override void OnAfterInstall(IDictionary savedState)
         {
-            base.Install(stateSaver);
-          
-            var octaneServerUrl = Context.Parameters["OctaneServerUrl"];
-            var clientId = Context.Parameters["ClientId"];
-            var clientSecret = Context.Parameters["ClientSecret"];
-            var instanceId = Guid.NewGuid().ToString(); //Context.Parameters["InstanceId"];
-            var pat = Context.Parameters["PAT"];
-            var tfsLocation = ConnectionCreator.GetTfsLocationFromHostName();
-            var conDetails =
-                new ConnectionDetails(octaneServerUrl, clientId, clientSecret, tfsLocation, instanceId)
-                {
-                    Pat = pat
-                };
-            ConfigurationManager.WriteConfig(conDetails);                        
-        }
+            base.OnAfterInstall(savedState);
 
-        public override void Uninstall(IDictionary savedState)
-        {
-            //base.Uninstall(savedState);
-
-            //var service = new ServiceController("TFSJobAgent");
-
-            //if ((service.Status.Equals(ServiceControllerStatus.Running)) ||
-
-            //    (service.Status.Equals(ServiceControllerStatus.StartPending)))
-            //{
-            //    service.Stop();
-            //}
+            var instpath = this.Context.Parameters["targetdir"];
+            
+            var path= Path.Combine(instpath, "OctaneTFSPluginConfiguratorUI.exe");
+            System.Diagnostics.Process.Start(path);
         }
     }
 }

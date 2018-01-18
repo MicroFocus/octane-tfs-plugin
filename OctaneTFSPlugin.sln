@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctaneTFSPlugin", "OctaneTFSPlugin\OctaneTFSPlugin.csproj", "{DFFD273E-73EC-436D-8FD5-2786114A9762}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OctaneTfsPluginSetup", "OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj", "{A86858D6-DD2C-4881-A931-BD072D1AD031}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctaneSdk", "alm-octane-csharp-rest-sdk\OctaneSdk\OctaneSdk.csproj", "{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctaneTFSPluginConfiguratorUI", "OctaneTFSPluginConfiguratorUI\OctaneTFSPluginConfiguratorUI.csproj", "{5FB160C2-49BA-4360-8AA7-C42575E0C905}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -171,6 +173,30 @@ Global
 		{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}.Release|x64.Build.0 = Release|Any CPU
 		{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}.Release|x86.ActiveCfg = Release|Any CPU
 		{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}.Release|x86.Build.0 = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Debug|x64.Build.0 = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Debug|x86.Build.0 = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageDebug|Any CPU.Build.0 = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageDebug|x64.ActiveCfg = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageDebug|x64.Build.0 = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageDebug|x86.ActiveCfg = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageDebug|x86.Build.0 = Debug|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageRelease|Any CPU.Build.0 = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageRelease|x64.ActiveCfg = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageRelease|x64.Build.0 = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageRelease|x86.ActiveCfg = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.PackageRelease|x86.Build.0 = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Release|x64.ActiveCfg = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Release|x64.Build.0 = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Release|x86.ActiveCfg = Release|Any CPU
+		{5FB160C2-49BA-4360-8AA7-C42575E0C905}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
