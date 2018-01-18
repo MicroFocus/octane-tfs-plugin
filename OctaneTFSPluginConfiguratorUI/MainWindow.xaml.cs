@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,8 +24,10 @@ namespace OctaneTFSPluginConfiguratorUI
     public partial class MainWindow : Window
     {
         ConnectionDetails _conDetails = new ConnectionDetails();
+
         public MainWindow()
         {
+            Helper.CheckedConnection = false;
             InitializeComponent();
 
             if (!ConfigurationManager.ConfigurationExists())
@@ -57,7 +60,10 @@ namespace OctaneTFSPluginConfiguratorUI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                return;                
             }
+
+            Helper.CheckedConnection = true;
 
             MessageBox.Show("Connection succesfull");
 
@@ -88,6 +94,19 @@ namespace OctaneTFSPluginConfiguratorUI
                 };
 
             _conDetails = conDetails;
+        }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (!Helper.CheckedConnection)
+            {
+                var res = MessageBox.Show("Connection was not checked, are you sure you want to exit?", "Warning",
+                    MessageBoxButton.YesNo);
+                if (res == MessageBoxResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
     }
 }

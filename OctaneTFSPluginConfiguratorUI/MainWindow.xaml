@@ -8,7 +8,7 @@
         Title="TFS Plugin for ALM Octane - Configuration" Height="274.546" Width="596.013"
         ResizeMode="NoResize" 
         WindowStartupLocation="CenterScreen"
-        >
+        Closing="MainWindow_OnClosing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80*"/>

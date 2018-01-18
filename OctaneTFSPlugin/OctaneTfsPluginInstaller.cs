@@ -22,6 +22,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             base.OnAfterInstall(savedState);
 
             var instpath = this.Context.Parameters["targetdir"];
+            
             var path= Path.Combine(instpath, "OctaneTFSPluginConfiguratorUI.exe");
             System.Diagnostics.Process.Start(path);
         }

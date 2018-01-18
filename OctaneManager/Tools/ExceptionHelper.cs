@@ -26,12 +26,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 				PluginManager.GetInstance().RestartPlugin();
 				return true;
 			}
-			else if (myEx is GeneralHttpException)
-			{
-				HttpStatusCode status = ((GeneralHttpException)myEx).StatusCode;
-				log.Error($"{methodName} failed with {myEx.GetType().Name} : {(int)status} {status} - {myEx.Message}");
-				return false;
-			}
+			//else if (myEx is GeneralHttpException)
+			//{
+			//	HttpStatusCode status = ((GeneralHttpException)myEx).StatusCode;
+			//	log.Error($"{methodName} failed with {myEx.GetType().Name} : {(int)status} {status} - {myEx.Message}");
+			//	return false;
+			//}
 			else
 			{
 				log.Error($"{methodName} failed with {myEx.GetType().ToString()} : {myEx.Message}", myEx);
