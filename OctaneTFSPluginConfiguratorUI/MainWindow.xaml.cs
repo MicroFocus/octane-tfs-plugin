@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MicroFocus.Adm.Octane.Api.Core.Connector;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
@@ -40,7 +41,7 @@ namespace OctaneTFSPluginConfiguratorUI
 
             Location.Text = connectionDetails.ALMOctaneUrl;
             ClientId.Text = connectionDetails.ClientId;
-            ClientSecret.Text = connectionDetails.ClientSecret;
+            ClientSecret.Password = connectionDetails.ClientSecret;
             TfsLocation.Text = connectionDetails.TfsLocation;
             Pat.Text = connectionDetails.Pat;
             _instanceId= connectionDetails.InstanceId;            
@@ -48,6 +49,10 @@ namespace OctaneTFSPluginConfiguratorUI
 
         private void TestConnectionButton_OnClick(object sender, RoutedEventArgs e)
         {
+            NetworkSettings.EnableAllSecurityProtocols();
+            NetworkSettings.IgnoreServerCertificateValidation();
+            RestConnector.AwaitContinueOnCapturedContext = false;
+
             ReadFields();
             try
             {           
@@ -81,7 +86,7 @@ namespace OctaneTFSPluginConfiguratorUI
         {
             var octaneServerUrl = Location.Text;
             var clientId = ClientId.Text;
-            var clientSecret = ClientSecret.Text;            
+            var clientSecret = ClientSecret.Password;            
             var pat = Pat.Text;
             var tfsLocation = TfsLocation.Text;
 
