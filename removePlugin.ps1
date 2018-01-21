@@ -35,13 +35,15 @@ else
 
 # Run your code that needs to be elevated here
 
+Write-Host ("Stopping service TFSJobAgent")
+stop-service "TFSJobAgent"
+
+
 $filesToRemove = New-Object System.Collections.ArrayList
-$baseDir = "c:\Program Files\Microsoft Team Foundation Server 15.0\Application Tier\TFSJobAgent\"
-$filesToRemove.Add($baseDir + "Hpe.Nga.Api.Core.*")
-$filesToRemove.Add($baseDir + "OctaneTFSPlugin.*")
-$filesToRemove.Add($baseDir + "OctaneManager.*")
-$filesToRemove.Add($baseDir + "OctaneTFSPluginLogConfig.xml")
-$filesToRemove.Add($baseDir + "OctaneManager.*")
+$baseDir = "c:\Program Files\Microsoft Team Foundation Server 15.0\Application Tier\TFSJobAgent\Plugins\"
+$filesToRemove.Add($baseDir + "MicroFocus.Adm.Octane.Api.Core.*")
+$filesToRemove.Add($baseDir + "MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin.*")
+$filesToRemove.Add($baseDir + "MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.*")
 $filesToRemove.Add($baseDir + "Newtonsoft.Json.*")
 $filesToRemove.Add($baseDir + "Nancy.Hosting.*")
 $filesToRemove.Add($baseDir + "log4net.*")
@@ -64,7 +66,8 @@ if($input="y"){
   }
 
 }
-
+Write-Host ("Starting service TFSJobAgent")
+stop-service "TFSJobAgent"
 
 Write-Host -NoNewLine "Press any key to continue..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

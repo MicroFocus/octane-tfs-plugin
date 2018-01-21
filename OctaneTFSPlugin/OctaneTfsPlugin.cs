@@ -73,7 +73,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 			{
 				BuildUpdatedEvent updatedEvent = (BuildUpdatedEvent)notificationEventArgs;
 				Build build = updatedEvent.Build;
-				Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for build {updatedEvent.BuildId}");
+				Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for build {updatedEvent.BuildId} (Build Number : {updatedEvent.Build.BuildNumber}, Build Defenition: {updatedEvent.Build.Definition.Name})");
 
 				CiEvent ciEvent = CiEventUtils.ToCiEvent(build);
 				if (notificationEventArgs is BuildStartedEvent)
