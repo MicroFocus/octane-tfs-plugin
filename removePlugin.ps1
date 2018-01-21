@@ -35,6 +35,10 @@ else
 
 # Run your code that needs to be elevated here
 
+Write-Host ("Stopping service TFSJobAgent")
+stop-service "TFSJobAgent"
+
+
 $filesToRemove = New-Object System.Collections.ArrayList
 $baseDir = "c:\Program Files\Microsoft Team Foundation Server 15.0\Application Tier\TFSJobAgent\Plugins\"
 $filesToRemove.Add($baseDir + "MicroFocus.Adm.Octane.Api.Core.*")
@@ -62,7 +66,8 @@ if($input="y"){
   }
 
 }
-
+Write-Host ("Starting service TFSJobAgent")
+stop-service "TFSJobAgent"
 
 Write-Host -NoNewLine "Press any key to continue..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

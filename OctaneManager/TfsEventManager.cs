@@ -80,13 +80,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 						var scmData = ScmEventHelper.GetScmData(_tfsApis, ciEvent.BuildInfo);
 						if (scmData != null)
 						{
-							Log.Debug($"Build {ciEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
+							Log.Info($"Build {ciEvent.BuildInfo} - scm data contains {scmData.Commits.Count} commits");
 							var scmEvent = CreateScmEvent(ciEvent, scmData);
 							_generalEventsQueue.Add(scmEvent);
 						}
 						else
 						{
-							Log.Debug($"Build {ciEvent.BuildInfo} - scm data is empty");
+							Log.Info($"Build {ciEvent.BuildInfo} - scm data is empty");
 						}
 
 						//handle test result
@@ -199,7 +199,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 					var run = _tfsApis.GetRunForBuid(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
 					if (run == null)
 					{
-						Log.Debug($"Build {buildInfo} - run was not created for build. No test results");
+						Log.Info($"Build {buildInfo} - run was not created for build. No test results");
 					}
 					else
 					{
@@ -207,7 +207,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 						OctaneTestResult octaneTestResult = OctaneUtils.ConvertToOctaneTestResult(_octaneApis.PluginInstanceId, projectCiId, buildCiId, testResults, run.WebAccessUrl);
 						_octaneApis.SendTestResults(octaneTestResult);
 
-						Log.Debug($"Build {buildInfo} - testResults are sent ({octaneTestResult.TestRuns.Count} tests)");
+						Log.Info($"Build {buildInfo} - testResults are sent ({octaneTestResult.TestRuns.Count} tests)");
 					}
 				}
 				else

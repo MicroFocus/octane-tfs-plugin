@@ -225,7 +225,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				{
 					int initTimeoutIndex = Math.Min((_initFailCounter / 3), _initTimeoutInMinutesArr.Length - 1);
 					int initTimeoutMinutes = _initTimeoutInMinutesArr[initTimeoutIndex];
-					Log.Info($"Wait {initTimeoutMinutes} minute(s) for next trial of initialization");
+					Log.Info($"Wait {initTimeoutMinutes} minute(s) till next initialization attempt...");
 					Thread.Sleep(initTimeoutMinutes * 1000 * 60);
 					_initFailCounter++;
 				}

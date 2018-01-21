@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -62,7 +62,7 @@ table{
 			<h2>Actions</h2>
 			<a onclick='return startPlugin()'><img class="linkIcon" src="resources/f-status-run.svg" alt="Start Plugin"><span class="linkText">Start Plugin</span></a>
 			<a onclick='return stopPlugin()'><img class="linkIcon" src="resources/f-status-stopped.svg" alt="Stop Plugin"><span class="linkText">Stop Plugin</span></a>
-			<a onclick='return clearQueues()'><img class="linkIcon" src="resources/f-delete-circle.svg" alt="Clear queues"><span class="linkText">Clear queues</span></a>
+			<!--<a onclick='return clearQueues()'><img class="linkIcon" src="resources/f-delete-circle.svg" alt="Clear queues"><span class="linkText">Clear queues</span></a>-->
 		</div>
 
 		
@@ -75,8 +75,8 @@ table{
 	</table>
 	<h2>Queues</h2>
 		<table>
-		<tr><td class="itemHeader">General event queue size :</td><td class="itemValue"><div id="generalQueueSize">Loading ...</div></td></tr>
-		<tr><td class="itemHeader">Finish event queue size :</td><td class="itemValue"><div id="finishQueueSize">Loading ...</div></td></tr>
+		<tr><td class="itemHeader">All events queue size :</td><td class="itemValue"><div id="generalQueueSize">Loading ...</div></td></tr>
+		<tr><td class="itemHeader">SCM queue size :</td><td class="itemValue"><div id="finishQueueSize">Loading ...</div></td></tr>
 	</table>
 </body>
 

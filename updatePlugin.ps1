@@ -39,6 +39,9 @@ else
 # Run your code that needs to be elevated here
 Write-Host ("Current dir " + $directorypath)
 
+Write-Host ("Sopping service TFSJobAgent")
+stop-service "TFSJobAgent"
+
 $filesToCopy = New-Object System.Collections.ArrayList
 $targetDir = "c:\Program Files\Microsoft Team Foundation Server 15.0\Application Tier\TFSJobAgent\Plugins\"
 $sourceDir = $directorypath + "\OctaneTFSPlugin\bin\Debug\"
@@ -70,6 +73,8 @@ if($input="y"){
 
 }
 
+Write-Host ("Starting service TFSJobAgent")
+start-service "TFSJobAgent"
 
 Write-Host -NoNewLine "Press any key to continue..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
