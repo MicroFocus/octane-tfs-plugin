@@ -1,3 +1,6 @@
+$invocation = (Get-Variable MyInvocation).Value
+$directorypath = Split-Path $invocation.MyCommand.Path
+
 # Get the ID and security principal of the current user account
 $myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
 $myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
@@ -34,32 +37,34 @@ else
    }
 
 # Run your code that needs to be elevated here
+Write-Host ("Current dir " + $directorypath)
 
-$filesToRemove = New-Object System.Collections.ArrayList
-$baseDir = "c:\Program Files\Microsoft Team Foundation Server 15.0\Application Tier\TFSJobAgent\"
-$filesToRemove.Add($baseDir + "Hpe.Nga.Api.Core.*")
-$filesToRemove.Add($baseDir + "OctaneTFSPlugin.*")
-$filesToRemove.Add($baseDir + "OctaneManager.*")
-$filesToRemove.Add($baseDir + "OctaneTFSPluginLogConfig.xml")
-$filesToRemove.Add($baseDir + "OctaneManager.*")
-$filesToRemove.Add($baseDir + "Newtonsoft.Json.*")
-$filesToRemove.Add($baseDir + "Nancy.Hosting.*")
-$filesToRemove.Add($baseDir + "log4net.*")
+$filesToCopy = New-Object System.Collections.ArrayList
+$targetDir = "c:\Program Files\Microsoft Team Foundation Server 15.0\Application Tier\TFSJobAgent\Plugins\"
+$sourceDir = $directorypath + "\OctaneTFSPlugin\bin\Debug\"
+$filesToCopy.Add($sourceDir + "MicroFocus.Adm.Octane.Api.Core.*")
+$filesToCopy.Add($sourceDir + "MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin.*")
+$filesToCopy.Add($sourceDir + "MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.*")
+$filesToCopy.Add($sourceDir + "Newtonsoft.Json.*")
+$filesToCopy.Add($sourceDir + "Nancy.Hosting.*")
+$filesToCopy.Add($sourceDir + "log4net.*")
 
-ForEach ($item In $filesToRemove)
+
+ForEach ($item In $filesToCopy)
 {
   Write-Host $item
 }
 
 $input= Read-Host ("Continue?")
 if($input="y"){
-  ForEach ($item In $filesToRemove)
+  ForEach ($item In $filesToCopy)
   {
     try{
-          Write-Host ("Deleting : " + $item)
-          Remove-Item $item
+          Write-Host ("Copy : " + $item)
+          Copy-Item $item $targetDir
+          Write-Host ("Copied!")
         }catch{
-          Write-Host ("Failed Deleting " + $item )
+          Write-Host ("Failed to copy: " + $item )
         }
   }
 
