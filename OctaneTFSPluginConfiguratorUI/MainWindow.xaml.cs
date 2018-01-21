@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,6 +29,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using log4net;
 using MicroFocus.Adm.Octane.Api.Core.Connector;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
@@ -39,27 +41,35 @@ namespace OctaneTFSPluginConfiguratorUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         ConnectionDetails _conDetails = new ConnectionDetails();
         private readonly string _instanceId = Guid.NewGuid().ToString();
         public MainWindow()
         {
-            Helper.CheckedConnection = false;
-            InitializeComponent();
+            try
+            {
+                Helper.CheckedConnection = false;
+                InitializeComponent();
+                TfsLocation.Text = ConnectionCreator.GetTfsLocationFromHostName();
+                if (!ConfigurationManager.ConfigurationExists())
+                {                    
+                    return;
+                }
 
-            if (!ConfigurationManager.ConfigurationExists())
-            {                
-                TfsLocation.Text = ConnectionCreator.GetTfsLocationFromHostName();                
-                return;                
+                var connectionDetails = ConfigurationManager.Read(false);
+
+                Location.Text = connectionDetails.ALMOctaneUrl;
+                ClientId.Text = connectionDetails.ClientId;
+                ClientSecret.Password = connectionDetails.ClientSecret;
+                TfsLocation.Text = connectionDetails.TfsLocation;
+                Pat.Password = connectionDetails.Pat;
+                _instanceId = connectionDetails.InstanceId;
             }
-
-            var connectionDetails = ConfigurationManager.Read(false);
-
-            Location.Text = connectionDetails.ALMOctaneUrl;
-            ClientId.Text = connectionDetails.ClientId;
-            ClientSecret.Password = connectionDetails.ClientSecret;
-            TfsLocation.Text = connectionDetails.TfsLocation;
-            Pat.Password = connectionDetails.Pat;
-            _instanceId= connectionDetails.InstanceId;            
+            catch (Exception ex)
+            {
+                Log.Warn("Could not parse existing configuration file",ex);
+            }
+            
         }
 
         private void TestConnectionButton_OnClick(object sender, RoutedEventArgs e)
@@ -90,11 +100,18 @@ namespace OctaneTFSPluginConfiguratorUI
 
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
-        {                   
-           ReadFields();
-           ConfigurationManager.WriteConfig(_conDetails);
+        {
+            try
+            {
+                ReadFields();
+                ConfigurationManager.WriteConfig(_conDetails);
 
-           MessageBox.Show("Settings saved!");
+                MessageBox.Show("Settings saved!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not save configuration file!");
+            }
         }
 
         private void ReadFields()
