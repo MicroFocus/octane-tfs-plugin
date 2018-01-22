@@ -43,7 +43,7 @@ namespace OctaneTFSPluginConfiguratorUI
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         ConnectionDetails _conDetails = new ConnectionDetails();
-        private readonly string _instanceId = Guid.NewGuid().ToString();
+        private string _instanceId = Guid.NewGuid().ToString();
         public MainWindow()
         {
             try
@@ -121,7 +121,7 @@ namespace OctaneTFSPluginConfiguratorUI
             var clientSecret = ClientSecret.Password;            
             var pat = Pat.Password;
             var tfsLocation = TfsLocation.Text;
-
+            _instanceId = string.IsNullOrEmpty(_instanceId) ? Guid.NewGuid().ToString() : _instanceId;
             var conDetails =
                 new ConnectionDetails(octaneServerUrl, clientId, clientSecret, tfsLocation, _instanceId)
                 {
