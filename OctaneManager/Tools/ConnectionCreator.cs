@@ -23,6 +23,7 @@ using System;
 using System.Net;
 using System.Reflection;
 using System.Web;
+using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
@@ -123,7 +124,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			//1.validate connectivity
 			try
 			{
-				restConnector.Connect(connectionDetails.Host, new APIKeyConnectionInfo(connectionDetails.ClientId, connectionDetails.ClientSecret));
+				restConnector.Connect(connectionDetails.Host, new APIKeyConnectionInfo(connectionDetails.ClientId, connectionDetails.ClientSecret));			   
 			}
 			catch (Exception e)
 			{
@@ -144,7 +145,26 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 				throw new Exception(msg);
 			}
 
-			DateTime end = DateTime.Now;
+            //validate authorization
+		    try
+		    {
+		        string request = $"/internal-api/shared_spaces/{connectionDetails.SharedSpace}/analytics/ci/servers/connectivity/status";
+		        restConnector.ExecuteGet(request, null);                
+		    }
+		    catch (Exception ex)
+		    {
+                MqmRestException restEx = ex.InnerException as MqmRestException;
+		        if (restEx.StatusCode == HttpStatusCode.Forbidden)
+		        {
+		            throw new Exception("Provided credentials are not sufficient for requested resource");
+		        }
+		        else
+		        {
+		            throw new Exception(ex.Message);
+                }		        		        
+		    }
+
+            DateTime end = DateTime.Now;
 			Log.Debug($"Validate connection to Octane finished in {(long)((end - start).TotalMilliseconds)} ms");
 			return new OctaneApis(restConnector, connectionDetails);
 		}
