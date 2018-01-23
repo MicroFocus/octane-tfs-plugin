@@ -59,7 +59,7 @@ There are several rest api operations that can be performed to monitor plugin he
 | http://localhost:4567/stop       | POST |Stop plugin|
 | http://localhost:4567/version       | GET |Get plugin version|
 
-
+Plugin logs are located in C:\Users\Public\Documents\OctaneTfsPlugin\logs
 
 ## Relevent links
 -	**Download the most recent build version of the plugin** at [appveyor](https://ci.appveyor.com/project/MicroFocus/octane-tfs-plugin)
