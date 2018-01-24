@@ -16,7 +16,7 @@ Latest release branch status:
 
 1. Download latest msi release setup from : [releases](https://github.com/MicroFocus/octane-tfs-plugin/releases)
 2. Run setup
-3. Configure all relevant fields following the [Configure the setup](#Configure the connection)
+3. Configure all relevant fields following the [Configure the setup] guide(https://github.com/MicroFocus/octane-tfs-plugin#configure-the-setup)
 
 ### Configuring the TFS ci plugin to connect to ALM Octane
 #### Before you configure the connection:
@@ -33,8 +33,8 @@ Enter the following information in the relevant fields:
 
       This folder is provided by default and should be changed only if TFS installation path is different from the default
 
-**Location**: http:// Octane fully qualified domain name / IP address> {:}/ui/?p=
-For example, in this URL, the shared space ID is 1002:  http://myServer.myCompany.com:8081/ui/?p=1002
+**Location**: http://myServer.myCompany.com:8081/ui/?p=1002
+where 1002 is your shared space id and 8081 is the ALM Octane port service port
 
 **Client ID/Secret**: Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when communicating with ALM Octane
 
@@ -74,4 +74,4 @@ Plugin logs are located in C:\Users\Public\Documents\OctaneTfsPlugin\logs
 #### Guidelines
 - Document your code – it enables others to continue the great work you did on the code and update it.
 
-### Feel free to contact us on any question related to contributions - octane[dot]ci[dot]plugins-[at]-gmail-dot-com
+### Feel free to contact us on any question related to contributions - octane.ci.plugins@gmail.com
