@@ -94,7 +94,7 @@ namespace OctaneTFSPluginConfiguratorUI
 
             Helper.CheckedConnection = true;
 
-            MessageBox.Show("Connection succesfull");
+            MessageBox.Show("Connection successful");
 
         }
 
