@@ -23,7 +23,6 @@ Latest release branch status:
 1. Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when
 communicating with ALM Octane. The access keys must be assigned the CI/CD Integration role in all relevant workspaces. For details, see Set up API access for integration.
 2. To enable the TFS server to communicate with ALM Octane, make sure the server can access the Internet. If your network requires a proxy to connect to the Internet, setup the required proxy configuration.
-3. Decide which Bamboo user ALM Octane will use to execute jobs on the server.
 
 #### Configure the setup
 During the msi setup
