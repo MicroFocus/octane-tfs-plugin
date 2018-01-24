@@ -16,7 +16,7 @@ Latest release branch status:
 
 1. Download latest msi release setup from : [releases](https://github.com/MicroFocus/octane-tfs-plugin/releases)
 2. Run setup
-3. Configure all relevant fields following the [Configure the setup] guide(https://github.com/MicroFocus/octane-tfs-plugin#configure-the-setup)
+3. Configure all relevant fields following the [Configure the setup](https://github.com/MicroFocus/octane-tfs-plugin#configure-the-setup) guide
 
 ### Configuring the TFS ci plugin to connect to ALM Octane
 #### Before you configure the connection:
