@@ -87,15 +87,14 @@ namespace OctaneTFSPluginConfiguratorUI
                 ConnectionCreator.CreateOctaneConnection(_conDetails);
             }
             catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+            {                
+                MessageBox.Show(ex.Message, "ALM Octane", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
                 return;                
             }
 
             Helper.CheckedConnection = true;
 
-            MessageBox.Show("Connection successful");
-
+            MessageBox.Show("Connection succesfull","ALM Octane",MessageBoxButton.OK,MessageBoxImage.Information,MessageBoxResult.OK);
         }
 
 
@@ -105,12 +104,14 @@ namespace OctaneTFSPluginConfiguratorUI
             {
                 ReadFields();
                 ConfigurationManager.WriteConfig(_conDetails);
-
-                MessageBox.Show("Settings saved!");
+                
+                MessageBox.Show("Settings saved!", "ALM Octane", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Could not save configuration file!");
+                const string error = "Could not save configuration file!";
+                Log.Error(error,ex);
+                MessageBox.Show(error, "ALM Octane", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             }
         }
 

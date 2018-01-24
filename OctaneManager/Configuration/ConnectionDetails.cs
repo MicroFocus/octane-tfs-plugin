@@ -15,6 +15,7 @@
 */
 using Newtonsoft.Json;
 using System;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration.Credentials;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
@@ -56,11 +57,22 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 		}
 		public string ALMOctaneUrl { get; set; }
 		public string ClientId { get; set; }
-		public string ClientSecret { get; set; }
 
-		public string Pat { get; set; }
+	    [JsonIgnore]
+        public string ClientSecret
+	    {
+	        get => CredentialsManager.GetSecret(CredentialsManager.AlmOctaneCredentials);
+	        set => CredentialsManager.SaveSecret(CredentialsManager.AlmOctaneCredentials, value);
+	    }
 
-		public string TfsLocation { get; set; }
+	    [JsonIgnore]
+        public string Pat
+	    {
+	        get => CredentialsManager.GetSecret(CredentialsManager.TfsOctaneCredentials);
+	        set => CredentialsManager.SaveSecret(CredentialsManager.TfsOctaneCredentials, value);
+        }
+
+	    public string TfsLocation { get; set; }
 		public ConnectionDetails()
 		{
 
