@@ -22,13 +22,13 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OctaneTFSPluginConfiguratorUI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("ALMOctaneTFSPluginConfiguratorUI")]
+[assembly: AssemblyDescription("Application for configuring the ALM Octane TFS Plugin")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Microfocus")]
 [assembly: AssemblyProduct("OctaneTFSPluginConfiguratorUI")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Microfocus Copyright ©  2018")]
+[assembly: AssemblyTrademark("Micro Focus")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

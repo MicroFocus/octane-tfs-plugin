@@ -95,7 +95,6 @@ namespace OctaneTFSPluginConfiguratorUI
             Helper.CheckedConnection = true;
 
             MessageBox.Show("Connection succesfull","ALM Octane",MessageBoxButton.OK,MessageBoxImage.Information,MessageBoxResult.OK);
-
         }
 
 
