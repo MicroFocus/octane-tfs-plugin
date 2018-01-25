@@ -80,6 +80,7 @@
     <Compile Include="Configuration\ConnectionDetails.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Configuration\Credentials\CredentialsManager.cs" />
+    <Compile Include="Configuration\Credentials\Encryption.cs" />
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
     <Compile Include="Queue\FinishedEventsQueue.cs" />

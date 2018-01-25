@@ -19,7 +19,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration.Credentials;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
-	public class ConnectionDetails
+	public class ConnectionDetails : ICloneable
 	{
 		[JsonIgnore]
 		public string Host
@@ -57,19 +57,17 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 		}
 		public string ALMOctaneUrl { get; set; }
 		public string ClientId { get; set; }
-
-	    [JsonIgnore]
+	    
         public string ClientSecret
 	    {
-	        get => CredentialsManager.GetSecret(CredentialsManager.AlmOctaneCredentials);
-	        set => CredentialsManager.SaveSecret(CredentialsManager.AlmOctaneCredentials, value);
+	        get;
+	        set;
 	    }
-
-	    [JsonIgnore]
+	    
         public string Pat
 	    {
-	        get => CredentialsManager.GetSecret(CredentialsManager.TfsOctaneCredentials);
-	        set => CredentialsManager.SaveSecret(CredentialsManager.TfsOctaneCredentials, value);
+	        get; 
+	        set; 
         }
 
 	    public string TfsLocation { get; set; }
@@ -96,5 +94,39 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 			return this;
 		}
 
+        
+
+	    public object Clone()
+	    {
+	        var clone  =new ConnectionDetails();
+
+	        clone.ClientSecret = ClientSecret;
+	        clone.Pat = Pat;
+	        clone.ALMOctaneUrl = ALMOctaneUrl;
+	        clone.ClientId = ClientId;
+	        clone.TfsLocation = TfsLocation;
+	        clone.InstanceId = InstanceId;
+	        return clone;
+	    }
+
+	    public void Encrypt()
+	    {
+	        Pat = Encryption.Encrypt(Pat);
+	        ClientSecret = Encryption.Encrypt(ClientSecret);
+        }
+
+
+	    public void Decrypt()
+	    {
+	        Pat = Encryption.Decrypt(Pat);
+	        ClientSecret = Encryption.Decrypt(ClientSecret);
+        }
+
+	    public ConnectionDetails GetSecureObject()
+	    {
+	        var clone = Clone() as ConnectionDetails;
+            clone.Encrypt();
+	        return clone;
+	    }
 	}
 }

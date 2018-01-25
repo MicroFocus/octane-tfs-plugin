@@ -20,6 +20,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration.Credentials;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
@@ -80,8 +81,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 				Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(resForLog, true)}");
 			}
 
-			ConnectionDetails res = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
-			return res;
+			var res = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
+
+		    res.Decrypt();
+
+            return res;
 		}
 
 		public static bool ConfigurationExists()
@@ -96,8 +100,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 
 		public static void WriteConfig(ConnectionDetails config)
 		{
-			var configFile = GetConfigFilePath();
-			var configText = JsonHelper.SerializeObject(config, true);
+			var configFile = GetConfigFilePath();		                
+			var configText = JsonHelper.SerializeObject(config.GetSecureObject(), true);
 			File.WriteAllText(configFile, configText);
 			Log.Info($"Writing configuration done");
 		}
