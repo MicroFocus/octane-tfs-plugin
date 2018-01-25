@@ -38,7 +38,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
             var instpath = this.Context.Parameters["targetdir"];
             
-            var path= Path.Combine(instpath, "OctaneTFSPluginConfiguratorUI.exe");
+            var path= Path.Combine(instpath, "ALMOctaneTFSPluginConfiguratorUI.exe");
             System.Diagnostics.Process.Start(path);
         }
     }
