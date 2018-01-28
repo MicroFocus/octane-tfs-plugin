@@ -20,7 +20,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration.Credentials;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
