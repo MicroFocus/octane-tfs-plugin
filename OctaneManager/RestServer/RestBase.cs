@@ -80,8 +80,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			Post["/config", RestrictAccessFromLocalhost] = _ =>
 			{
 				var configStr = Context.Request.Body.AsString();
-				Log.Debug($"Received new config: \n {configStr}");
-
+				Log.Debug($"Received new configuration");//dont log received log configuration as it contains plain passwords
 				var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
 
 				try
