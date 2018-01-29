@@ -93,7 +93,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 					WriteWindowsEvent($"Log4net configuration file {fullPath}", EventLogEntryType.Information);
 
 					//change path to log files
-					var logFolder = Path.Combine(ConfigurationManager.ConfigFolder, "Logs");
+				
 					log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
 					foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
 					{
@@ -104,12 +104,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 							//it means - config file contains only name of log file, for example abc.log. Directory path was added automatically.
 							//usually app doesn't have permissions to write logs in plugin directory
 							{
-								if (!Directory.Exists(logFolder))
-								{
-									Directory.CreateDirectory(logFolder);
-								}
-
-								fileAppender.File = Path.Combine(logFolder, Path.GetFileName(fileAppender.File));
+								Paths.CreateDirIfMissing(Paths.LogFolder);
+								fileAppender.File = Path.Combine(Paths.LogFolder, Path.GetFileName(fileAppender.File));
 								fileAppender.ActivateOptions();
 							}
 							WriteWindowsEvent($"Log4net log file is  {fileAppender.File}", EventLogEntryType.Information);

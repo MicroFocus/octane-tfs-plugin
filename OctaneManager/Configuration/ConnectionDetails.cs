@@ -21,6 +21,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
 	public class ConnectionDetails : ICloneable
 	{
+		public static string SENSITIVE_VALUE_REPLACER = "**********";
+
 		[JsonIgnore]
 		public string Host
 		{
@@ -57,20 +59,20 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 		}
 		public string ALMOctaneUrl { get; set; }
 		public string ClientId { get; set; }
-	    
-        public string ClientSecret
-	    {
-	        get;
-	        set;
-	    }
-	    
-        public string Pat
-	    {
-	        get; 
-	        set; 
-        }
 
-	    public string TfsLocation { get; set; }
+		public string ClientSecret
+		{
+			get;
+			set;
+		}
+
+		public string Pat
+		{
+			get;
+			set;
+		}
+
+		public string TfsLocation { get; set; }
 		public ConnectionDetails()
 		{
 
@@ -87,46 +89,52 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 
 		public string InstanceId { get; set; } = Guid.NewGuid().ToString();
 
-		public ConnectionDetails RemoveSensitiveInfo()
+
+
+		public object Clone()
 		{
-			ClientSecret = "***";
-			Pat = "***";
-			return this;
+			return this.MemberwiseClone();
 		}
 
-        
-
-	    public object Clone()
-	    {
-	        var clone  =new ConnectionDetails();
-
-	        clone.ClientSecret = ClientSecret;
-	        clone.Pat = Pat;
-	        clone.ALMOctaneUrl = ALMOctaneUrl;
-	        clone.ClientId = ClientId;
-	        clone.TfsLocation = TfsLocation;
-	        clone.InstanceId = InstanceId;
-	        return clone;
-	    }
-
-	    public void Encrypt()
-	    {
-	        Pat = Encryption.Encrypt(Pat);
-	        ClientSecret = Encryption.Encrypt(ClientSecret);
-        }
+		public void Encrypt()
+		{
+			Pat = Encryption.Encrypt(Pat);
+			ClientSecret = Encryption.Encrypt(ClientSecret);
+		}
 
 
-	    public void Decrypt()
-	    {
-	        Pat = Encryption.Decrypt(Pat);
-	        ClientSecret = Encryption.Decrypt(ClientSecret);
-        }
+		public void Decrypt()
+		{
+			Pat = Encryption.Decrypt(Pat);
+			ClientSecret = Encryption.Decrypt(ClientSecret);
+		}
 
-	    public ConnectionDetails GetSecureObject()
-	    {
-	        var clone = Clone() as ConnectionDetails;
-            clone.Encrypt();
-	        return clone;
-	    }
+		public void ResetSensitiveInfoTo(ConnectionDetails other)
+		{
+			if (SENSITIVE_VALUE_REPLACER.Equals(other.Pat))
+			{
+				other.Pat = this.Pat;
+			}
+
+			if (SENSITIVE_VALUE_REPLACER.Equals(other.ClientSecret))
+			{
+				other.ClientSecret = this.ClientSecret;
+			}
+		}
+
+		public ConnectionDetails GetInstanceWithoutSensitiveInfo()
+		{
+			var clone = Clone() as ConnectionDetails;
+			clone.ClientSecret = SENSITIVE_VALUE_REPLACER;
+			clone.Pat = SENSITIVE_VALUE_REPLACER;
+			return clone;
+		}
+
+		public ConnectionDetails GetSecuredInstance()
+		{
+			var clone = Clone() as ConnectionDetails;
+			clone.Encrypt();
+			return clone;
+		}
 	}
 }

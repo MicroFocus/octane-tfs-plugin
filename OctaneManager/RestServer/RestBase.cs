@@ -82,10 +82,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				var configStr = Context.Request.Body.AsString();
 				Log.Debug($"Received new configuration");//dont log received log configuration as it contains plain passwords
 				var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
-
 				try
 				{
 					ConnectionCreator.CheckMissingValues(config);
+					ConfigurationManager.ResetSensitiveInfo(config);
 					ConfigurationManager.WriteConfig(config);
 				}
 				catch (Exception e)
@@ -106,6 +106,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 					var config = JsonHelper.DeserializeObject<ConnectionDetails>(configStr);
 
 					ConnectionCreator.CheckMissingValues(config);
+					ConfigurationManager.ResetSensitiveInfo(config);
 					ConnectionCreator.CreateTfsConnection(config);
 					ConnectionCreator.CreateOctaneConnection(config);
 				}
@@ -125,7 +126,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 					ConnectionDetails conf = null;
 					try
 					{
-						conf = ConfigurationManager.Read(false);
+						conf = ConfigurationManager.Read(false).GetInstanceWithoutSensitiveInfo();
 					}
 					catch (FileNotFoundException)
 					{
@@ -140,7 +141,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				}
 				else
 				{
-					string config = JsonHelper.SerializeObject(ConfigurationManager.Read(false).RemoveSensitiveInfo(), true);
+					string config = JsonHelper.SerializeObject(ConfigurationManager.Read(false).GetInstanceWithoutSensitiveInfo(), true);
 					return new TextResponse(config);
 				}
 
