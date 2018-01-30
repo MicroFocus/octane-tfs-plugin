@@ -291,6 +291,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 				PluginManager.GetInstance().GeneralEventsQueue.Add(startEvent);
 				PluginManager.GetInstance().GeneralEventsQueue.Add(finishEvent);
+				PluginManager.GetInstance().FinishedEventsQueue.Add(finishEvent);
 			}
 			catch (Exception ex)
 			{
