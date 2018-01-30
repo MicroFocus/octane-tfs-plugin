@@ -134,15 +134,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 							//1.Log
 							Log.Debug($"Build {ciEvent.BuildInfo} - {ciEvent.EventType.ToString().ToUpper()} event is sent");
 
-
-							//2.Add finish events to special list for futher handling : scm event and test result sending
-							bool isFinishEvent = ciEvent.EventType.Equals(CiEventType.Finished);
-							if (isFinishEvent)
-							{
-								_finishedEventsQueue.Add(ciEvent);
-							}
-
-							//3.Clear original list
+							//2.Clear original list
 							_generalEventsQueue.Remove(ciEvent);
 						}
 					}
