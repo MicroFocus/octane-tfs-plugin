@@ -37,10 +37,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConnectionDetails _connectionDetails;
 
-		private GeneralEventsQueue _generalEventsQueue;
-		private FinishedEventsQueue _finishedEventsQueue;
+		private EventList _generalEventsQueue;
+		private EventsQueue _testResultsQueue;
+		private EventsQueue _scmEventsQueue;
 
-		private TfsEventManager _eventManager;
+		private QueuesManager _eventManager;
 		private OctaneTaskManager _taskManager;
 
 		private StatusEnum _pluginStatus = StatusEnum.Stopped;
@@ -56,13 +57,16 @@ namespace MicroFocus.Ci.Tfs.Octane
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
 			ReadConfigurationFile();
 			StartRestServer();
-			_generalEventsQueue = new GeneralEventsQueue();
-			_finishedEventsQueue = new FinishedEventsQueue();
+			_generalEventsQueue = new EventList();
+			_testResultsQueue = new EventsQueue();
+			_scmEventsQueue = new EventsQueue();
 		}
 
-		public GeneralEventsQueue GeneralEventsQueue => _generalEventsQueue;
+		public EventList GeneralEventsQueue => _generalEventsQueue;
 
-		public FinishedEventsQueue FinishedEventsQueue => _finishedEventsQueue;
+		public EventsQueue TestResultsQueue => _testResultsQueue;
+
+		public EventsQueue ScmEventsQueue => _scmEventsQueue;
 
 		public StatusEnum Status
 		{
@@ -199,7 +203,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 					_taskManager = new OctaneTaskManager(tfsApis, octaneApis);
 					_taskManager.Start();
-					_eventManager = new TfsEventManager(tfsApis, octaneApis);
+					_eventManager = new QueuesManager(tfsApis, octaneApis);
 					_eventManager.Start();
 
 					_initFailCounter = 0;

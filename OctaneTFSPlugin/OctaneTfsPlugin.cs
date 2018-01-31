@@ -73,20 +73,21 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 			{
 				BuildUpdatedEvent updatedEvent = (BuildUpdatedEvent)notificationEventArgs;
 				Build build = updatedEvent.Build;
-				Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for build {updatedEvent.BuildId} (Build Number : {updatedEvent.Build.BuildNumber}, Build Defenition: {updatedEvent.Build.Definition.Name})");
+				Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for build {updatedEvent.BuildId} (Build Number : {updatedEvent.Build.BuildNumber}, Build Definition: {updatedEvent.Build.Definition.Name})");
 
 				CiEvent ciEvent = CiEventUtils.ToCiEvent(build);
 				if (notificationEventArgs is BuildStartedEvent)
 				{
 					ciEvent.EventType = CiEventType.Started;
+					_pluginManager.GeneralEventsQueue.Add(ciEvent);
 				}
 				else if (notificationEventArgs is BuildCompletedEvent)
 				{
 					ciEvent.EventType = CiEventType.Finished;
-					_pluginManager.FinishedEventsQueue.Add(ciEvent);
+					_pluginManager.ScmEventsQueue.Add(ciEvent);
+					_pluginManager.TestResultsQueue.Add(ciEvent);
+					_pluginManager.GeneralEventsQueue.Add(ciEvent);
 				}
-
-				_pluginManager.GeneralEventsQueue.Add(ciEvent);
 			}
 			catch (Exception e)
 			{

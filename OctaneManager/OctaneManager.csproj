@@ -81,9 +81,9 @@
     <Compile Include="Configuration\Paths.cs" />
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
-    <Compile Include="Queue\FinishedEventsQueue.cs" />
-    <Compile Include="Queue\GeneralEventsQueue.cs" />
-    <Compile Include="TfsEventManager.cs" />
+    <Compile Include="Queue\EventsQueue.cs" />
+    <Compile Include="Queue\EventList.cs" />
+    <Compile Include="Queue\QueuesManager.cs" />
     <Compile Include="Tools\ConnectionCreator.cs" />
     <Compile Include="Dto\Events\CiEvent.cs" />
     <Compile Include="Dto\Connectivity\OctaneTask.cs" />

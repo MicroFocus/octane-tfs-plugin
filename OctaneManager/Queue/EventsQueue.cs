@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 {
-	public class FinishedEventsQueue
+	public class EventsQueue
 	{
 		private Queue<CiEvent> queue = new Queue<CiEvent>();
 

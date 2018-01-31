@@ -13,20 +13,20 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-using MicroFocus.Ci.Tfs.Octane;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using SystemConfigurationManager = System.Configuration.ConfigurationManager;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 
 namespace MicroFocus.Ci.Tfs.Tests
 {
 	[TestClass]
 	public class OctaneManagerBaseTest
 	{
-		protected static TfsEventManager octaneManager;
+		protected static QueuesManager octaneManager;
 		protected static TfsApis _tfsManager;
 
 		[AssemblyInitialize]

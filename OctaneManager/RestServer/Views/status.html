@@ -56,7 +56,7 @@ table{
 		<h2>Links</h2>
 
 		<a href="/config" target="_blank"><img class="linkIcon" src="resources/configuration.svg" alt="Configuration"><span class="linkText">Configuration</span></a>
-		<a href="/logs/last" target="_blank"><img class="linkIcon" src="resources/f-step-simple.svg" alt="Last Log" ><span class="linkText">Last Log</span></a>
+		<a href="/logs/app/last" target="_blank"><img class="linkIcon" src="resources/f-step-simple.svg" alt="Application Log" ><span class="linkText">Application Log</span></a>
 
 		<div id="actions" class="hidden">
 			<h2>Actions</h2>
@@ -75,8 +75,10 @@ table{
 	</table>
 	<h2>Queues</h2>
 		<table>
-		<tr><td class="itemHeader">All events queue size :</td><td class="itemValue"><div id="generalQueueSize">Loading ...</div></td></tr>
-		<tr><td class="itemHeader">SCM queue size :</td><td class="itemValue"><div id="finishQueueSize">Loading ...</div></td></tr>
+		<tr><td class="itemHeader">All events queue size :</td><td class="itemValue"><div id="generalEventsQueue">Loading ...</div></td></tr>
+		<tr><td class="itemHeader">SCM events queue size :</td><td class="itemValue"><div id="scmEventsQueue">Loading ...</div></td></tr>
+		<tr><td class="itemHeader">Test results queue size :</td><td class="itemValue"><div id="testResultsQueue">Loading ...</div></td></tr>
+
 	</table>
 </body>
 
@@ -97,8 +99,9 @@ function refresh(){
 
 		$('#pluginStatus').text(data['pluginStatus']);
 		$('#pluginVersion').text(data['pluginVersion']);
-		$('#generalQueueSize').text(data['generalQueueSize']);
-		$('#finishQueueSize').text(data['finishQueueSize']);
+		$('#generalEventsQueue').text(data['generalEventsQueue']);
+		$('#scmEventsQueue').text(data['scmEventsQueue']); 
+		$('#testResultsQueue').text(data['testResultsQueue']);
 		
 		if(data['pluginStatus']==='Connected'){
 			$('#pluginStatus').addClass('pluginConnected');

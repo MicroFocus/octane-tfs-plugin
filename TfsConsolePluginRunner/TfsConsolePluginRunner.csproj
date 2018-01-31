@@ -78,7 +78,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AlmOctaneTfsPluginConsoleRunner.log4net.config.xml">
+    <Content Include="ConsoleRunner.log4net.config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

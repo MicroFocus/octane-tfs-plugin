@@ -37,9 +37,13 @@
     <layout type="log4net.Layout.PatternLayout">
       <conversionPattern value="%date [%6.6thread] %-5level %-40.40logger: %message%newline"/>
     </layout>
+    <filter type="log4net.Filter.LoggerMatchFilter">
+      <loggerToMatch value="TfsRestConnector" />
+      <acceptOnMatch value="false" />
+    </filter>
   </appender>
-  <appender name="FileAppender" type="log4net.Appender.RollingFileAppender">
-    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\tfs-plugin-console-app.log" />
+  <appender name="AppAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\app.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
     <maxSizeRollBackups value="10" />
@@ -48,11 +52,32 @@
     <layout type="log4net.Layout.PatternLayout">
       <conversionPattern value="%date [%6.6thread] %-5level %-40.40logger: %message%newline" />
     </layout>
+    <filter type="log4net.Filter.LoggerMatchFilter">
+      <loggerToMatch value="MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.TfsRestConnector" />
+      <acceptOnMatch value="false" />
+    </filter>
   </appender>
-
+  <appender name="TfsRestAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\tfsRest.log" />
+    <appendToFile value="true" />
+    <rollingStyle value="Size" />
+    <maxSizeRollBackups value="10" />
+    <maximumFileSize value="2MB" />
+    <staticLogFileName value="true" />
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%6.6thread] %-5level : %message%newline" />
+    </layout>
+    <filter type="log4net.Filter.LoggerMatchFilter">
+      <!--filter example http://www.claassen.net/geek/blog/2009/06/log4net-filtering-by-logger.html-->
+      <loggerToMatch value="MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.TfsRestConnector" />
+      <acceptOnMatch value="true" />
+    </filter>
+    <filter type="log4net.Filter.DenyAllFilter" />
+  </appender>
   <root>
     <level value="DEBUG"/>
-    <appender-ref ref="FileAppender"/>
+    <appender-ref ref="AppAppender"/>
+    <appender-ref ref="TfsRestAppender"/>
     <appender-ref ref="ManagedColoredConsoleAppender"/>
   </root>
 </log4net>
