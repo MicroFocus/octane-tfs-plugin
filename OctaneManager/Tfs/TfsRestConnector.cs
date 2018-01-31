@@ -85,58 +85,68 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 
 		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data)
 		{
-			//Log.Debug($"Sending request : {httpType}  to {_tfsConf.Uri.ToString()}/{urlSuffix}");
-			//Log.Debug($"Data : {data}");
-
-			//encode your personal access token                   
-			var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConfiguration.Pat)));
-
-
-			//use the httpclient
-			using (var client = new HttpClient())
+			DateTime start = DateTime.Now;
+			HttpStatusCode statusCode = 0;
+			try
 			{
-				client.BaseAddress = _tfsConfiguration.Uri;
-				client.DefaultRequestHeaders.Accept.Clear();
-				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
-				HttpResponseMessage response = null;
-
-				switch (httpType)
-				{
-					case HttpMethodEnum.GET:
-						response = client.GetAsync(urlSuffix, HttpCompletionOption.ResponseContentRead).Result;
-						break;
-					case HttpMethodEnum.POST:
-						StringContent requestContent = new StringContent(data, Encoding.UTF8, "application/json");
-						response = client.PostAsync(urlSuffix, requestContent).Result;
-						break;
-					default:
-						throw new NotSupportedException("Not supported http type");
-				}
+				//encode your personal access token                   
+				var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConfiguration.Pat)));
 
 
+				//use the httpclient
+				using (var client = new HttpClient())
+				{
+					client.BaseAddress = _tfsConfiguration.Uri;
+					client.DefaultRequestHeaders.Accept.Clear();
+					client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+					HttpResponseMessage response = null;
 
-				//check to see if we have a succesfull respond
-				string content = response.Content.ReadAsStringAsync().Result;
-				if (response.IsSuccessStatusCode)
-				{
-					T result = JsonHelper.DeserializeObject<T>(content);
-					return result;
+					switch (httpType)
+					{
+						case HttpMethodEnum.GET:
+							response = client.GetAsync(urlSuffix, HttpCompletionOption.ResponseContentRead).Result;
+							break;
+						case HttpMethodEnum.POST:
+							StringContent requestContent = new StringContent(data, Encoding.UTF8, "application/json");
+							response = client.PostAsync(urlSuffix, requestContent).Result;
+							break;
+						default:
+							throw new NotSupportedException("Not supported http type");
+					}
+
+
+
+					//check to see if we have a succesfull respond
+					statusCode = response.StatusCode;
+					string content = response.Content.ReadAsStringAsync().Result;
+					if (response.IsSuccessStatusCode)
+					{
+						T result = JsonHelper.DeserializeObject<T>(content);
+						return result;
+					}
+					else if (response.StatusCode == HttpStatusCode.Unauthorized)
+					{
+						throw new UnauthorizedAccessException("TFS PAT is not valid or does not have required permissions.");
+					}
+					else if (response.StatusCode == HttpStatusCode.NotFound)
+					{
+						throw new HttpException(404, $"Url is not found : {_tfsConfiguration.Uri.ToString()}{urlSuffix}");
+					}
+					else
+					{
+						String msg = $"Failed to set {httpType} {urlSuffix} : {content})";
+						Trace.WriteLine(msg);
+						throw new Exception(msg);
+					}
 				}
-				else if (response.StatusCode == HttpStatusCode.Unauthorized)
-				{
-					throw new UnauthorizedAccessException("TFS PAT is not valid or does not have required permissions.");
-				}
-				else if (response.StatusCode == HttpStatusCode.NotFound)
-				{
-					throw new HttpException(404, $"Url is not found : {_tfsConfiguration.Uri.ToString()}{urlSuffix}");
-				}
-				else
-				{
-					String msg = $"Failed to set {httpType} {urlSuffix} : {content})";
-					Trace.WriteLine(msg);
-					throw new Exception(msg);
-				}
+			}
+			finally
+			{
+				DateTime end = DateTime.Now;
+				string timeMsStr = string.Format("{0,7}", (long)(end - start).TotalMilliseconds);
+				Log.Info($"{(int)statusCode} | {timeMsStr} ms | {httpType}:{urlSuffix}");
+
 			}
 		}
 	}

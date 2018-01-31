@@ -85,6 +85,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto
 		[JsonProperty("phaseType")]
 		public string PhaseType { get; set; }
 
+		//[JsonProperty("testResultExpected")]
+		//public bool TestResultExpected { get; set; } 
+
 		[JsonIgnore]
 		public TfsBuildInfo BuildInfo { get; set; }
 	}

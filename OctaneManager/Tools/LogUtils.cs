@@ -17,6 +17,7 @@ using log4net;
 using log4net.Config;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -49,12 +50,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			EventLog.WriteEntry(source, msg, eventLogEntryType, 5005);
 		}
 
-		public static string GetLogFilePath()
+		public static string GetLogFilePath(string logType)
 		{
 			log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
 			foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
 			{
-				if (appender is log4net.Appender.FileAppender)
+				if (appender is log4net.Appender.FileAppender && appender.Name.ToLower().StartsWith(logType.ToLower()))
 				{
 					log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
 					return fileAppender.File;
@@ -62,6 +63,24 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			}
 			return null;
 		}
+
+		public static Dictionary<string, string> GetAllLogFilePaths()
+		{
+			Dictionary<string, string> logType2LogFilePath = new Dictionary<string, string>();
+			log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
+			foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
+			{
+				if (appender is log4net.Appender.FileAppender)
+				{
+					log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
+
+					string logType = fileAppender.Name.ToLower().Replace("appender", "");
+					logType2LogFilePath[logType] = fileAppender.File;
+				}
+			}
+			return logType2LogFilePath;
+		}
+
 		public static void ConfigureLog4NetForPluginMode()
 		{
 			Thread.Sleep(10000);
@@ -93,7 +112,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 					WriteWindowsEvent($"Log4net configuration file {fullPath}", EventLogEntryType.Information);
 
 					//change path to log files
-				
+
 					log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
 					foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
 					{

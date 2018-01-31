@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 {
-	public class GeneralEventsQueue
+	public class EventList
 	{
 		private List<CiEvent> list = new List<CiEvent>();
 		private static readonly int QUEUE_LIMIT = 10000;
@@ -62,7 +62,5 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 		{
 			list.Clear();
 		}
-
-
 	}
 }

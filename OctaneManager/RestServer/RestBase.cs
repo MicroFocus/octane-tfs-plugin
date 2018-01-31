@@ -49,8 +49,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				Dictionary<string, object> map = new Dictionary<string, object>();
 				map["pluginStatus"] = PluginManager.GetInstance().Status.ToString();
 				map["pluginVersion"] = Helpers.GetPluginVersion();
-				map["generalQueueSize"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
-				map["finishQueueSize"] = PluginManager.GetInstance().FinishedEventsQueue.Count;
+				map["generalEventsQueue"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
+				map["scmEventsQueue"] = PluginManager.GetInstance().ScmEventsQueue.Count;
+				map["testResultsQueue"] = PluginManager.GetInstance().TestResultsQueue.Count;
 
 				map["isLocal"] = IsLocal(Request);
 
@@ -67,12 +68,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				return "Received";
 			};
 
-			Get["/logs/{logId}"] = parameters =>
+			Get["/logs/{logType}/{logId}"] = parameters =>
 			{
-				return HandleGetLogRequest(parameters.logId);
+				return HandleGetLogRequest(parameters.logType, parameters.logId);
 			};
 
-			Get["/logs"] = _ =>
+			Get["/logs"] = parameters =>
 			{
 				return HandleGetLogListRequest();
 			};
@@ -182,14 +183,16 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			Post["/queues/clear", RestrictAccessFromLocalhost] = _ =>
 			{
 				Dictionary<string, object> queueStatus = new Dictionary<string, object>();
-				queueStatus["generalQueueSize"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
-				queueStatus["finishQueueSize"] = PluginManager.GetInstance().FinishedEventsQueue.Count;
+				queueStatus["GeneralEventsQueue"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
+				queueStatus["ScmEventsQueue"] = PluginManager.GetInstance().ScmEventsQueue.Count;
+				queueStatus["TaskResultQueue"] = PluginManager.GetInstance().TestResultsQueue.Count;
 
 				string json = JsonHelper.SerializeObject(queueStatus, true);
 				Log.Debug($"Clear event queues requested : {json}");
 
 				PluginManager.GetInstance().GeneralEventsQueue.Clear();
-				PluginManager.GetInstance().FinishedEventsQueue.Clear();
+				PluginManager.GetInstance().ScmEventsQueue.Clear();
+				PluginManager.GetInstance().TestResultsQueue.Clear();
 				return $"Cleared {json}";
 			};
 
@@ -221,35 +224,38 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 		private dynamic HandleGetLogListRequest()
 		{
-			string logfilePath = LogUtils.GetLogFilePath();
-			if (logfilePath == null)
-			{
-				return "Log file is not defined";
-			}
-			string logDirPath = Path.GetDirectoryName(logfilePath);
-			string logFileName = Path.GetFileName(logfilePath);
-			string[] foundFiles = Directory.GetFiles(logDirPath, logFileName + ".?");
+			Dictionary<string, string> logType2LogFilePath = LogUtils.GetAllLogFilePaths();
 			StringBuilder sb = new StringBuilder();
-			sb.Append($"Found {foundFiles.Length} files");
-			foreach (string foundFile in foundFiles)
+			int counter = 0;
+			foreach (KeyValuePair<string, string> entry in logType2LogFilePath)
 			{
-				sb.Append("</br>").Append(Environment.NewLine);
-				string fileName = Path.GetFileName(foundFile);
-				if (logFileName.Equals(fileName))
+				string logDirPath = Path.GetDirectoryName(entry.Value);
+				string logFileName = Path.GetFileName(entry.Value);
+				string[] foundFiles = Directory.GetFiles(logDirPath, logFileName + ".?");
+
+				foreach (string foundFile in foundFiles)
 				{
-					sb.Append("/logs/last");
-				}
-				else
-				{
-					sb.Append("/logs/" + fileName.Replace(logFileName + ".", ""));
+					counter++;
+					sb.Append("</br>").Append(Environment.NewLine);
+					string fileName = Path.GetFileName(foundFile);
+					if (logFileName.Equals(fileName))
+					{
+						sb.Append($"/logs/{entry.Key}/last");
+					}
+					else
+					{
+						sb.Append($"/logs/{entry.Key}/" + fileName.Replace(logFileName + ".", ""));
+					}
 				}
 			}
+
+			sb.Insert(0, $"Found {counter} files : ");
 			return sb.ToString();
 		}
 
-		private dynamic HandleGetLogRequest(string logId)
+		private dynamic HandleGetLogRequest(string logType, string logId)
 		{
-			string path = LogUtils.GetLogFilePath();
+			string path = LogUtils.GetLogFilePath(logType);
 			if (path == null)
 			{
 				return "Log file is not defined";
@@ -291,7 +297,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 				PluginManager.GetInstance().GeneralEventsQueue.Add(startEvent);
 				PluginManager.GetInstance().GeneralEventsQueue.Add(finishEvent);
-				PluginManager.GetInstance().FinishedEventsQueue.Add(finishEvent);
+				PluginManager.GetInstance().ScmEventsQueue.Add(finishEvent);
+				PluginManager.GetInstance().TestResultsQueue.Add(finishEvent);
 			}
 			catch (Exception ex)
 			{
