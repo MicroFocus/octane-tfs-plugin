@@ -37,9 +37,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConnectionDetails _connectionDetails;
 
-		private EventList _generalEventsQueue;
-		private EventsQueue _testResultsQueue;
-		private EventsQueue _scmEventsQueue;
+		private readonly EventList _generalEventsQueue = new EventList();
+		private readonly EventsQueue _testResultsQueue = new EventsQueue();
+		private readonly EventsQueue _scmEventsQueue = new EventsQueue();
 
 		private QueuesManager _eventManager;
 		private OctaneTaskManager _taskManager;
@@ -57,9 +57,6 @@ namespace MicroFocus.Ci.Tfs.Octane
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
 			ReadConfigurationFile();
 			StartRestServer();
-			_generalEventsQueue = new EventList();
-			_testResultsQueue = new EventsQueue();
-			_scmEventsQueue = new EventsQueue();
 		}
 
 		public EventList GeneralEventsQueue => _generalEventsQueue;

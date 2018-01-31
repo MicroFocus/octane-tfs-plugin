@@ -55,7 +55,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
 			foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
 			{
-				if (appender is log4net.Appender.FileAppender && appender.Name.ToLower().StartsWith(logType.ToLower()))
+				if (appender is log4net.Appender.FileAppender && appender.Name.ToLowerInvariant().StartsWith(logType.ToLower()))
 				{
 					log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
 					return fileAppender.File;

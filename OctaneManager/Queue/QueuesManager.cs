@@ -173,7 +173,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 			Log.Info($"Build {ciEvent.BuildInfo} - SCM data contains {commitCount} commits. Handling time is {(long)((end - start).TotalMilliseconds)} ms.");
 		}
 
-		private CiEvent CreateScmEvent(CiEvent finishEvent, ScmData scmData)
+		private static CiEvent CreateScmEvent(CiEvent finishEvent, ScmData scmData)
 		{
 			var scmEventEvent = finishEvent.Clone();
 			scmEventEvent.EventType = CiEventType.Scm;
@@ -220,8 +220,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 
 	public class SleepTimeWrapper
 	{
-		public const int DEFAULT_SLEEP_TIME = 2; //2 seconds
-		public const int MAX_SLEEP_TIME = 120; //120 seconds
+		public static readonly int DEFAULT_SLEEP_TIME = 2; //2 seconds
+		public static readonly int MAX_SLEEP_TIME = 120; //120 seconds
 
 		public int SleepTime { get; set; } = DEFAULT_SLEEP_TIME;
 

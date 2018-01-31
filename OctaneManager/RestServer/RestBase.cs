@@ -253,7 +253,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			return sb.ToString();
 		}
 
-		private dynamic HandleGetLogRequest(string logType, string logId)
+		private static dynamic HandleGetLogRequest(string logType, string logId)
 		{
 			string path = LogUtils.GetLogFilePath(logType);
 			if (path == null)

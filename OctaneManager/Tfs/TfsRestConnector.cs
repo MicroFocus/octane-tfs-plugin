@@ -87,6 +87,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 		{
 			DateTime start = DateTime.Now;
 			HttpStatusCode statusCode = 0;
+			string content = "";
 			try
 			{
 				//encode your personal access token                   
@@ -119,7 +120,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 
 					//check to see if we have a succesfull respond
 					statusCode = response.StatusCode;
-					string content = response.Content.ReadAsStringAsync().Result;
+					content = response.Content.ReadAsStringAsync().Result;
 					if (response.IsSuccessStatusCode)
 					{
 						T result = JsonHelper.DeserializeObject<T>(content);
@@ -144,8 +145,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			finally
 			{
 				DateTime end = DateTime.Now;
-				string timeMsStr = string.Format("{0,7}", (long)(end - start).TotalMilliseconds);
-				Log.Info($"{(int)statusCode} | {timeMsStr} ms | {httpType}:{urlSuffix}");
+				string timeMsStr = string.Format("{0,7} ms", (long)(end - start).TotalMilliseconds);
+				string responseSize = string.Format("{0,7} B", content.Length);
+				Log.Info($"{(int)statusCode} | {timeMsStr} | {responseSize} |  {httpType}:{urlSuffix}");
 
 			}
 		}

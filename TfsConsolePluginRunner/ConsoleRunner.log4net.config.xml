@@ -38,7 +38,7 @@
       <conversionPattern value="%date [%6.6thread] %-5level %-40.40logger: %message%newline"/>
     </layout>
     <filter type="log4net.Filter.LoggerMatchFilter">
-      <loggerToMatch value="TfsRestConnector" />
+      <loggerToMatch value="MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.TfsRestConnector" />
       <acceptOnMatch value="false" />
     </filter>
   </appender>
