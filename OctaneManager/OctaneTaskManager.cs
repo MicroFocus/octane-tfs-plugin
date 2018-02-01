@@ -14,7 +14,6 @@
 * limitations under the License.
 */
 using log4net;
-using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
@@ -24,7 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;

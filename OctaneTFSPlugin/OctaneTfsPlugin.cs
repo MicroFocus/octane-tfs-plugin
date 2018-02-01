@@ -24,6 +24,8 @@ using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
@@ -86,7 +88,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 					ciEvent.EventType = CiEventType.Finished;
 					_pluginManager.ScmEventsQueue.Add(ciEvent);
 					_pluginManager.TestResultsQueue.Add(ciEvent);
-					_pluginManager.GeneralEventsQueue.Add(ciEvent);
+
+					Task.Factory.StartNew(() =>
+					{
+						Thread.Sleep(CiEvent.DELAY_FOR_FINISH_EVENT);
+						_pluginManager.GeneralEventsQueue.Add(ciEvent);
+					});
 				}
 			}
 			catch (Exception e)

@@ -158,10 +158,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			return testResults;
 		}
 
-		public TfsRun GetRunForBuid(string collectionName, string projectName, string buildId)
+		public TfsRun GetRunForBuild(string collectionName, string projectName, string buildId)
 		{
-			var build = GetBuild(collectionName, projectName, buildId);
-			var uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs?api-version=1.0&buildUri={build.Uri}");
+			//var build = GetBuild(collectionName, projectName, buildId);
+			var buildUri = "vstfs:///Build/Build/" + buildId;
+			var uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs?api-version=1.0&buildUri={buildUri}");
 			var runs = _tfsRestConnector.GetCollection<TfsRun>(uriSuffix);
 			return runs.Count > 0 ? runs[0] : null;
 		}

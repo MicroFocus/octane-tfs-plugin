@@ -189,7 +189,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 				string msg = "";
 				if (_octaneApis.IsTestResultRelevant(ciEvent.Project))
 				{
-					var run = _tfsApis.GetRunForBuid(ciEvent.BuildInfo.CollectionName, ciEvent.BuildInfo.Project, ciEvent.BuildInfo.BuildId);
+					var run = _tfsApis.GetRunForBuild(ciEvent.BuildInfo.CollectionName, ciEvent.BuildInfo.Project, ciEvent.BuildInfo.BuildId);
 					if (run == null)
 					{
 						msg = "Run was not created for build. No test results.";
