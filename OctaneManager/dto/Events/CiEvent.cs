@@ -27,7 +27,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto
 		/// Delay finish event to allow scm event and test result to be sent to server. 
 		/// That will allow update pipeline node in UI with more data then finish event will be receive in UI
 		/// </summary>
-		public static int DELAY_FOR_FINISH_EVENT = 5000;
+		public const int DELAY_FOR_FINISH_EVENT = 5000;
 
 		public CiEvent() { }
 

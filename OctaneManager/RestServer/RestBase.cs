@@ -43,7 +43,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 		{
 			Get["/"] = _ =>
 			{
-				String view = GetView("status.html");
+				String view = GetView("console.html");
 				return view;
 			};
 

@@ -172,7 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\Resources\style.css" />
-    <EmbeddedResource Include="RestServer\Views\status.html" />
+    <EmbeddedResource Include="RestServer\Views\console.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\Resources\configuration.svg" />

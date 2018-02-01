@@ -98,7 +98,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 		/// </summary>
 		private static ICollection<TfsScmChange> GetFilteredBuildChanges(TfsApis tfsManager, TfsBuildInfo buildInfo, TfsBuild build, ICollection<TfsScmChange> changes)
 		{
-
 			//put changes in map
 			Dictionary<string, TfsScmChange> changesMap = new Dictionary<string, TfsScmChange>();
 			foreach (TfsScmChange change in changes)
