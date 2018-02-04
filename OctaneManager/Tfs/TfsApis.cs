@@ -194,7 +194,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/project-collections
 			var uriSuffix = ($"_apis/projectcollections?api-version=1.0&context={context}");
-			var collections = _tfsRestConnector.GetCollection<TfsProjectCollection>(uriSuffix);
+			_tfsRestConnector.GetCollection<TfsProjectCollection>(uriSuffix);
 		}
 
 		private IList<TfsProject> GetProjects(string collectionName)
