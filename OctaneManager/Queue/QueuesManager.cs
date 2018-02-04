@@ -50,6 +50,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 			_tfsApis = tfsApis;
 		}
 
+		public TfsApis TfsApis
+		{
+			get { return _tfsApis; }
+		}
+
 		public void Start()
 		{
 			_generalEventsQueue = PluginManager.GetInstance().GeneralEventsQueue;
@@ -139,7 +144,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 			}
 			Log.Debug("GeneralEvents task - finished");
 		}
-
 
 		public void ShutDown()
 		{

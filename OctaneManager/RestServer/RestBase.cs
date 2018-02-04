@@ -299,13 +299,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				startEvent.EventType = CiEventType.Started;
 
 				PluginManager.GetInstance().GeneralEventsQueue.Add(startEvent);
-				PluginManager.GetInstance().ScmEventsQueue.Add(finishEvent);
-				PluginManager.GetInstance().TestResultsQueue.Add(finishEvent);
-				Task.Factory.StartNew(() =>
-				{
-					Thread.Sleep(CiEvent.DELAY_FOR_FINISH_EVENT);
-					PluginManager.GetInstance().GeneralEventsQueue.Add(finishEvent);
-				});
+				PluginManager.GetInstance().HandleFinishEvent(finishEvent);
 			}
 			catch (Exception ex)
 			{
