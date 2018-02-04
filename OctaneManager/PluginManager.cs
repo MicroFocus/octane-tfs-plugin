@@ -24,6 +24,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -41,7 +42,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private readonly EventsQueue _testResultsQueue = new EventsQueue();
 		private readonly EventsQueue _scmEventsQueue = new EventsQueue();
 
-		private QueuesManager _eventManager;
+		private QueuesManager _queuesManager;
 		private OctaneTaskManager _taskManager;
 
 		private StatusEnum _pluginStatus = StatusEnum.Stopped;
@@ -109,9 +110,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			_cancellationTokenSource.Cancel();
 
-			if (_eventManager != null)
+			if (_queuesManager != null)
 			{
-				_eventManager.ShutDown();
+				_queuesManager.ShutDown();
 			}
 
 			if (_taskManager != null)
@@ -131,9 +132,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 					_octaneInitializationThread.Wait();
 				}
 
-				if (_eventManager != null)
+				if (_queuesManager != null)
 				{
-					_eventManager.WaitShutdown();
+					_queuesManager.WaitShutdown();
 				}
 
 				if (_taskManager != null)
@@ -144,7 +145,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 			_octaneInitializationThread = null;
 			_taskManager = null;
-			_eventManager = null;
+			_queuesManager = null;
 			Status = StatusEnum.Stopped;
 		}
 
@@ -200,8 +201,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 					_taskManager = new OctaneTaskManager(tfsApis, octaneApis);
 					_taskManager.Start();
-					_eventManager = new QueuesManager(tfsApis, octaneApis);
-					_eventManager.Start();
+					_queuesManager = new QueuesManager(tfsApis, octaneApis);
+					_queuesManager.Start();
 
 					_initFailCounter = 0;
 					Status = StatusEnum.Connected;
@@ -209,10 +210,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 				catch (Exception ex)
 				{
 					Log.Error($"Error in StartPlugin : {ex.Message}", ex);
-					if (_eventManager != null)
+					if (_queuesManager != null)
 					{
-						_eventManager.ShutDown();
-						_eventManager = null;
+						_queuesManager.ShutDown();
+						_queuesManager = null;
 					}
 					if (_taskManager != null)
 					{
@@ -254,6 +255,30 @@ namespace MicroFocus.Ci.Tfs.Octane
 		public void Dispose()
 		{
 			Shutdown();
+		}
+
+		public void HandleFinishEvent(CiEvent ciEvent)
+		{
+			Task.Factory.StartNew(() =>
+			{
+				try
+				{
+					if (_queuesManager != null)
+					{
+						_queuesManager.TfsApis.ConnectionValidation("warm-up");
+					}
+				}
+				finally
+				{
+					_scmEventsQueue.Add(ciEvent);
+					_testResultsQueue.Add(ciEvent);
+
+					Thread.Sleep(5000);
+					_generalEventsQueue.Add(ciEvent);
+				}
+
+
+			});
 		}
 	}
 }

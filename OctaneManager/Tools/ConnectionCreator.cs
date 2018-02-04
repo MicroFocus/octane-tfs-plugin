@@ -83,7 +83,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			{
 				DateTime start = DateTime.Now;
 				Log.Debug($"Validate connection to TFS  {tfsServerUriStr}");
-				tfsManager.GetProjectCollections();
+				tfsManager.ConnectionValidation("connection-validation");
 				DateTime end = DateTime.Now;
 				Log.Debug($"Validate connection to TFS finished in {(long)((end - start).TotalMilliseconds)} ms");
 			}

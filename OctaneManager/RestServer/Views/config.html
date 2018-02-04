@@ -169,7 +169,7 @@ $(document).ready(function(){
 				//alert( err.responseText );
 				$("#resultMessage").css('color', 'red');
 				var errMsg = err.responseText;
-				var maxLength = 100;
+				var maxLength = 200;
 				if(errMsg.length > maxLength){
 					errMsg = errMsg.substr(0, maxLength-3) + "...";
 				}

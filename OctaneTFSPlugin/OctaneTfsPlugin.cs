@@ -86,14 +86,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 				else if (notificationEventArgs is BuildCompletedEvent)
 				{
 					ciEvent.EventType = CiEventType.Finished;
-					_pluginManager.ScmEventsQueue.Add(ciEvent);
-					_pluginManager.TestResultsQueue.Add(ciEvent);
-
-					Task.Factory.StartNew(() =>
-					{
-						Thread.Sleep(CiEvent.DELAY_FOR_FINISH_EVENT);
-						_pluginManager.GeneralEventsQueue.Add(ciEvent);
-					});
+					_pluginManager.HandleFinishEvent(ciEvent);
 				}
 			}
 			catch (Exception e)

@@ -190,6 +190,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			return collections;
 		}
 
+		public void ConnectionValidation(string context)
+		{
+			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/project-collections
+			var uriSuffix = ($"_apis/projectcollections?api-version=1.0&context={context}");
+			var collections = _tfsRestConnector.GetCollection<TfsProjectCollection>(uriSuffix);
+		}
+
 		private IList<TfsProject> GetProjects(string collectionName)
 		{
 			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/projects
