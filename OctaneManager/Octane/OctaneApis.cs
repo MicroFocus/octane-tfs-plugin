@@ -121,7 +121,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 			bool skipErrors = false;
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_TEST_RESULTS}?skip-errors={skipErrors.ToString().ToLower()}";
 
-			String xml = OctaneUtils.SerializeToXml(octaneTestResult);
+			String xml = OctaneTestResutsUtils.SerializeToXml(octaneTestResult);
 			ResponseWrapper res = _restConnector.ExecutePost(baseUri, null, xml,
 						 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
 

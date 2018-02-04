@@ -17,41 +17,73 @@
 -->
 <log4net>
   <appender name="AppAppender" type="log4net.Appender.RollingFileAppender">
-    <file value="app.log" />
+    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\app.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
-    <maxSizeRollBackups value="10" />
-    <maximumFileSize value="2MB" />
+    <maxSizeRollBackups value="4" />
+    <maximumFileSize value="4MB" />
     <staticLogFileName value="true" />
     <layout type="log4net.Layout.PatternLayout">
-      <conversionPattern value="%date [%6.6thread] %-5level %-40.40logger - %message%newline" />
+      <conversionPattern value="%date [%6.6thread] %-5level %-40.40logger: %message%newline" />
     </layout>
     <filter type="log4net.Filter.LoggerMatchFilter">
-      <loggerToMatch value="MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.TfsRestConnector" />
+      <loggerToMatch value="_" />
       <acceptOnMatch value="false" />
     </filter>
   </appender>
-  <appender name="TfsRestAppender" type="log4net.Appender.RollingFileAppender">
-    <file value="tfsRest.log" />
+  <appender name="TfsRestCallsAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\tfsRestCalls.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
-    <maxSizeRollBackups value="10" />
-    <maximumFileSize value="2MB" />
+    <maxSizeRollBackups value="4" />
+    <maximumFileSize value="4MB" />
     <staticLogFileName value="true" />
     <layout type="log4net.Layout.PatternLayout">
       <conversionPattern value="%date [%6.6thread] %-5level : %message%newline" />
     </layout>
     <filter type="log4net.Filter.LoggerMatchFilter">
-      <!--filter example http://www.claassen.net/geek/blog/2009/06/log4net-filtering-by-logger.html-->
-      <loggerToMatch value="MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.TfsRestConnector" />
+      <loggerToMatch value="_TfsRestCalls" />
       <acceptOnMatch value="true" />
     </filter>
     <filter type="log4net.Filter.DenyAllFilter" />
   </appender>
-
+  <appender name="MqmTestResultsAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\mqmTestResults.log" />
+    <appendToFile value="true" />
+    <rollingStyle value="Size" />
+    <maxSizeRollBackups value="4" />
+    <maximumFileSize value="4MB" />
+    <staticLogFileName value="true" />
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date**************************************************************************************************************************************************%newline%message%newline" />
+    </layout>
+    <filter type="log4net.Filter.LoggerMatchFilter">
+      <loggerToMatch value="_MqmTestResults" />
+      <acceptOnMatch value="true" />
+    </filter>
+    <filter type="log4net.Filter.DenyAllFilter" />
+  </appender>
+  <appender name="TfsTestResultsAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\tfsTestResults.log" />
+    <appendToFile value="true" />
+    <rollingStyle value="Size" />
+    <maxSizeRollBackups value="4" />
+    <maximumFileSize value="4MB" />
+    <staticLogFileName value="true" />
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date %message%newline%newline" />
+    </layout>
+    <filter type="log4net.Filter.LoggerMatchFilter">
+      <loggerToMatch value="_TfsTestResults" />
+      <acceptOnMatch value="true" />
+    </filter>
+    <filter type="log4net.Filter.DenyAllFilter" />
+  </appender>
   <root>
     <level value="DEBUG"/>
     <appender-ref ref="AppAppender"/>
-    <appender-ref ref="TfsRestAppender"/>
+    <appender-ref ref="TfsRestCallsAppender"/>
+    <appender-ref ref="TfsTestResultsAppender"/>
+    <appender-ref ref="MqmTestResultsAppender"/>
   </root>
 </log4net>

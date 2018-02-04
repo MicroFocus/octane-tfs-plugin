@@ -30,7 +30,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
 	public class TfsRestConnector
 	{
-		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly ILog Log = LogManager.GetLogger(LogUtils.TFS_REST_CALLS_LOGGER);
 
 		private readonly TfsConfiguration _tfsConfiguration;
 
@@ -44,9 +44,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			return Send<T>(HttpMethodEnum.POST, urlSuffix, data);
 		}
 
-		public T SendGet<T>(string urlSuffix)
+		public T SendGet<T>(string urlSuffix, string resultLoggerName = null)
 		{
-			return Send<T>(HttpMethodEnum.GET, urlSuffix, null);
+			return Send<T>(HttpMethodEnum.GET, urlSuffix, null, resultLoggerName);
 		}
 
 		public List<T> GetCollection<T>(string uriSuffix)
@@ -55,7 +55,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			return collections.Items;
 		}
 
-		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize, int maxPages)
+		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize, int maxPages, string resultLoggerName = null)
 		{
 			int top = pageSize;
 			int skip = 0;
@@ -66,7 +66,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			while (!completed && pages < maxPages)
 			{
 				string uriSuffixWithPage = ($"{uriSuffix}{joiner}$skip={skip}&$top={top}");
-				TfsBaseCollection<T> results = SendGet<TfsBaseCollection<T>>(uriSuffixWithPage);
+				TfsBaseCollection<T> results = SendGet<TfsBaseCollection<T>>(uriSuffixWithPage, resultLoggerName);
 				skip += top;
 
 				if (finalResults == null)
@@ -83,7 +83,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			return finalResults;
 		}
 
-		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data)
+		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data, string resultLoggerName = null)
 		{
 			DateTime start = DateTime.Now;
 			HttpStatusCode statusCode = 0;
@@ -149,6 +149,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 				string responseSize = string.Format("{0,7} B", content.Length);
 				Log.Info($"{(int)statusCode} | {timeMsStr} | {responseSize} |  {httpType}:{urlSuffix}");
 
+				if (resultLoggerName != null)
+				{
+					LogManager.GetLogger(resultLoggerName).Debug($"{(int)statusCode} | {timeMsStr} | {responseSize} | {httpType}:{urlSuffix} | {content}");
+				}
 			}
 		}
 	}
