@@ -201,7 +201,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
 					else
 					{
 						var testResults = _tfsApis.GetTestResultsForRun(ciEvent.BuildInfo.CollectionName, ciEvent.BuildInfo.Project, run.Id.ToString());
-						OctaneTestResult octaneTestResult = OctaneUtils.ConvertToOctaneTestResult(_octaneApis.PluginInstanceId, ciEvent.Project, ciEvent.BuildId, testResults, run.WebAccessUrl);
+						OctaneTestResult octaneTestResult = OctaneTestResutsUtils.ConvertToOctaneTestResult(_octaneApis.PluginInstanceId, ciEvent.Project, ciEvent.BuildId, testResults, run.WebAccessUrl);
 						_octaneApis.SendTestResults(octaneTestResult);
 						msg = $"TestResults are sent ({octaneTestResult.TestRuns.Count} tests)";
 					}

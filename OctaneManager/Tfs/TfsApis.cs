@@ -153,8 +153,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			var url = $"{collectionName}/{projectName}/_apis/test/runs/{runId}/results?api-version=1.0";
 			const int pageSize = 1000;
 			const int maxPages = 100;
-			var testResults = _tfsRestConnector.GetPagedCollection<TfsTestResult>(url, pageSize, maxPages);
 
+			var testResults = _tfsRestConnector.GetPagedCollection<TfsTestResult>(url, pageSize, maxPages, LogUtils.TFS_TEST_RESULTS_LOGGER);
 			return testResults;
 		}
 

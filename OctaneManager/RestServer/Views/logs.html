@@ -1,0 +1,87 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>TFS plugin for ALM Octane</title>
+	<meta name="description" content="TFS plugin for ALM Octane">
+	<meta name="author" content="Microfocus">
+
+	<link rel="stylesheet" type="text/css" href="resources/style.css">
+	<link rel="shortcut icon" href="resources/f-ci-tfs.png">
+	<style>
+
+
+h2{
+		margin-left: 20px;
+		margin-bottom: -10px;
+}
+table{
+	margin : 18px 0 0 20px;
+	font-size: 17px;
+}
+		
+.itemHeader{
+		width : 250px;
+}
+.itemValue{
+		width : 250px;
+}
+#logLinks{
+	margin: 30px;
+}
+		
+#logLinks a{
+	color:#000;
+	display: block;
+	margin: 10px 0 0 0;
+}
+#logLinks a:not(:hover) {
+    text-decoration: none;
+}
+#logLinks a:hover {
+    text-decoration: none;
+	color: #948D9D;
+	cursor: pointer;
+}
+
+.linkText{
+	margin-left: 5px;
+	font-size: 20px;
+}
+		
+
+</style>
+	<noscript>Sorry, your browser does not support JavaScript!</noscript>
+</head>
+
+
+<body>
+
+	<div id="header">
+		<img id="octaneIcon" src="resources/s-octane-logo.svg" alt="ALM Octane">
+		<a href="../" id="home"><img class="linkIcon" src="resources/home-white.svg" alt="Home"></a>
+		<div id="title">TFS Plugin for ALM Octane - Logs</div>
+	</div>
+
+	<div id="logLinks">
+		<a href="/logs/app/last"><img class="linkIcon" src="resources/f-step-simple.svg" alt="Logs" ><span class="linkText">Application log</span></a>
+		<a href="/logs/tfsRestCalls/last"><img class="linkIcon" src="resources/f-step-simple.svg" alt="Logs" ><span class="linkText">Tfs rest calls log</span></a>
+		<a href="/logs/tfsTestResults/last"><img class="linkIcon" src="resources/f-step-simple.svg" alt="Logs" ><span class="linkText">Tfs test results log</span></a>
+		<a href="/logs/mqmTestResults/last"><img class="linkIcon" src="resources/f-step-simple.svg" alt="Logs" ><span class="linkText">ALM octane test results log</span></a>
+	</div>
+	
+</body>
+
+<script src="resources/jquery-3.2.1.min.js"></script>
+
+
+<script>
+
+$(document).ready(function(){
+
+
+});
+
+
+</script>
+</html>

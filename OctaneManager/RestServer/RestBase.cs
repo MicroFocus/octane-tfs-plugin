@@ -78,7 +78,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 			Get["/logs"] = parameters =>
 			{
-				return HandleGetLogListRequest();
+				String view = GetView("logs.html");
+				return view;
+				//return HandleGetLogListRequest();
 			};
 
 			Post["/config", RestrictAccessFromLocalhost] = _ =>

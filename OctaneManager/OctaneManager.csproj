@@ -81,6 +81,7 @@
     <Compile Include="Configuration\Paths.cs" />
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
+    <Compile Include="Octane\OctaneTestResutsUtils.cs" />
     <Compile Include="Queue\EventsQueue.cs" />
     <Compile Include="Queue\EventList.cs" />
     <Compile Include="Queue\QueuesManager.cs" />
@@ -190,6 +191,18 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\Resources\help.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\logs.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\Resources\f-ci-tfs.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\Resources\f-ci-tfs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\Resources\home-white.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

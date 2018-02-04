@@ -55,5 +55,12 @@ body{
     text-decoration: none;
 	color: #948D9D;
 	cursor: pointer;
+}
 
+#home{
+	float : right;
+	margin: 15px 20px 0 0;
+}
+#home img{
+		height : 25px;
 }
