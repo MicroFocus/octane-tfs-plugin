@@ -74,7 +74,29 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 									ScmCommitFileChange commitChange = new ScmCommitFileChange();
 									scmCommit.Changes.Add(commitChange);
 
-									commitChange.Type = tfsCommitChange.ChangeType;
+									string commitChangeType = tfsCommitChange.ChangeType.ToLowerInvariant();
+									switch (commitChangeType)
+									{
+										case "add":
+										case "edit":
+										case "delete":
+											//do nothins
+											break;
+										case "delete, sourcerename":
+											commitChangeType = "delete";
+											break;
+										case "rename":
+										case "edit, rename":
+											commitChangeType = "add";
+											break;
+										default:
+											Log.Debug($"Build {buildInfo} - Unexpected change type <{commitChangeType}> for file <{tfsCommitChange.Item.Path}>. Setting default to 'edit'.");
+											commitChangeType = "edit";
+											
+											break;
+									}
+
+									commitChange.Type = commitChangeType;
 									commitChange.File = tfsCommitChange.Item.Path;
 								}
 							}
