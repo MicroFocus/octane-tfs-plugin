@@ -111,7 +111,7 @@ table .itemCaption{
 		<tr><td class="itemCaption">TFS Location</td><td><input type="text" name="tfsLocation"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsLocationHelp')"></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="tfsLocationHelp">HTTP address of the TFS, such as http://yourhost:8080/tfs/. <br />This value is used to let plugin know how to refer to itself, for example to create links to build/run/etc. <br />This is necessary because plugin cannot reliably detect such a URL from within itself.</div></td><td></td></tr>
 		<tr><td class="itemCaption">TFS PAT</td><td><input type="password" name="tfsPat"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsPatHelp')"></td></tr>
-		<tr><td></td><td><div class="helpHidden" id="tfsPatHelp">Personal Acess Token To TFS.</div></td><td></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="tfsPatHelp">Personal Acess Token To TFS. PAT  minimal permission set should contain :<ul><li>Build (read and execute)</li><li>Code (read)</li><li>Project and team (read)</li><li>Test management (read)</li></ul></div></td><td></td></tr>
 		<tr><td class="itemCaption">Instance ID</td><td><input type="text" name="instanceId"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#instanceIdHelp')"></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="instanceIdHelp">An ID to uniquely identify this instance of the plugin.</div></td><td></td></tr>
 		<tr><td></td><td><div><p id="resultMessage"></p><button id="testConnection" type="button">Test Connection</button></div></td><td></td></tr>
