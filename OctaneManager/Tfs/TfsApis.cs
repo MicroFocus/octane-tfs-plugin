@@ -117,7 +117,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}/changes?api=version=2.0");
 			const int pageSize = 200;
 			const int maxPages = 5;
-			var changes = _tfsRestConnector.GetPagedCollection<TfsScmChange>(uriSuffix, pageSize, maxPages);
+			var changes = _tfsRestConnector.GetPagedCollection<TfsScmChange>(uriSuffix, pageSize, maxPages, null);
 			return changes;
 		}
 

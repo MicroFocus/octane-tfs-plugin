@@ -41,21 +41,26 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 
 		public T SendPost<T>(string urlSuffix, string data)
 		{
-			return Send<T>(HttpMethodEnum.POST, urlSuffix, data);
+			return Send<T>(HttpMethodEnum.POST, urlSuffix, data, null);
 		}
 
-		public T SendGet<T>(string urlSuffix, string resultLoggerName = null)
+		public T SendGet<T>(string urlSuffix)
+		{
+			return SendGet<T>(urlSuffix, null);
+		}
+
+		public T SendGet<T>(string urlSuffix, string resultLoggerName)
 		{
 			return Send<T>(HttpMethodEnum.GET, urlSuffix, null, resultLoggerName);
 		}
 
 		public List<T> GetCollection<T>(string uriSuffix)
 		{
-			TfsBaseCollection<T> collections = SendGet<TfsBaseCollection<T>>(uriSuffix);
+			TfsBaseCollection<T> collections = SendGet<TfsBaseCollection<T>>(uriSuffix, null);
 			return collections.Items;
 		}
 
-		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize, int maxPages, string resultLoggerName = null)
+		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize, int maxPages, string resultLoggerName)
 		{
 			int top = pageSize;
 			int skip = 0;
@@ -83,7 +88,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			return finalResults;
 		}
 
-		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data, string resultLoggerName = null)
+		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data, string resultLoggerName)
 		{
 			DateTime start = DateTime.Now;
 			HttpStatusCode statusCode = 0;
