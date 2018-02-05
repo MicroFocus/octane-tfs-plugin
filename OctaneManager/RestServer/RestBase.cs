@@ -26,6 +26,7 @@ using Nancy.Responses;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -82,6 +83,19 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				return view;
 				//return HandleGetLogListRequest();
 			};
+
+			Get["/logs/download/all"] = _ =>
+			{
+				string zipPath = CreateZipFileFromLogFiles();
+				string fileName = Path.GetFileName(zipPath);
+				DeleteTempZipFileWithDelay(zipPath);
+				
+				var file = new FileStream(zipPath, FileMode.Open);
+				var response = new StreamResponse(() => file, MimeTypes.GetMimeType(fileName));
+				return response.AsAttachment(fileName);
+			};
+
+
 
 			Post["/config", RestrictAccessFromLocalhost] = _ =>
 			{
@@ -200,7 +214,61 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				PluginManager.GetInstance().TestResultsQueue.Clear();
 				return $"Cleared {json}";
 			};
+		}
 
+		private void DeleteTempZipFileWithDelay(string fileName)
+		{
+			Task.Factory.StartNew(() =>
+			{
+				try
+				{
+					Thread.Sleep(60 * 2 * 1000);//delete after 2 minutes
+					File.Delete(fileName);
+					//Log.Debug($"Temp zip file {fileName} was successfully deleted.");
+				}
+				catch (Exception e)
+				{
+					Log.Error($"Failed to delete zip file {fileName} : {e.Message}");
+				}
+			});
+
+		}
+
+		private string CreateZipFileFromLogFiles()
+		{
+			//get log file names
+			string[] patterns = new[] { "*.log", "*.log.1", "*.log.2" };
+			List<string> fileList = new List<string>();
+			foreach(string pattern in patterns)
+			{
+				var arr = Directory.GetFiles(Paths.LogFolder, pattern, SearchOption.TopDirectoryOnly);
+				fileList.AddRange(arr);
+			}
+			
+			//create log temp dir
+			string dir = Path.Combine(Paths.LogFolder, "temp");
+			if (!Directory.Exists(dir))
+			{
+				Directory.CreateDirectory(dir);
+			}
+
+			//create zip file
+			string zipFileName = Path.Combine(dir, "Logs " + DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss.fffffff") + ".zip");
+			using (var zip = ZipFile.Open(zipFileName, ZipArchiveMode.Create))
+			{
+				foreach (var file in fileList)
+				{
+					using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Delete | FileShare.ReadWrite))
+					{
+						var zipArchiveEntry = zip.CreateEntry(Path.GetFileName(file), CompressionLevel.Optimal);
+						using (var destination1 = zipArchiveEntry.Open())
+						{
+							stream.CopyTo(destination1);
+						}
+					}
+				}
+			}
+			return zipFileName;
 		}
 
 		private static string GetView(string viewName)

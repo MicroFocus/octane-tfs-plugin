@@ -20,7 +20,7 @@
     <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\app.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
-    <maxSizeRollBackups value="4" />
+    <maxSizeRollBackups value="3" />
     <maximumFileSize value="4MB" />
     <staticLogFileName value="true" />
     <layout type="log4net.Layout.PatternLayout">
@@ -35,7 +35,7 @@
     <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\tfsRestCalls.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
-    <maxSizeRollBackups value="4" />
+    <maxSizeRollBackups value="3" />
     <maximumFileSize value="4MB" />
     <staticLogFileName value="true" />
     <layout type="log4net.Layout.PatternLayout">
@@ -51,7 +51,7 @@
     <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\mqmTestResults.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
-    <maxSizeRollBackups value="4" />
+    <maxSizeRollBackups value="3" />
     <maximumFileSize value="4MB" />
     <staticLogFileName value="true" />
     <layout type="log4net.Layout.PatternLayout">
@@ -67,7 +67,7 @@
     <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\tfsTestResults.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
-    <maxSizeRollBackups value="4" />
+    <maxSizeRollBackups value="3" />
     <maximumFileSize value="4MB" />
     <staticLogFileName value="true" />
     <layout type="log4net.Layout.PatternLayout">
