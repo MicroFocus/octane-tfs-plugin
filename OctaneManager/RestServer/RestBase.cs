@@ -95,8 +95,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				return response.AsAttachment(fileName);
 			};
 
-
-
 			Post["/config", RestrictAccessFromLocalhost] = _ =>
 			{
 				var configStr = Context.Request.Body.AsString();
@@ -216,7 +214,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			};
 		}
 
-		private void DeleteTempZipFileWithDelay(string fileName)
+		private static void DeleteTempZipFileWithDelay(string fileName)
 		{
 			Task.Factory.StartNew(() =>
 			{
@@ -224,7 +222,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 				{
 					Thread.Sleep(60 * 2 * 1000);//delete after 2 minutes
 					File.Delete(fileName);
-					//Log.Debug($"Temp zip file {fileName} was successfully deleted.");
 				}
 				catch (Exception e)
 				{
@@ -234,7 +231,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
 		}
 
-		private string CreateZipFileFromLogFiles()
+		private static string CreateZipFileFromLogFiles()
 		{
 			//get log file names
 			string[] patterns = new[] { "*.log", "*.log.1", "*.log.2" };
