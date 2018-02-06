@@ -15,7 +15,6 @@
 */
 using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
@@ -182,19 +181,19 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 			Post["/start", RestrictAccessFromLocalhost] = _ =>
 			{
 				if (PluginManager.GetInstance().Status == PluginManager.StatusEnum.Connected)
-					return "Octane manager is already running";
+					return "ALM Octane plugin is already running";
 
 				Log.Debug("Plugin start requested");
 
 				PluginManager.GetInstance().StartPlugin();
-				return "Started";
+				return "Starting ALM Octane plugin";
 			};
 
 			Post["/stop", RestrictAccessFromLocalhost] = _ =>
 			{
 				Log.Debug("Plugin stop requested");
 				PluginManager.GetInstance().StopPlugin(false);
-				return "Stopped";
+				return "Stopping ALM Octane plugin";
 			};
 
 			Post["/queues/clear", RestrictAccessFromLocalhost] = _ =>
