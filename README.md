@@ -22,7 +22,7 @@ Latest release branch status:
 #### Before you configure the connection:
 1. Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when
 communicating with ALM Octane. The access keys must be assigned the CI/CD Integration role in all relevant workspaces. For details, see Set up API access for integration.
-2. To enable the TFS server to communicate with ALM Octane, make sure the server can access the Internet. If your network requires a proxy to connect to the Internet, setup the required proxy configuration.
+2. Make sure your TFS server can communicate with ALM Octane. For example, if you are working with a SaaS version of ALM Octane, make sure that your TFS server can access the Internet .If your network requires a proxy to connect to the Internet, setup the required proxy configuration.
 
 #### Configure the setup
 During the msi setup
@@ -42,7 +42,7 @@ where 1002 is your shared space id and 8081 is the ALM Octane port service port
 **PAT (TFS Personal access token)**: The token should be configured by TFS admin (see [PAT](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate) )
 
 **After the connection is set up**, open ALM Octane, define a CI server and create pipelines.
-For details, see Integrate with your CI server in the ALM Octane Help.
+For details, see ['Set up CI servers'](https://admhelp.microfocus.com/octane/en/latest/Online/Content/AdminGuide/article_CI_servers_setup.htm?cshid=Install_CI_Plugin) in the ALM Octane Help
 
 ## Administer the plugin
 There are several rest api operations that can be performed to monitor plugin health.
