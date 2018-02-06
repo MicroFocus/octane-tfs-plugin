@@ -19,7 +19,7 @@ install:
     nuget restore OctaneTFSPlugin.sln
 build:
   project: OctaneTFSPlugin.sln
-  verbosity: detailed
+  verbosity: normal
 after_build:
 - cmd: 'package.cmd'
 test: off
