@@ -20,7 +20,7 @@
             <Label Padding="5,7,5,5">ALM Octane Client ID</Label>
             <Label Padding="5,7,5,5">ALM Octane Client Secret</Label>
             <Label Padding="5,5,5,5">TFS Location</Label>
-            <Label Padding="5,5,5,5">TFS Pat</Label>
+            <Label Padding="5,5,5,5">TFS PAT (Personal Access Token)</Label>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="0,0,0.4,-0.2">
             <TextBox x:Name="Location" Padding="5,5,5,5"></TextBox>
