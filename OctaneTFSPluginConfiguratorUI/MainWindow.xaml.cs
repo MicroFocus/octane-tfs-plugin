@@ -144,5 +144,10 @@ namespace OctaneTFSPluginConfiguratorUI
                 }
             }
         }
+
+        private void CancelButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

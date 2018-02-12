@@ -5,31 +5,90 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OctaneTFSPluginConfiguratorUI"
         mc:Ignorable="d"
-        Title="TFS Plugin for ALM Octane - Configuration" Height="274.546" Width="596.013"
+        Title="TFS Plugin for ALM Octane - Configuration" Height="380" Width="630"
         ResizeMode="NoResize" 
         WindowStartupLocation="CenterScreen"
-        Closing="MainWindow_OnClosing" Icon="MicroFocusIcon.ico">
+        Closing="MainWindow_OnClosing" Icon="MicroFocusIcon.ico" FontSize="18px">
+    <Window.Resources>
+        <Style x:Key="CommonStyle" TargetType="Control">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#555555"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Padding" Value="0 19 0 0"/>
+        </Style>
+        <Style x:Key="TextBoxStyle" BasedOn="{StaticResource CommonStyle}" TargetType="Control">
+            <Setter Property="BorderThickness" Value="0 0 0 1"/>
+            <Setter Property="BorderBrush" Value="#E6E6E6"/>
+            <Setter Property="Width" Value="360"></Setter>
+        </Style>
+
+        <Style TargetType="Label" BasedOn="{StaticResource CommonStyle}">
+            <Setter Property="Margin" Value="10 0 0 0"></Setter>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}"/>
+            
+
+        <Style TargetType="PasswordBox" BasedOn="{StaticResource TextBoxStyle}"/>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="40"></Setter>
+            <Setter Property="FontSize" Value="13"></Setter>
+            <Setter Property="Foreground" Value="#888888"></Setter>
+            
+            <Setter Property="Margin" Value="6 0 6 6"></Setter>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="ctrlTemplateButton" TargetType="{x:Type Button}">
+                        
+                        <Border x:Name="bdr_main" CornerRadius="0" Margin="4" BorderThickness="1" BorderBrush="#CCCCCC" Background="White">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Margin="8,6,8,6" ContentSource="Content" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bdr_main" Property="Background" Value="#0073E7"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bdr_main" Property="Background" Value="#0073E7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        
+    </Window.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="172*"/>
+            <RowDefinition Height="50*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="110*"/>
             <ColumnDefinition Width="179*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="0,0,0.4,-0.2">
+        <StackPanel Grid.Column="0" Margin="0,0,0.2,0.2" Grid.RowSpan="1">
+            <Label >ALM Octane Location:</Label>
+            <Label >ALM Octane Client ID:</Label>
+            <Label >ALM Octane Client Secret:</Label>
+            <Label >TFS Location:</Label>
+            <Label >TFS PAT (Personal Access Token):</Label>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="0">
+            <TextBox x:Name="Location" ></TextBox>
+            <TextBox x:Name="ClientId" ></TextBox>
+            <PasswordBox x:Name="ClientSecret" />
+            <TextBox x:Name="TfsLocation"/>
+            <PasswordBox x:Name="Pat"/>
+        </StackPanel>
 
-            <Label Padding="5,6,5,5">ALM Octane Location</Label>
-            <Label Padding="5,7,5,5">ALM Octane Client ID</Label>
-            <Label Padding="5,7,5,5">ALM Octane Client Secret</Label>
-            <Label Padding="5,5,5,5">TFS Location</Label>
-            <Label Padding="5,5,5,5">TFS PAT (Personal Access Token)</Label>
-        </StackPanel>
-        <StackPanel Grid.Column="1" Margin="0,0,0.4,-0.2">
-            <TextBox x:Name="Location" Padding="5,5,5,5"></TextBox>
-            <TextBox x:Name="ClientId" Padding="5,5,5,5"></TextBox>
-            <PasswordBox x:Name="ClientSecret" Padding="5,5,5,5"></PasswordBox>
-            <TextBox x:Name="TfsLocation" Padding="5,5,5,5"></TextBox>
-            <PasswordBox x:Name="Pat" Padding="5,5,5,5"></PasswordBox>
-            <Button Click="TestConnectionButton_OnClick" x:Name="TestConnectionButton" Margin="5,5,5,5">Test Connection</Button>
-            <Button Click="SaveButton_OnClick" x:Name="SaveButton" Margin="5,5,5,5">Save</Button>
-        </StackPanel>
+        
+        <DockPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Margin="0 20 0 0">
+            <Button Width="120" Click="TestConnectionButton_OnClick" x:Name="TestConnectionButton">Test Connection</Button>
+            <Button Width="80" Click="SaveButton_OnClick" x:Name="SaveButton" >Save</Button>
+            <Button Width="80" Click="CancelButton_OnClick" x:Name="CancelButton" >Cancel</Button>
+        </DockPanel>
+        
     </Grid>
 </Window>
