@@ -113,10 +113,10 @@
     <Resource Include="MicroFocusIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Logo.png" />
+    <Resource Include="qicon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="qicon.png" />
+    <Resource Include="octane-logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -73,7 +73,7 @@
                 <ColumnDefinition Width="100*"/>
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
-                <Image Source="Logo.png" Width="48" Height="48" Margin="5 0 0 5"></Image>
+                <Image Source="octane-logo.png"  Width="48" Height="45" Margin="5 0 0 5"></Image>
                 <Label FontSize="18" FontWeight="Bold" Margin="10 0 2 15">TFS Plugin For ALM Octane - Configuration</Label>
                 <Button FontWeight="Bold" Margin="150 0 0 0" Width="40" Height="40" Click="CancelButton_OnClick">X</Button>
             </DockPanel>
