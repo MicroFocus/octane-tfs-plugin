@@ -144,5 +144,28 @@ namespace OctaneTFSPluginConfiguratorUI
                 }
             }
         }
+
+        private void CancelButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void MainWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+            
+        }
+
+        private void TipButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (TipLabel.Visibility == Visibility.Hidden)
+            {
+                TipLabel.Visibility = Visibility.Visible;
+            }else
+                TipLabel.Visibility = Visibility.Hidden;
+
+        }
     }
 }
