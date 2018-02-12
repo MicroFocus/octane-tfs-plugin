@@ -147,7 +147,15 @@ namespace OctaneTFSPluginConfiguratorUI
 
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            this.Close();
+        }
+
+        private void MainWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+            
         }
     }
 }
