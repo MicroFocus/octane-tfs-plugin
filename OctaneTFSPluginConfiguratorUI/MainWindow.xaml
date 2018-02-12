@@ -20,7 +20,7 @@
         <Style x:Key="TextBoxStyle" BasedOn="{StaticResource CommonStyle}" TargetType="Control">
             <Setter Property="BorderThickness" Value="0 0 0 1"/>
             <Setter Property="BorderBrush" Value="#E6E6E6"/>
-            <Setter Property="Width" Value="360"></Setter>
+            <Setter Property="Width" Value="470"></Setter>
         </Style>
 
         <Style TargetType="Label" BasedOn="{StaticResource CommonStyle}">
@@ -69,8 +69,8 @@
                 <RowDefinition Height="70"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="110*"/>
-                <ColumnDefinition Width="179*"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100*"/>
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
                 <Image Source="Logo.png" Width="48" Height="48" Margin="5 0 0 5"></Image>
@@ -80,11 +80,17 @@
             <Line Grid.Row="0" Grid.ColumnSpan="2" X1="0" Y1="70" X2="630" Y2="70" Stroke="#EEEEEE" StrokeThickness="2" />
 
             <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0.6,0.2">
-                <Label >ALM Octane Location:</Label>
-                <Label >ALM Octane Client ID:</Label>
-                <Label >ALM Octane Client Secret:</Label>
+                <Label >Location:</Label>
+                <Label >Client ID:</Label>
+                <Label >Client Secret:</Label>
                 <Label >TFS Location:</Label>
-                <Label >TFS PAT (Personal Access Token):</Label>
+                <DockPanel>
+                    <Label >TFS PAT:</Label>
+                    <Button Style="{DynamicResource NoChromeButton}" Click="TipButton_OnClick" x:Name="TipButton">
+                        <Image Source="qicon.png" Height="20" Width="20" Margin="0 5 20 0"></Image>
+                    </Button>
+                </DockPanel>
+                <Label Visibility="Hidden" Padding="0 0 0 0" FontSize="10" x:Name="TipLabel" >(Personal Access Token)</Label>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="0.4,0,0,0.2">
                 <TextBox x:Name="Location" ></TextBox>

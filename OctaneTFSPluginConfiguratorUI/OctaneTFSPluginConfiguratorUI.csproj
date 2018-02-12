@@ -115,5 +115,8 @@
   <ItemGroup>
     <Resource Include="Logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="qicon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

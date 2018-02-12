@@ -157,5 +157,15 @@ namespace OctaneTFSPluginConfiguratorUI
                 this.DragMove();
             
         }
+
+        private void TipButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (TipLabel.Visibility == Visibility.Hidden)
+            {
+                TipLabel.Visibility = Visibility.Visible;
+            }else
+                TipLabel.Visibility = Visibility.Hidden;
+
+        }
     }
 }
