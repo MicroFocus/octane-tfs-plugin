@@ -137,7 +137,7 @@ namespace OctaneTFSPluginConfiguratorUI
             if (!Helper.CheckedConnection)
             {
                 var res = MessageBox.Show("Connection was not checked, are you sure you want to exit?", "Warning",
-                    MessageBoxButton.YesNo);
+                    MessageBoxButton.YesNo,MessageBoxImage.Warning);
                 if (res == MessageBoxResult.No)
                 {
                     e.Cancel = true;

@@ -30,7 +30,7 @@
 
 
         <Style TargetType="PasswordBox" BasedOn="{StaticResource TextBoxStyle}"/>
-        <Style TargetType="Button">
+        <Style x:Key="MainButtons" TargetType="Button">
             <Setter Property="Height" Value="40"></Setter>
             <Setter Property="FontSize" Value="13"></Setter>
             <Setter Property="Foreground" Value="#888888"></Setter>
@@ -75,7 +75,8 @@
             <DockPanel Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
                 <Image Source="octane-logo.png"  Width="48" Height="45" Margin="5 0 0 5"></Image>
                 <Label FontSize="18" FontWeight="Bold" Margin="10 0 2 15">TFS Plugin For ALM Octane - Configuration</Label>
-                <Button FontWeight="Bold" Margin="150 0 0 0" Width="40" Height="40" Click="CancelButton_OnClick">X</Button>
+                <Button Style="{StaticResource CloseButtons}" FontSize="20" FontWeight="Bold"  Margin="150 0 0 0" Width="40" Height="50" Click="CancelButton_OnClick"
+                        Content="X"/>
             </DockPanel>
             <Line Grid.Row="0" Grid.ColumnSpan="2" X1="0" Y1="70" X2="630" Y2="70" Stroke="#EEEEEE" StrokeThickness="2" />
 
@@ -103,9 +104,9 @@
             <Line Grid.Row="2" Stroke="#EEEEEE" StrokeThickness="2" X1="0" Y1="15" X2="620" Y2="15" Grid.ColumnSpan="2"/>
 
             <DockPanel Grid.Row="3" Grid.Column="1"  HorizontalAlignment="Right" Margin="0,1.728,0,0.4">
-                <Button Width="120" Click="TestConnectionButton_OnClick" x:Name="TestConnectionButton">Test Connection</Button>
-                <Button Width="80" Click="SaveButton_OnClick" x:Name="SaveButton" >Save</Button>
-                <Button Width="80" Click="CancelButton_OnClick" x:Name="CancelButton" >Cancel</Button>
+                <Button Style="{StaticResource MainButtons}" Width="120" Click="TestConnectionButton_OnClick" x:Name="TestConnectionButton">Test Connection</Button>
+                <Button Style="{StaticResource MainButtons}" Width="80" Click="SaveButton_OnClick" x:Name="SaveButton" >Save</Button>
+                <Button Style="{StaticResource MainButtons}" Width="80" Click="CancelButton_OnClick" x:Name="CancelButton" >Cancel</Button>
             </DockPanel>
 
         </Grid>
