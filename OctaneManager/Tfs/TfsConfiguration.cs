@@ -23,10 +23,20 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
         public Uri Uri{get; protected set; }
         public string Pat { get; protected set; }
 
+        //public string UserName { get; protected set; }// = @"localhost\michael"; //= @"hpeswlab\_alm_octane_auto";
+        public string Password { get; protected set; }// = "michael";
+
         public TfsConfiguration(Uri uri, string pat)
         {
             Uri = uri;
             Pat = pat;
+        }
+
+        public TfsConfiguration(Uri uri, string userName,string password)
+        {
+            Uri = uri;
+            UserName = userName;
+            Password = password;
         }
     }
 }

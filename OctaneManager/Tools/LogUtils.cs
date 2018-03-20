@@ -32,7 +32,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 		public static string OCTANE_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "MqmTestResults";
 		public static string TFS_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsTestResults";
 
-		private static void WriteWindowsEvent(string msg, EventLogEntryType eventLogEntryType)
+		public static void WriteWindowsEvent(string msg, EventLogEntryType eventLogEntryType)
 		{
 			string source = "TFSJobAgent";
 			string log = "Application";

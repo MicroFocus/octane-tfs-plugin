@@ -70,7 +70,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 		{
 			get;
 			set;
-		}
+		}        
 
 		public string TfsLocation { get; set; }
 		public ConnectionDetails()

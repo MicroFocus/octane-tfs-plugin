@@ -26,6 +26,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Remoting.Contexts;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
@@ -198,9 +199,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 		}
 
 		private IList<TfsProject> GetProjects(string collectionName)
-		{
-			//https://www.visualstudio.com/en-us/docs/integrate/api/tfs/projects
-			var uriSuffix = ($"{collectionName}/_apis/projects?api-version=1.0");
+		{		    		 
+            //https://www.visualstudio.com/en-us/docs/integrate/api/tfs/projects
+            var uriSuffix = ($"{collectionName}/_apis/projects?api-version=1.0");
 			var collections = _tfsRestConnector.SendGet<TfsBaseCollection<TfsProject>>(uriSuffix);
 			return collections.Items;
 		}

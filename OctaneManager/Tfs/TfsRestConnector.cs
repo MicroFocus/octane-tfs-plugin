@@ -93,18 +93,25 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			HttpStatusCode statusCode = 0;
 			string content = "";
 			try
-			{
-				//encode your personal access token                   
-				var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConfiguration.Pat)));
+			{			    
+                //encode your personal access token                   
+			    var credentials = 
+                    Convert.ToBase64String(
+                        string.IsNullOrEmpty(_tfsConfiguration.Pat) ?
+                                Encoding.ASCII.GetBytes($"{_tfsConfiguration.UserName}:{_tfsConfiguration.Password}") 
+                        //    Encoding.ASCII.GetBytes(":")
+                        :
+                        Encoding.ASCII.GetBytes($":{_tfsConfiguration.Pat}")
+                        );
 
-
-				//use the httpclient
+			    //use the httpclient
 				using (var client = new HttpClient())
 				{
 					client.BaseAddress = _tfsConfiguration.Uri;
 					client.DefaultRequestHeaders.Accept.Clear();
 					client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+                    
 					HttpResponseMessage response = null;
 
 					switch (httpType)
@@ -125,9 +132,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 					//check to see if we have a succesfull respond
 					statusCode = response.StatusCode;
 					content = response.Content.ReadAsStringAsync().Result;
-					if (response.IsSuccessStatusCode)
-					{
-						T result = JsonHelper.DeserializeObject<T>(content);
+					ppppppppppppppi[0pooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooof (response.IsSuccessStatusCode)
+					
+                        {
+                            _apis / projects ? api - version = 1.0-[-]
+
+                       T result = JsonHelper.DeserializeObject<T>(content);
 						return result;
 					}
 					else if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -159,5 +169,5 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 				}
 			}
 		}
-	}
+	}*I&7777xc
 }

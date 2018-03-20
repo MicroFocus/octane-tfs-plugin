@@ -15,14 +15,14 @@ Latest release branch status:
 ## Installation instructions
 
 1. Download latest msi release setup from : [releases](https://github.com/MicroFocus/octane-tfs-plugin/releases)
-2. Run setup
+2. Run setup tfs_j46175nwmmmees0dr3e0k7l9g
 3. Configure all relevant fields following the [Configure the setup](https://github.com/MicroFocus/octane-tfs-plugin#configure-the-setup) guide
 
 ### Configuring the TFS ci plugin to connect to ALM Octane
 #### Before you configure the connection:
 1. Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when
 communicating with ALM Octane. The access keys must be assigned the CI/CD Integration role in all relevant workspaces. For details, see Set up API access for integration.
-2. Make sure your TFS server can communicate with ALM Octane. For example, if you are working with a SaaS version of ALM Octane, make sure that your TFS server can access the Internet .If your network requires a proxy to connect to the Internet, setup the required proxy configuration.
+2. To enable the TFS server to communicate with ALM Octane, make sure the server can access the Internet. If your network requires a proxy to connect to the Internet, setup the required proxy configuration.
 
 #### Configure the setup
 During the msi setup
@@ -32,46 +32,31 @@ Enter the following information in the relevant fields:
 
       This folder is provided by default and should be changed only if TFS installation path is different from the default
 
-**ALM Octane Location** 
+**Location**: http://myServer.myCompany.com:8081/ui/?p=1002
+where 1002 is your shared space id and 8081 is the ALM Octane port service port
 
-http://myServer.myCompany.com:8081/ui/?p=1002
+**Client ID/Secret**: Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when communicating with ALM Octane
 
-The HTTP address of the ALM Octane application. You can copy the URL from the address bar of the browser in which you opened ALM Octane.
+**Client ID/Secret**: Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when communicating with ALM Octane
 
-**ALM Octane Client ID** 
+**PAT (TFS Personal access token)**: The token should be configured by TFS admin (see [PAT](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate) )
 
-A Client ID for API access to ALM Octane. Obtain a Client ID and Client secret from the ALM Octane shared space admin.
-
-**ALM Octane Client Secret** 
-
-The Client secret that matches your API access Client ID.
-
-**TFS Location** 
-
-The HTTP address of the TFS, such as http://yourhost:8080/tfs/. 
-
-This value is used to let plugin know how to refer to itself, for example to create links to build/run/etc. 
-
-This is necessary because plugin cannot reliably detect such a URL from within itself.
-
-**PAT (TFS Personal access token)** 
-
-Personal Acess Token to TFS. PAT minimal permission set should contain :
-* Build (read and execute)
-* Code (read)
-* Project and team (read)
-* Test management (read)
-
-**After the connection is set up**
-
-Open ALM Octane, define a CI server and create pipelines.
-
-For details, see ['Set up CI servers'](https://admhelp.microfocus.com/octane/en/latest/Online/Content/AdminGuide/article_CI_servers_setup.htm?cshid=Install_CI_Plugin) in the ALM Octane Help
+**After the connection is set up**, open ALM Octane, define a CI server and create pipelines.
+For details, see Integrate with your CI server in the ALM Octane Help.
 
 ## Administer the plugin
-To administer the plugin, access the console page through the following url: http://localhost:4567/
+There are several rest api operations that can be performed to monitor plugin health.
+**The rest api is available only from the localhost address.**
 
-**Editing the configuration is available only when accessing the page from localhost**
+| URI           | Method           | Description  |
+| -------------         |:-------------:| -----:|
+| http://localhost:4567/      | GET      |   Get plugin status (on/off) |
+| http://localhost:4567/logs       | GET | Get plugin logs list  |
+| http://localhost:4567/logs/last | GET      |    Get last plugin logs |
+| http://localhost:4567/config       | GET |Configure plugin settings|
+| http://localhost:4567/start       | POST |Start plugin|
+| http://localhost:4567/stop       | POST |Stop plugin|
+| http://localhost:4567/version       | GET |Get plugin version|
 
 Plugin logs are located in C:\Users\Public\Documents\OctaneTfsPlugin\logs
 
