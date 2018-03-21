@@ -78,7 +78,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			{
 				tfsServerUriStr = GetTfsLocationFromHostName();
 			}
-			TfsApis tfsManager = new TfsApis(tfsServerUriStr, connectionDetails.Pat);
+			TfsApis tfsManager = new TfsApis(tfsServerUriStr, connectionDetails.Pat,connectionDetails.Password);
 			try
 			{
 				DateTime start = DateTime.Now;

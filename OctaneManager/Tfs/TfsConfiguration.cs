@@ -32,10 +32,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
             Pat = pat;
         }
 
-        public TfsConfiguration(Uri uri, string userName,string password)
+
+        public TfsConfiguration(Uri uri, string pat ,string password) :this(uri,pat)
         {
-            Uri = uri;
-            UserName = userName;
             Password = password;
         }
     }

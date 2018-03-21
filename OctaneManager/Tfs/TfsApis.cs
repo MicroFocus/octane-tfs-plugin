@@ -42,10 +42,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 
 		//private const string TfsUrl = "http://localhost:8080/tfs";
 
-		public TfsApis(string tfsLocation, string pat)
+		public TfsApis(string tfsLocation, string pat,string password)
 		{
 			string myTfsLocation = tfsLocation.EndsWith("/") ? tfsLocation : tfsLocation + "/";
-			_tfsConf = new TfsConfiguration(new Uri(myTfsLocation), pat);
+			_tfsConf = new TfsConfiguration(new Uri(myTfsLocation), pat,password);
 			_tfsRestConnector = new TfsRestConnector(_tfsConf);
 			_subscriptionManager = new TfsSubscriptionManager(_tfsConf);
 		}

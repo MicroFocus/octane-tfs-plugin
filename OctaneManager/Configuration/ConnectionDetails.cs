@@ -70,7 +70,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 		{
 			get;
 			set;
-		}        
+		}
+
+	    public string Password { get; set; }
 
 		public string TfsLocation { get; set; }
 		public ConnectionDetails()
@@ -99,14 +101,16 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 		public void Encrypt()
 		{
 			Pat = Encryption.Encrypt(Pat);
-			ClientSecret = Encryption.Encrypt(ClientSecret);
+            Password = Encryption.Encrypt(Password);
+            ClientSecret = Encryption.Encrypt(ClientSecret);
 		}
 
 
 		public void Decrypt()
 		{
 			Pat = Encryption.Decrypt(Pat);
-			ClientSecret = Encryption.Decrypt(ClientSecret);
+            Password = Encryption.Decrypt(Password);
+            ClientSecret = Encryption.Decrypt(ClientSecret);
 		}
 
 		public void ResetSensitiveInfoTo(ConnectionDetails other)
@@ -116,7 +120,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 				other.Pat = this.Pat;
 			}
 
-			if (SENSITIVE_VALUE_REPLACER.Equals(other.ClientSecret))
+		    if (SENSITIVE_VALUE_REPLACER.Equals(other.Password))
+		    {
+		        other.Password= this.Password;
+		    }
+
+
+            if (SENSITIVE_VALUE_REPLACER.Equals(other.ClientSecret))
 			{
 				other.ClientSecret = this.ClientSecret;
 			}
@@ -127,6 +137,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 			var clone = Clone() as ConnectionDetails;
 			clone.ClientSecret = SENSITIVE_VALUE_REPLACER;
 			clone.Pat = SENSITIVE_VALUE_REPLACER;
+		    clone.Password = SENSITIVE_VALUE_REPLACER;
 			return clone;
 		}
 
