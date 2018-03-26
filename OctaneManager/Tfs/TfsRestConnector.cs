@@ -95,17 +95,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			try
 			{			    
                 //encode your personal access token                   
-			    var credentials = 
-                    Convert.ToBase64String(
-                        !string.IsNullOrEmpty(_tfsConfiguration.Password) ?
-                                Encoding.ASCII.GetBytes($"{_tfsConfiguration.Pat}:{_tfsConfiguration.Password}") 
-                        //    Encoding.ASCII.GetBytes(":")
-                        :
-                        Encoding.ASCII.GetBytes($":{_tfsConfiguration.Pat}")
-                        );
+			    var credentials =
+			        !string.IsNullOrEmpty(_tfsConfiguration.Password) ?
+			            $"{_tfsConfiguration.Pat}:{_tfsConfiguration.Password}": $":{_tfsConfiguration.Pat}";
+			    credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
 
-			    //use the httpclient
-				using (var client = new HttpClient())
+                //use the httpclient
+                using (var client = new HttpClient())
 				{
 					client.BaseAddress = _tfsConfiguration.Uri;
 					client.DefaultRequestHeaders.Accept.Clear();
@@ -138,7 +134,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 				    if (response != null)
 				    {
 				        statusCode = response.StatusCode;
-				        if (response.IsSuccessStatusCode)
+				        content = response.Content.ReadAsStringAsync().Result;
+                        if (response.IsSuccessStatusCode)
 				        {
 				            var result = JsonHelper.DeserializeObject<T>(content);
 				            return result;

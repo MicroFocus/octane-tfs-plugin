@@ -73,18 +73,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 
 		public static TfsApis CreateTfsConnection(ConnectionDetails connectionDetails)
 		{
-			var tfsServerUriStr = connectionDetails.TfsLocation;
-			if (tfsServerUriStr == null)
-			{
-				tfsServerUriStr = GetTfsLocationFromHostName();
-			}
-			TfsApis tfsManager = new TfsApis(tfsServerUriStr, connectionDetails.Pat,connectionDetails.Password);
+			var tfsServerUriStr = connectionDetails.TfsLocation ?? GetTfsLocationFromHostName();
+		    var tfsManager = new TfsApis(tfsServerUriStr, connectionDetails.Pat,connectionDetails.Password);
 			try
 			{
-				DateTime start = DateTime.Now;
+				var start = DateTime.Now;
 				Log.Debug($"Validate connection to TFS  {tfsServerUriStr}");
 				tfsManager.ConnectionValidation("connection-validation");
-				DateTime end = DateTime.Now;
+				var end = DateTime.Now;
 				Log.Debug($"Validate connection to TFS finished in {(long)((end - start).TotalMilliseconds)} ms");
 			}
 			catch (Exception e)
