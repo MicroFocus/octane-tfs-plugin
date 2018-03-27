@@ -67,6 +67,7 @@
                 <RowDefinition Height="270"/>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"/>
@@ -86,19 +87,26 @@
                 <Label >Client Secret:</Label>
                 <Label >TFS Location:</Label>
                 <DockPanel>
-                    <Label >TFS PAT:</Label>
+                    <Label x:Name="LabelCredentials">TFS PAT:</Label>
                     <Button Style="{DynamicResource NoChromeButton}" Click="TipButton_OnClick" x:Name="TipButton">
                         <Image Source="qicon.png" Height="20" Width="20" Margin="0 5 20 0"></Image>
                     </Button>
                 </DockPanel>
                 <Label Visibility="Hidden" Padding="0 0 0 0" FontSize="10" x:Name="TipLabel" >(Personal Access Token)</Label>
+                <Label>Password</Label>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="0.4,0,0,0.2">
                 <TextBox x:Name="Location" ></TextBox>
                 <TextBox x:Name="ClientId" ></TextBox>
                 <PasswordBox x:Name="ClientSecret" />
                 <TextBox x:Name="TfsLocation"/>
-                <PasswordBox x:Name="Pat"/>
+                <DockPanel>
+                    <PasswordBox Visibility="Collapsed" x:Name="Pat"/>
+                    <Label x:Name="UserNameLabel">Username:</Label>
+                    <TextBox x:Name="UsernameInput" Width="150"/>
+                    <Label x:Name="PasswordLabel">Password:</Label>
+                    <PasswordBox x:Name="PasswordInput"/>
+                </DockPanel>
             </StackPanel>
 
             <Line Grid.Row="2" Stroke="#EEEEEE" StrokeThickness="2" X1="0" Y1="15" X2="620" Y2="15" Grid.ColumnSpan="2"/>
