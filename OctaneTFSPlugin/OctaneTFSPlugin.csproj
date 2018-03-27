@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;TFS2015</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -51,48 +51,27 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.TeamFoundation.Build.Server">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Build2.WebApi">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Common">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Framework.Server">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-
-    <!--2017 dlls start-->
-    <Reference Condition="''$(Configuration)'!='PackageDebug2015' And '$(Configuration)'!='PackageRelease2015''" Include="Microsoft.TeamFoundation.Build.Server, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\2017\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
-    </Reference>
-    <Reference Condition="''$(Configuration)'!='PackageDebug2015' And '$(Configuration)'!='PackageRelease2015''" Include="Microsoft.TeamFoundation.Build2.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\2017\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
-    </Reference>
-    <Reference Condition="''$(Configuration)'!='PackageDebug2015' And '$(Configuration)'!='PackageRelease2015''" Include="Microsoft.TeamFoundation.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\2017\Microsoft.TeamFoundation.Common.dll</HintPath>
-    </Reference>
-    <Reference Condition="''$(Configuration)'!='PackageDebug2015' And '$(Configuration)'!='PackageRelease2015''" Include="Microsoft.TeamFoundation.Framework.Server, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\2017\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
-    </Reference>
-    <!--2017 dlls end-->
-
-    <!--2015 dlls start-->
-    <Reference Condition="''$(Configuration)'=='PackageDebug2015' Or '$(Configuration)'=='PackageRelease2015''" Include="Microsoft.TeamFoundation.Build.Server, Version=14.0.0.0">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\2015\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
-    </Reference>
-      <SpecificVersion>False</SpecificVersion>
-      <Reference Condition="''$(Configuration)'=='PackageDebug2015' Or '$(Configuration)'=='PackageRelease2015''" Include="Microsoft.TeamFoundation.Build2.WebApi, Version=14.0.0.0">
-      <HintPath>..\tfs-server-dlls\2015\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
-    </Reference>
-    <Reference Condition="''$(Configuration)'=='PackageDebug2015' Or '$(Configuration)'=='PackageRelease2015''" Include="Microsoft.TeamFoundation.Common, Version=14.0.0.0">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\2015\Microsoft.TeamFoundation.Common.dll</HintPath>
-    </Reference>
-    <Reference Condition="''$(Configuration)'=='PackageDebug2015' Or '$(Configuration)'=='PackageRelease2015''" Include="Microsoft.TeamFoundation.Framework.Server, Version=14.0.0.0">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\2015\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
-    </Reference>
-    <!--2015 dlls end-->
-
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
@@ -135,4 +114,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

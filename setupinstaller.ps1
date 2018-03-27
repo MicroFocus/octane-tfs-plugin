@@ -1,0 +1,1 @@
+Get-Content '.\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj' | Foreach-Object {$_ -replace '.*DefaultLocation.*', ('"DefaultLocation" = "8:[ProgramFiles64Folder]\\Microsoft Team Foundation Server 14.0\\Application Tier\\TFSJobAgent\\Plugins"')} | Set-Content  'c:\temp\test.txt'
