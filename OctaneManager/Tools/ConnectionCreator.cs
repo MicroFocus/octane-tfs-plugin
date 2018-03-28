@@ -33,7 +33,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 
 		public static void CheckMissingValues(ConnectionDetails connectionDetails)
 		{
-			if (String.IsNullOrEmpty(connectionDetails.ALMOctaneUrl))
+			if (string.IsNullOrEmpty(connectionDetails.ALMOctaneUrl))
 			{
 				throw new ArgumentException("ALMOctaneUrl is missing");
 			}
@@ -41,19 +41,19 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			{
 				throw new ArgumentException("ALMOctaneUrl missing sharedspace id");
 			}
-			if (String.IsNullOrEmpty(connectionDetails.ClientId))
+			if (string.IsNullOrEmpty(connectionDetails.ClientId))
 			{
 				throw new ArgumentException("ClientId is missing");
 			}
-			if (String.IsNullOrEmpty(connectionDetails.ClientSecret))
+			if (string.IsNullOrEmpty(connectionDetails.ClientSecret))
 			{
 				throw new ArgumentException("Client secret is missing");
 			}
-			if (String.IsNullOrEmpty(connectionDetails.Pat))
-			{
-				throw new ArgumentException("Pat is missing");
+			if (string.IsNullOrEmpty(connectionDetails.Pat))
+			{                
+				//throw new ArgumentException("Pat is missing");
 			}
-			if (String.IsNullOrEmpty(connectionDetails.TfsLocation))
+			if (string.IsNullOrEmpty(connectionDetails.TfsLocation))
 			{
 				throw new ArgumentException("TfsLocation is missing");
 			}
@@ -61,7 +61,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			{
 				throw new ArgumentException("TfsLocation should contain external domain and not 'localhost'");
 			}
-			if (String.IsNullOrEmpty(connectionDetails.InstanceId))
+			if (string.IsNullOrEmpty(connectionDetails.InstanceId))
 			{
 				throw new ArgumentException("InstanceId is missing");
 			}
@@ -73,18 +73,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 
 		public static TfsApis CreateTfsConnection(ConnectionDetails connectionDetails)
 		{
-			var tfsServerUriStr = connectionDetails.TfsLocation;
-			if (tfsServerUriStr == null)
-			{
-				tfsServerUriStr = GetTfsLocationFromHostName();
-			}
-			TfsApis tfsManager = new TfsApis(tfsServerUriStr, connectionDetails.Pat);
+			var tfsServerUriStr = connectionDetails.TfsLocation ?? GetTfsLocationFromHostName();
+		    var tfsManager = new TfsApis(tfsServerUriStr, connectionDetails.Pat,connectionDetails.Password);
 			try
 			{
-				DateTime start = DateTime.Now;
+				var start = DateTime.Now;
 				Log.Debug($"Validate connection to TFS  {tfsServerUriStr}");
 				tfsManager.ConnectionValidation("connection-validation");
-				DateTime end = DateTime.Now;
+				var end = DateTime.Now;
 				Log.Debug($"Validate connection to TFS finished in {(long)((end - start).TotalMilliseconds)} ms");
 			}
 			catch (Exception e)

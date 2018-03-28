@@ -14,21 +14,10 @@
 * limitations under the License.
 */
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using log4net;
 using MicroFocus.Adm.Octane.Api.Core.Connector;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
@@ -44,6 +33,7 @@ namespace OctaneTFSPluginConfiguratorUI
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         ConnectionDetails _conDetails = new ConnectionDetails();
         private string _instanceId = Guid.NewGuid().ToString();
+        private readonly TfsVersion _tfsVersion;
         public MainWindow()
         {
             try
@@ -64,12 +54,58 @@ namespace OctaneTFSPluginConfiguratorUI
                 TfsLocation.Text = connectionDetails.TfsLocation;
                 Pat.Password = connectionDetails.Pat;
                 _instanceId = connectionDetails.InstanceId;
+                PasswordInput.Password = connectionDetails.Password;
+                UsernameInput.Text = connectionDetails.Pat;
             }
             catch (Exception ex)
             {
                 Log.Warn("Could not parse existing configuration file",ex);
             }
+
+            _tfsVersion = Helpers.GetInstalledTfsVersion();
             
+            switch (_tfsVersion)
+            {
+                case TfsVersion.Tfs2015:
+                    Set2015FieldsVisibility(Visibility.Visible);
+                    break;
+                case TfsVersion.Tfs2017:
+                    Set2017FieldsVisibility(Visibility.Visible);
+                    break;
+                case TfsVersion.NotDefined:
+                    break;
+                default:
+                    Set2017FieldsVisibility(Visibility.Visible);
+                    break;
+                    
+            }
+           
+
+        }
+
+        private void Set2015FieldsVisibility(Visibility v)
+        {
+            if (v == Visibility.Visible)
+            {
+                Set2017FieldsVisibility(Visibility.Collapsed);
+            }
+            LabelCredentials.Content = "Credentials";
+            TipLabel.Content="Username/Password";
+            PasswordLabel.Visibility = v;
+            PasswordInput.Visibility = v;
+            UsernameInput.Visibility = v;
+            UserNameLabel.Visibility = v;            
+        }
+        private void Set2017FieldsVisibility(Visibility v)
+        {
+            if (v == Visibility.Visible)
+            {
+                Set2015FieldsVisibility(Visibility.Collapsed);
+            }
+            LabelCredentials.Content = "TFS PAT:";
+            TipLabel.Content = "(Personal Access Token)";
+            Pat.Visibility = v;
+            PasswordInput.Password = "";            
         }
 
         private void TestConnectionButton_OnClick(object sender, RoutedEventArgs e)
@@ -120,13 +156,15 @@ namespace OctaneTFSPluginConfiguratorUI
             var octaneServerUrl = Location.Text;
             var clientId = ClientId.Text;
             var clientSecret = ClientSecret.Password;            
-            var pat = Pat.Password;
+            var pat = _tfsVersion == TfsVersion.Tfs2015 ? UsernameInput.Text : Pat.Password;
+            var password = PasswordInput.Password;
             var tfsLocation = TfsLocation.Text;
             _instanceId = string.IsNullOrEmpty(_instanceId) ? Guid.NewGuid().ToString() : _instanceId;
             var conDetails =
                 new ConnectionDetails(octaneServerUrl, clientId, clientSecret, tfsLocation, _instanceId)
                 {
-                    Pat = pat
+                    Pat = pat,
+                    Password = password
                 };
 
             _conDetails = conDetails;

@@ -55,22 +55,22 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 
 		public List<T> GetCollection<T>(string uriSuffix)
 		{
-			TfsBaseCollection<T> collections = SendGet<TfsBaseCollection<T>>(uriSuffix, null);
+			var collections = SendGet<TfsBaseCollection<T>>(uriSuffix, null);
 			return collections.Items;
 		}
 
 		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize, int maxPages, string resultLoggerName)
 		{
-			int top = pageSize;
-			int skip = 0;
-			bool completed = false;
+			var top = pageSize;
+			var skip = 0;
+			var completed = false;
 			List<T> finalResults = null;
-			string joiner = uriSuffix.Contains("?") ? "&" : "?";
-			int pages = 0;
+			var joiner = uriSuffix.Contains("?") ? "&" : "?";
+			var pages = 0;
 			while (!completed && pages < maxPages)
 			{
-				string uriSuffixWithPage = ($"{uriSuffix}{joiner}$skip={skip}&$top={top}");
-				TfsBaseCollection<T> results = SendGet<TfsBaseCollection<T>>(uriSuffixWithPage, resultLoggerName);
+				var uriSuffixWithPage = ($"{uriSuffix}{joiner}$skip={skip}&$top={top}");
+				var results = SendGet<TfsBaseCollection<T>>(uriSuffixWithPage, resultLoggerName);
 				skip += top;
 
 				if (finalResults == null)
@@ -89,22 +89,25 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 
 		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data, string resultLoggerName)
 		{
-			DateTime start = DateTime.Now;
+			var start = DateTime.Now;
 			HttpStatusCode statusCode = 0;
-			string content = "";
+			var content = "";
 			try
-			{
-				//encode your personal access token                   
-				var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _tfsConfiguration.Pat)));
+			{			    
+                //encode your personal access token                   
+			    var credentials =
+			        !string.IsNullOrEmpty(_tfsConfiguration.Password) ?
+			            $"{_tfsConfiguration.Pat}:{_tfsConfiguration.Password}": $":{_tfsConfiguration.Pat}";
+			    credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
 
-
-				//use the httpclient
-				using (var client = new HttpClient())
+                //use the httpclient
+                using (var client = new HttpClient())
 				{
 					client.BaseAddress = _tfsConfiguration.Uri;
 					client.DefaultRequestHeaders.Accept.Clear();
 					client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+                    
 					HttpResponseMessage response = null;
 
 					switch (httpType)
@@ -113,51 +116,65 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 							response = client.GetAsync(urlSuffix, HttpCompletionOption.ResponseContentRead).Result;
 							break;
 						case HttpMethodEnum.POST:
-							StringContent requestContent = new StringContent(data, Encoding.UTF8, "application/json");
+							var requestContent = new StringContent(data, Encoding.UTF8, "application/json");
 							response = client.PostAsync(urlSuffix, requestContent).Result;
 							break;
-						default:
-							throw new NotSupportedException("Not supported http type");
+					    case HttpMethodEnum.PUT:
+					        break;
+					    case HttpMethodEnum.DELETE:
+					        break;
+					    default:
+							Log.Warn("Not supported http type");
+                            break;					        
 					}
 
 
 
 					//check to see if we have a succesfull respond
-					statusCode = response.StatusCode;
-					content = response.Content.ReadAsStringAsync().Result;
-					if (response.IsSuccessStatusCode)
-					{
-						T result = JsonHelper.DeserializeObject<T>(content);
-						return result;
-					}
-					else if (response.StatusCode == HttpStatusCode.Unauthorized)
-					{
-						throw new UnauthorizedAccessException("TFS PAT is not valid or does not have required permissions.");
-					}
-					else if (response.StatusCode == HttpStatusCode.NotFound)
-					{
-						throw new HttpException(404, $"Url is not found : {_tfsConfiguration.Uri.ToString()}{urlSuffix}");
-					}
-					else
-					{
-						String msg = $"Failed to set {httpType} {urlSuffix} : {content})";
-						Trace.WriteLine(msg);
-						throw new Exception(msg);
-					}
+				    if (response != null)
+				    {
+				        statusCode = response.StatusCode;
+				        content = response.Content.ReadAsStringAsync().Result;
+                        if (response.IsSuccessStatusCode)
+				        {
+				            var result = JsonHelper.DeserializeObject<T>(content);
+				            return result;
+				        }
+				        else
+				            switch (response.StatusCode)
+				            {
+				                case HttpStatusCode.Unauthorized:
+				                    throw new UnauthorizedAccessException(
+				                        "TFS PAT is not valid or does not have required permissions.");
+				                case HttpStatusCode.NotFound:
+				                    throw new HttpException(404,
+				                        $"Url is not found : {_tfsConfiguration.Uri.ToString()}{urlSuffix}");
+				                default:
+				                    var msg = $"Failed to set {httpType} {urlSuffix} : {content})";
+				                    Log.Error(msg);
+				                    throw new Exception(msg);
+				            }
+				    }
+				    else
+				    {
+				        var msg = $"Response object was null! {httpType} {urlSuffix} : {content})";
+				        Log.Error(msg);
+				        throw new Exception(msg);
+                    }
 				}
 			}
 			finally
 			{
-				DateTime end = DateTime.Now;
-				string timeMsStr = string.Format("{0,7} ms", (long)(end - start).TotalMilliseconds);
-				string responseSize = string.Format("{0,7} B", content.Length);
-				Log.Info($"{(int)statusCode} | {timeMsStr} | {responseSize} |  {httpType}:{urlSuffix}");
+			    var end = DateTime.Now;
+			    var timeMsStr = $"{(long) (end - start).TotalMilliseconds,7} ms";
+			    var responseSize = $"{content.Length,7} B";
+			    Log.Info($"{(int)statusCode} | {timeMsStr} | {responseSize} |  {httpType}:{urlSuffix}");
 
-				if (resultLoggerName != null)
-				{
-					LogManager.GetLogger(resultLoggerName).Debug($"{(int)statusCode} | {timeMsStr} | {responseSize} | {httpType}:{urlSuffix} | {content}");
-				}
+			    if (resultLoggerName != null)
+			    {
+			        LogManager.GetLogger(resultLoggerName).Debug($"{(int)statusCode} | {timeMsStr} | {responseSize} | {httpType}:{urlSuffix} | {content}");
+			    }
 			}
-		}
+        }
 	}
 }

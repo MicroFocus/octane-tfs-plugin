@@ -23,6 +23,7 @@ using Microsoft.TeamFoundation.Build.WebApi.Events;
 using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +39,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
 		static OctaneTfsPlugin()
 		{
-			LogUtils.ConfigureLog4NetForPluginMode();
+
+		    LogUtils.WriteWindowsEvent("Plugin loaded", EventLogEntryType.Information);
+
+
+            LogUtils.ConfigureLog4NetForPluginMode();
 			Log.Info("");
 			Log.Info("");
 			Log.Info("******************************************************************");
@@ -64,7 +69,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
 		public SubscriberPriority Priority => SubscriberPriority.Normal;
 
-		public EventNotificationStatus ProcessEvent(IVssRequestContext requestContext, NotificationType notificationType,
+#if TFS2015
+        public EventNotificationStatus ProcessEvent(IVssRequestContext requestContext, NotificationType notificationType,
 			object notificationEventArgs, out int statusCode, out string statusMessage,
 			out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
 		{
@@ -98,4 +104,42 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 			return EventNotificationStatus.ActionPermitted;
 		}
 	}
+
+
+#else
+        public EventNotificationStatus ProcessEvent(IVssRequestContext requestContext, NotificationType notificationType,
+			object notificationEventArgs, out int statusCode, out string statusMessage,
+			out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
+		{
+			statusCode = 0;
+			properties = null;
+			statusMessage = String.Empty;
+			try
+			{
+				BuildUpdatedEvent updatedEvent = (BuildUpdatedEvent)notificationEventArgs;
+				Build build = updatedEvent.Build;
+				Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for build {updatedEvent.BuildId} (Build Number : {updatedEvent.Build.BuildNumber}, Build Definition: {updatedEvent.Build.Definition.Name})");
+
+				CiEvent ciEvent = CiEventUtils.ToCiEvent(build);
+				if (notificationEventArgs is BuildStartedEvent)
+				{
+					ciEvent.EventType = CiEventType.Started;
+					_pluginManager.GeneralEventsQueue.Add(ciEvent);
+				}
+				else if (notificationEventArgs is BuildCompletedEvent)
+				{
+					ciEvent.EventType = CiEventType.Finished;
+					_pluginManager.HandleFinishEvent(ciEvent);
+				}
+			}
+			catch (Exception e)
+			{
+				var msg = $"ProcessEvent {notificationEventArgs.GetType().Name} failed {e.Message}";
+				Log.Error(msg, e);
+				TeamFoundationApplicationCore.LogException(requestContext, msg, e);
+			}
+			return EventNotificationStatus.ActionPermitted;
+		}
+	}
+#endif
 }

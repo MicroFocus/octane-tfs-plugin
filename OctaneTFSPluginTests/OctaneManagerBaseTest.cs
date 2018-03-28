@@ -44,8 +44,8 @@ namespace MicroFocus.Ci.Tfs.Tests
 			ConfigurationManager.WriteConfig(connectionDetails);
 
 			RunModeManager.GetInstance().RunMode = PluginRunMode.ConsoleApp;
-			//octaneManager = new OctaneManager(ConfigurationManager.Read());
-			_tfsManager = new TfsApis(tfsLocation, connectionDetails.Pat);
+			
+			_tfsManager = new TfsApis(tfsLocation, connectionDetails.Pat,"");
 		}
 	}
 }

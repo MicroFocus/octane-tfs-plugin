@@ -14,9 +14,16 @@
 * limitations under the License.
 */
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
+    public enum TfsVersion
+    {
+        Tfs2015,
+        Tfs2017,
+        NotDefined,
+    }
 	public static class Helpers
     {
         public static string GetPluginVersion()
@@ -25,5 +32,27 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             return version;
         }
+
+        public static TfsVersion GetInstalledTfsVersion()
+        {
+            var rk2015 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\TeamFoundationServer\\14.0\\InstalledComponents\\ApplicationTier", false);
+            var rk2017 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\TeamFoundationServer\\15.0\\InstalledComponents\\ApplicationTier", false);
+
+            if (rk2015 != null)
+            {
+                return TfsVersion.Tfs2015;
+            }
+            else if(rk2017 != null)
+            {
+                return TfsVersion.Tfs2017;
+            }
+            else
+            {
+                return TfsVersion.NotDefined;
+            }
+
+        }
     }
+
+    
 }
