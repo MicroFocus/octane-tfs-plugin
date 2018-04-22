@@ -21,7 +21,7 @@ using System.Windows.Input;
 using log4net;
 using MicroFocus.Adm.Octane.Api.Core.Connector;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 
 namespace OctaneTFSPluginConfiguratorUI
 {
@@ -119,12 +119,13 @@ namespace OctaneTFSPluginConfiguratorUI
             {           
                 
                 ConnectionCreator.CheckMissingValues(_conDetails);
-                ConnectionCreator.CreateTfsConnection(_conDetails);
                 ConnectionCreator.CreateOctaneConnection(_conDetails);
+                ConnectionCreator.CreateTfsConnection(_conDetails);                
             }
             catch (Exception ex)
-            {                
-                MessageBox.Show(ex.Message, "ALM Octane", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+            {
+                //MessageBox.Show(ex.Message, "ALM Octane", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+                ErrorMessageWindow.Show("ALM Octane", ex.Message);
                 return;                
             }
 

@@ -20,7 +20,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Scm;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using MicroFocus.Ci.Tfs.Octane;
 using System;
 using System.Collections.Generic;

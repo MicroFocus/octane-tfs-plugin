@@ -124,7 +124,7 @@
     <Compile Include="Queue\EventsQueue.cs" />
     <Compile Include="Queue\EventList.cs" />
     <Compile Include="Queue\QueuesManager.cs" />
-    <Compile Include="Tools\ConnectionCreator.cs" />
+    <Compile Include="Tools\Connectivity\ConnectionCreator.cs" />
     <Compile Include="Dto\Events\CiEvent.cs" />
     <Compile Include="Dto\Connectivity\OctaneTask.cs" />
     <Compile Include="Dto\Connectivity\OctaneTaskBase.cs" />
@@ -154,6 +154,7 @@
     <Compile Include="Dto\Events\CiBuildResult.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="RestServer\NancyGzipCompression.cs" />
+    <Compile Include="Tools\Connectivity\ProviderNotFoundException.cs" />
     <Compile Include="Tools\Helpers.cs" />
     <Compile Include="Tools\ExceptionHelper.cs" />
     <Compile Include="Tools\JsonHelper.cs" />

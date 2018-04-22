@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1.Subscriptions;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs

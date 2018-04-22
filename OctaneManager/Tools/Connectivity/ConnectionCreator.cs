@@ -22,10 +22,11 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using System;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Web;
 using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 {
 	public class ConnectionCreator
 	{
@@ -114,31 +115,47 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 		{
 
 			Log.Debug($"Validate connection to Octane {connectionDetails.Host} and sharedspace {connectionDetails.SharedSpace}");
-			DateTime start = DateTime.Now;
-			RestConnector restConnector = new RestConnector();
+			var start = DateTime.Now;
+			var restConnector = new RestConnector();
 
 			//1.validate connectivity
 			try
 			{
 				restConnector.Connect(connectionDetails.Host, new APIKeyConnectionInfo(connectionDetails.ClientId, connectionDetails.ClientSecret));			   
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Exception innerException = ExceptionHelper.GetMostInnerException(e);
-				var msg = $"Invalid connection to Octane : {innerException.Message}";
-				throw new Exception(msg);
+				var innerException = ExceptionHelper.GetMostInnerException(ex);
+			    string msg;
+
+			    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+			    if (innerException.Message.Contains("404"))
+			    {
+
+			        msg = $"Connection to ALM Octane not autherized, please check ALM Octane client id and secret!";
+			    }
+			    else
+			    {
+			        msg =
+			            $"ALM Octane server ({connectionDetails.Host}) could not be reached\n please check ALM Octane location Url\\IP and proxy settings";
+			    }
+				
+                Log.Error(msg,innerException);
+
+				throw new Exception(msg,innerException);
 			}
 
 			//2.validate sharedspace exist
 			try
 			{
-				string workspacesUrl = $"/api/shared_spaces/{connectionDetails.SharedSpace}/workspaces?limit=1";
+				var workspacesUrl = $"/api/shared_spaces/{connectionDetails.SharedSpace}/workspaces?limit=1";
 				restConnector.ExecuteGet(workspacesUrl, null);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				var msg = $"Invalid connection to Octane : sharedspace {connectionDetails.SharedSpace} does not exist";
-				throw new Exception(msg);
+				var msg = $"Could not connect to ALM Octane : sharedspace {connectionDetails.SharedSpace} does not exist";
+			    Log.Error(msg, ex);
+                throw new Exception(msg);
 			}
 
             //validate authorization
@@ -149,18 +166,22 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 		    }
 		    catch (Exception ex)
 		    {
-                MqmRestException restEx = ex.InnerException as MqmRestException;
-		        if (restEx.StatusCode == HttpStatusCode.Forbidden)
+		        if (ex.InnerException is MqmRestException restEx && restEx.StatusCode == HttpStatusCode.Forbidden)
 		        {
-		            throw new Exception("Provided credentials are not sufficient for requested resource");
+		            const string msg = "Could not connect to ALM Octane : Provided credentials are not sufficient for requested resource";
+                    Log.Error(msg);
+		            throw new Exception(msg);
 		        }
 		        else
 		        {
-		            throw new Exception(ex.Message);
+		            var msg = $"Could not connect to ALM Octane (generic error): {ex.Message}";
+
+                    Log.Error(ex.Message);
+                    throw new Exception(ex.Message);
                 }		        		        
 		    }
 
-            DateTime end = DateTime.Now;
+            var end = DateTime.Now;
 			Log.Debug($"Validate connection to Octane finished in {(long)((end - start).TotalMilliseconds)} ms");
 			return new OctaneApis(restConnector, connectionDetails);
 		}

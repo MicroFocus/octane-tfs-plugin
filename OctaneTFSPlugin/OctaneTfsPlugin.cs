@@ -16,7 +16,7 @@
 using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using MicroFocus.Ci.Tfs.Octane;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Build.WebApi.Events;

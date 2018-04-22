@@ -19,7 +19,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {

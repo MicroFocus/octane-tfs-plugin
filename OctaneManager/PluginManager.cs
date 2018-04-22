@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;

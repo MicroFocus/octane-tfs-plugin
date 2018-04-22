@@ -16,7 +16,7 @@
 using System.Reflection;
 using Microsoft.Win32;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 {
     public enum TfsVersion
     {

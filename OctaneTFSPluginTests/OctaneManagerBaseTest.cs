@@ -16,7 +16,7 @@
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using SystemConfigurationManager = System.Configuration.ConfigurationManager;
