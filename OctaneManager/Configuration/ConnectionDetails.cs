@@ -72,7 +72,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 			set;
 		}
 
-	    public string Password { get; set; }
+	    public string Password { get; set; } = "";
 
 		public string TfsLocation { get; set; }
 		public ConnectionDetails()
@@ -100,18 +100,20 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 
 		public void Encrypt()
 		{
-			Pat = Encryption.Encrypt(Pat);
-            Password = Encryption.Encrypt(Password);
+			Pat = Encryption.Encrypt(Pat);            
             ClientSecret = Encryption.Encrypt(ClientSecret);
-		}
+            if(!string.IsNullOrEmpty(Password))
+		        Password = Encryption.Encrypt(Password);
+        }
 
 
 		public void Decrypt()
 		{
-			Pat = Encryption.Decrypt(Pat);
-            Password = Encryption.Decrypt(Password);
+			Pat = Encryption.Decrypt(Pat);            
             ClientSecret = Encryption.Decrypt(ClientSecret);
-		}
+            if(!string.IsNullOrEmpty(Password))
+		        Password = Encryption.Decrypt(Password);
+        }
 
 		public void ResetSensitiveInfoTo(ConnectionDetails other)
 		{
