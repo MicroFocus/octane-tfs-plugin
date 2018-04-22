@@ -20,7 +20,7 @@ using System;
 using System.Net;
 using System.Security.Authentication;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 {
 	public static class ExceptionHelper
 	{

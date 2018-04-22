@@ -16,7 +16,7 @@
 using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.IO;

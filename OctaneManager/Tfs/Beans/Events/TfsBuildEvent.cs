@@ -17,7 +17,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.Linq;
 

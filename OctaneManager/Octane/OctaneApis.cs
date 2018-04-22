@@ -20,7 +20,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.Net;

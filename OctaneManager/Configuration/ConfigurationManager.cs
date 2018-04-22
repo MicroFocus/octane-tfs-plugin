@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 using log4net;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.IO;
 using System.Reflection;

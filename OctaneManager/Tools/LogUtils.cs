@@ -23,7 +23,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 {
 	public class LogUtils
 	{

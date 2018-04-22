@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 {
 	public static class ScmEventHelper
 	{

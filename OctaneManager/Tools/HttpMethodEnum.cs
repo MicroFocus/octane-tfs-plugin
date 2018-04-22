@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 {
 	public enum HttpMethodEnum
 	{
