@@ -24,7 +24,7 @@ namespace OctaneTFSPluginConfiguratorUI
 
         private void Cmd_Copy_OnClick(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(TxtError.Text);
+            Clipboard.SetDataObject(TxtError.Text);
         }
 
         public static ErrorMessageWindow Show(string title, string errorMessage)
