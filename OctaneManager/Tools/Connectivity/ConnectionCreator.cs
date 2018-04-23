@@ -133,6 +133,18 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			    {
 
 			        msg = $"Connection to ALM Octane not autherized, please check ALM Octane client id and secret!";
+			    }else if (innerException.Message.Contains("The handshake failed due to an unexpected packet format."))
+			    {
+			        if (connectionDetails.Host.Contains("https"))
+			        {
+			            msg =
+			                $"ALM Octane server ({connectionDetails.Host}) could not be reached! Please check if server supports https connection";
+			        }
+			        else
+			        {
+			            msg =
+			                $"ALM Octane server ({connectionDetails.Host}) could not be reached (seems like a http/https problem) ! Please check connection url and port";
+                    }
 			    }
 			    else
 			    {
