@@ -129,11 +129,16 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			    string msg;
 
 			    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-			    if (innerException.Message.Contains("404"))
+			    if (innerException.Message.Contains("404") || innerException.Message.Contains("401"))
 			    {
 
 			        msg = $"Connection to ALM Octane not autherized, please check ALM Octane client id and secret!";
-			    }else if (innerException.Message.Contains("The handshake failed due to an unexpected packet format."))
+			    }
+                else if(innerException.Message.Contains("No connection could be made because the target machine actively refused it"))
+			    {
+			        msg = $"ALM Octane server ({connectionDetails.Host}) could not be reached! Please check ALM Octane is availble on specified port.";
+                }
+                else if (innerException.Message.Contains("The handshake failed due to an unexpected packet format."))
 			    {
 			        if (connectionDetails.Host.Contains("https"))
 			        {
