@@ -35,6 +35,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
         public static TfsVersion GetInstalledTfsVersion()
         {
+#if TFS2015
+            return TfsVersion.Tfs2015;
+#elif TFS2017
+            return TfsVersion.Tfs2017;
+#endif
             var rk2015 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\TeamFoundationServer\\14.0\\InstalledComponents\\ApplicationTier", false);
             var rk2017 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\TeamFoundationServer\\15.0\\InstalledComponents\\ApplicationTier", false);
 

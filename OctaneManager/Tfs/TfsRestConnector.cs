@@ -144,8 +144,15 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 				            switch (response.StatusCode)
 				            {
 				                case HttpStatusCode.Unauthorized:
-				                    throw new UnauthorizedAccessException(
-				                        "TFS PAT is not valid or does not have required permissions.");
+				                    string errorMsg;
+				                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+				                    if (Helpers.GetInstalledTfsVersion()==TfsVersion.Tfs2015)
+				                        errorMsg =
+				                            "Specified username/password are not valid or do not have required permissions to access TFS server";
+				                    else
+				                        errorMsg = "TFS PAT is not valid or does not have required permissions.";
+				                    throw new UnauthorizedAccessException(errorMsg);
+
 				                case HttpStatusCode.NotFound:
 				                    throw new HttpException(404,
 				                        $"Url is not found : {_tfsConfiguration.Uri.ToString()}{urlSuffix}");
