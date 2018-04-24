@@ -16,19 +16,20 @@
 
 using log4net;
 using MicroFocus.Adm.Octane.Api.Core.Connector;
+using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using System;
 using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
 using System.Web;
-using MicroFocus.Adm.Octane.Api.Core.Connector.Exceptions;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 {
-	public class ConnectionCreator
+    public class ConnectionCreator
 	{
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -86,14 +87,22 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			}
 			catch (Exception e)
 			{
-				string msgPrefix = "Invalid connection to TFS : ";
-				if (e is HttpException)
+                const string tfsNotFoundError = "Please check that TFS Location URL is valid and TFS server is online";
+			    const string msgPrefix = "Generic error connecting to TFS server: ";
+
+			    var innerException = e.InnerException;
+			    if (innerException is HttpRequestException)
+			    {
+			        Log.Error(tfsNotFoundError);
+			        throw new Exception(tfsNotFoundError);
+                }
+
+				if (e is HttpException httpException)
 				{
-					HttpException httpException = (HttpException)e;
-					if (httpException.GetHttpCode() == 404)
+				    if (httpException.GetHttpCode() == 404)
 					{
-						Log.Error("Tfs location is invalid");
-						throw new Exception(msgPrefix + "TFS location is invalid");
+						Log.Error(tfsNotFoundError);
+						throw new Exception(tfsNotFoundError);
 					}
 				}
 				var msg = msgPrefix + (e.InnerException != null ? e.InnerException.Message : e.Message);
