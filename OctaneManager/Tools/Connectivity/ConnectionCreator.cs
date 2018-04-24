@@ -132,7 +132,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			    if (innerException.Message.Contains("404") || innerException.Message.Contains("401"))
 			    {
 
-			        msg = $"Connection to ALM Octane not autherized, please check ALM Octane client id and secret!";
+			        msg = $"Connection to ALM Octane not authorized, please check ALM Octane client id and secret!";
 			    }
                 else if(innerException.Message.Contains("No connection could be made because the target machine actively refused it"))
 			    {
