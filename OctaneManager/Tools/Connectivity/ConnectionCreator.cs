@@ -36,11 +36,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 		{
 			if (string.IsNullOrEmpty(connectionDetails.ALMOctaneUrl))
 			{
-				throw new ArgumentException("ALMOctaneUrl is missing");
+				throw new ArgumentException("ALM Octane Url is not specified");
 			}
 			if (!connectionDetails.ALMOctaneUrl.Contains("p="))
 			{
-				throw new ArgumentException("ALMOctaneUrl missing sharedspace id");
+				throw new ArgumentException("ALM Octane Url is missing sharedspace id");
 			}
 			if (string.IsNullOrEmpty(connectionDetails.ClientId))
 			{
@@ -56,11 +56,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			}
 			if (string.IsNullOrEmpty(connectionDetails.TfsLocation))
 			{
-				throw new ArgumentException("TfsLocation is missing");
-			}
+			    throw new ArgumentException("TFS Location not specified");
+            }
 			if (connectionDetails.TfsLocation.Contains("localhost"))
 			{
-				throw new ArgumentException("TfsLocation should contain external domain and not 'localhost'");
+				throw new ArgumentException("TFS Location should contain external domain and not 'localhost'");
 			}
 			if (string.IsNullOrEmpty(connectionDetails.InstanceId))
 			{
