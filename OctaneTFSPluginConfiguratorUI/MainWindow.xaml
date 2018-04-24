@@ -103,9 +103,9 @@
                 <DockPanel>
                     <PasswordBox Visibility="Collapsed" x:Name="Pat"/>
                     <Label x:Name="UserNameLabel">Username:</Label>
-                    <TextBox x:Name="UsernameInput" Width="150"/>
+                    <TextBox x:Name="UsernameInput" Width="200"/>
                     <Label x:Name="PasswordLabel">Password:</Label>
-                    <PasswordBox x:Name="PasswordInput"/>
+                    <PasswordBox x:Name="PasswordInput" Width="150"/>
                 </DockPanel>
             </StackPanel>
 

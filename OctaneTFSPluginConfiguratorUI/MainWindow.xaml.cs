@@ -90,7 +90,7 @@ namespace OctaneTFSPluginConfiguratorUI
                 Set2017FieldsVisibility(Visibility.Collapsed);
             }
             LabelCredentials.Content = "Credentials";
-            TipLabel.Content="Username/Password";
+            TipLabel.Content="TFS Username/Password";
             PasswordLabel.Visibility = v;
             PasswordInput.Visibility = v;
             UsernameInput.Visibility = v;
