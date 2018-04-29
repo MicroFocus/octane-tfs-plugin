@@ -36,10 +36,30 @@ namespace OctaneTFSPluginConfiguratorUI
         private readonly TfsVersion _tfsVersion;
         public MainWindow()
         {
+            InitializeComponent();
+
+            _tfsVersion = Helpers.GetInstalledTfsVersion();
+
+            switch (_tfsVersion)
+            {
+                case TfsVersion.Tfs2015:
+                    Set2015FieldsVisibility(Visibility.Visible);
+                    break;
+                case TfsVersion.Tfs2017:
+                    Set2017FieldsVisibility(Visibility.Visible);
+                    break;
+                case TfsVersion.NotDefined:
+                    break;
+                default:
+                    Set2017FieldsVisibility(Visibility.Visible);
+                    break;
+
+            }
+
             try
             {
                 Helper.CheckedConnection = false;
-                InitializeComponent();
+                
                 TfsLocation.Text = ConnectionCreator.GetTfsLocationFromHostName();
                 if (!ConfigurationManager.ConfigurationExists())
                 {                    
@@ -62,23 +82,7 @@ namespace OctaneTFSPluginConfiguratorUI
                 Log.Warn("Could not parse existing configuration file",ex);
             }
 
-            _tfsVersion = Helpers.GetInstalledTfsVersion();
-            
-            switch (_tfsVersion)
-            {
-                case TfsVersion.Tfs2015:
-                    Set2015FieldsVisibility(Visibility.Visible);
-                    break;
-                case TfsVersion.Tfs2017:
-                    Set2017FieldsVisibility(Visibility.Visible);
-                    break;
-                case TfsVersion.NotDefined:
-                    break;
-                default:
-                    Set2017FieldsVisibility(Visibility.Visible);
-                    break;
-                    
-            }
+          
            
 
         }

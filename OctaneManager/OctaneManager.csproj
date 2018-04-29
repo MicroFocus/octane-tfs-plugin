@@ -99,6 +99,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -120,9 +121,9 @@
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
     <Compile Include="Octane\OctaneTestResutsUtils.cs" />
-    <Compile Include="Queue\EventsQueue.cs" />
-    <Compile Include="Queue\EventList.cs" />
-    <Compile Include="Queue\QueuesManager.cs" />
+    <Compile Include="RestServer\Queue\EventsQueue.cs" />
+    <Compile Include="RestServer\Queue\EventList.cs" />
+    <Compile Include="RestServer\Queue\QueuesManager.cs" />
     <Compile Include="Tools\Connectivity\ConnectionCreator.cs" />
     <Compile Include="Dto\Events\CiEvent.cs" />
     <Compile Include="Dto\Connectivity\OctaneTask.cs" />
