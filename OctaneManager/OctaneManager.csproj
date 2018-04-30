@@ -121,9 +121,9 @@
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
     <Compile Include="Octane\OctaneTestResutsUtils.cs" />
-    <Compile Include="RestServer\Queue\EventsQueue.cs" />
-    <Compile Include="RestServer\Queue\EventList.cs" />
-    <Compile Include="RestServer\Queue\QueuesManager.cs" />
+    <Compile Include="Queue\EventList.cs" />
+    <Compile Include="Queue\EventsQueue.cs" />
+    <Compile Include="Queue\QueuesManager.cs" />
     <Compile Include="Tools\Connectivity\ConnectionCreator.cs" />
     <Compile Include="Dto\Events\CiEvent.cs" />
     <Compile Include="Dto\Connectivity\OctaneTask.cs" />
