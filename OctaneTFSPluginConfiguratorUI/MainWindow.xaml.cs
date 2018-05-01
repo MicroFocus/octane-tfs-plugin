@@ -37,6 +37,7 @@ namespace OctaneTFSPluginConfiguratorUI
         public MainWindow()
         {
             InitializeComponent();
+            LogUtils.ConfigureLog4NetForPluginMode(false);
 
             _tfsVersion = Helpers.GetInstalledTfsVersion();
 

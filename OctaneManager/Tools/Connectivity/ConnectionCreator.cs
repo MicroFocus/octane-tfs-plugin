@@ -138,7 +138,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			    string msg;
 
 			    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-			    if (innerException.Message.Contains("404") || innerException.Message.Contains("401"))
+			    if (innerException.Message.Contains("401"))
 			    {
 
 			        msg = $"Connection to ALM Octane not authorized, please check ALM Octane client id and secret!";
