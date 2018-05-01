@@ -155,6 +155,10 @@
       <Project>{9d6fda4f-f77b-44db-9895-8b020690ef12}</Project>
       <Name>OctaneManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OctaneTFSPlugin\OctaneTFSPlugin.csproj">
+      <Project>{dffd273e-73ec-436d-8fd5-2786114a9762}</Project>
+      <Name>OctaneTFSPlugin</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MicroFocusIcon.ico" />
