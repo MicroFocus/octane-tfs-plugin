@@ -44,7 +44,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             var path= Path.Combine(instpath, "ALMOctaneTFSPluginConfiguratorUI.exe");
             System.Diagnostics.Process.Start(path);
             
-            LogUtils.WriteWindowsEvent("Stopping service...", EventLogEntryType.Information, "ALM Octane Setup");
+            LogUtils.WriteWindowsEvent("Starting service...", EventLogEntryType.Information, "ALM Octane Setup");
             var sc = new ServiceController("TFSJobAgent");
             sc.Start();
         }
