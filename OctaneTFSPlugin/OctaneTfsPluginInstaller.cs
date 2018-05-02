@@ -16,9 +16,12 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.ServiceProcess;
 using System.Windows.Forms;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
@@ -41,5 +44,16 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             var path= Path.Combine(instpath, "ALMOctaneTFSPluginConfiguratorUI.exe");
             System.Diagnostics.Process.Start(path);
         }
+
+        protected override void OnBeforeInstall(IDictionary savedState)
+        {
+            base.OnBeforeInstall(savedState);
+            LogUtils.WriteWindowsEvent("Stopping service...", EventLogEntryType.Information,"ALM Octane Setup");
+            var sc = new ServiceController("TFSJobAgent");
+            sc.Stop();
+        }
+
+        
+
     }
 }
