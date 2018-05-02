@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 {

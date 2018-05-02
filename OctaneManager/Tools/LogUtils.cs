@@ -13,17 +13,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-using log4net;
-using log4net.Config;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using log4net;
+using log4net.Appender;
+using log4net.Config;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 
-namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
+namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public class LogUtils
 	{
@@ -32,10 +34,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 		public static string OCTANE_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "MqmTestResults";
 		public static string TFS_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsTestResults";
 
-		public static void WriteWindowsEvent(string msg, EventLogEntryType eventLogEntryType)
-		{
-			string source = "TFSJobAgent";
-			string log = "Application";
+		public static void WriteWindowsEvent(string msg, EventLogEntryType eventLogEntryType,string source= "TFSJobAgent")
+		{			
+			const string log = "Application";
 
 			if (!EventLog.SourceExists(source))
 			{
@@ -57,12 +58,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
 		public static string GetLogFilePath(string logType)
 		{
-			log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
+			var repository = LogManager.GetRepository();
 			foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
 			{
 				if (appender is log4net.Appender.FileAppender && appender.Name.ToLowerInvariant().StartsWith(logType.ToLower()))
 				{
-					log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
+					var fileAppender = (log4net.Appender.FileAppender)appender;
 					return fileAppender.File;
 				}
 			}
@@ -71,17 +72,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
 		public static Dictionary<string, string> GetAllLogFilePaths()
 		{
-			Dictionary<string, string> logType2LogFilePath = new Dictionary<string, string>();
-			log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
-			foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
+			var logType2LogFilePath = new Dictionary<string, string>();
+			var repository = LogManager.GetRepository();
+			foreach (var appender in repository.GetAppenders())
 			{
-				if (appender is log4net.Appender.FileAppender)
-				{
-					log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
+			    if (!(appender is FileAppender fileAppender)) continue;
 
-					string logType = fileAppender.Name.ToLower().Replace("appender", "");
-					logType2LogFilePath[logType] = fileAppender.File;
-				}
+			    var logType = fileAppender.Name.ToLower().Replace("appender", "");
+			    logType2LogFilePath[logType] = fileAppender.File;
 			}
 			return logType2LogFilePath;
 		}
@@ -93,7 +91,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			try
 			{
 				//find config file to load
-				var logConfigFileName = "MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin.log4net.config.xml";
+				const string logConfigFileName = "MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin.log4net.config.xml";
 
 				var dllPath = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
 				var pluginsDirectory = Path.GetDirectoryName(dllPath);
@@ -105,7 +103,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 				}
 				else
 				{
-					string temp = Path.Combine(pluginsDirectory, logConfigFileName);
+					var temp = Path.Combine(pluginsDirectory, logConfigFileName);
 					if (File.Exists(temp))
 					{
 						fullPath = temp;
@@ -119,13 +117,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
 					//change path to log files
 
-					log4net.Repository.ILoggerRepository repository = LogManager.GetRepository();
+					var repository = LogManager.GetRepository();
 					foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
 					{
-						if (appender is log4net.Appender.FileAppender)
+						if (appender is FileAppender fileAppender)
 						{
-							log4net.Appender.FileAppender fileAppender = (log4net.Appender.FileAppender)appender;
-							if (fileAppender.File.Contains("TfsJobAgent"))
+						    if (fileAppender.File.Contains("TfsJobAgent"))
 							//it means - config file contains only name of log file, for example abc.log. Directory path was added automatically.
 							//usually app doesn't have permissions to write logs in plugin directory
 							{

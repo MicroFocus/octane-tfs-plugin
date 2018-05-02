@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 {

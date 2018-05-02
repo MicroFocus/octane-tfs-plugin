@@ -16,9 +16,12 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.ServiceProcess;
 using System.Windows.Forms;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
@@ -36,10 +39,57 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         {
             base.OnAfterInstall(savedState);
 
+            LogUtils.WriteWindowsEvent("Starting service...", EventLogEntryType.Information, "ALM Octane Setup");
+            var sc = new ServiceController("TFSJobAgent");
+            sc.Start();
+            sc.WaitForStatus(ServiceControllerStatus.Running);
+
             var instpath = this.Context.Parameters["targetdir"];
             
             var path= Path.Combine(instpath, "ALMOctaneTFSPluginConfiguratorUI.exe");
             System.Diagnostics.Process.Start(path);
+                        
         }
+
+        protected override void OnBeforeUninstall(IDictionary savedState)
+        {
+            base.OnBeforeUninstall(savedState);
+
+            LogUtils.WriteWindowsEvent("Stopping service...", EventLogEntryType.Information, "ALM Octane Setup");
+            var sc = new ServiceController("TFSJobAgent");
+            if (sc.Status == ServiceControllerStatus.Running)
+            {
+                sc.Stop();
+                sc.WaitForStatus(ServiceControllerStatus.Stopped);
+            }
+
+        }
+
+        protected override void OnAfterUninstall(IDictionary savedState)
+        {
+            base.OnAfterUninstall(savedState);
+
+            LogUtils.WriteWindowsEvent("Starting service...", EventLogEntryType.Information, "ALM Octane Setup");
+            var sc = new ServiceController("TFSJobAgent");
+            sc.Start();
+            sc.WaitForStatus(ServiceControllerStatus.Running);
+
+        }
+
+        protected override void OnBeforeInstall(IDictionary savedState)
+        {
+            base.OnBeforeInstall(savedState);
+            LogUtils.WriteWindowsEvent("Stopping service...", EventLogEntryType.Information,"ALM Octane Setup");
+            var sc = new ServiceController("TFSJobAgent");
+            if (sc.Status == ServiceControllerStatus.Running)
+            {
+                sc.Stop();
+                sc.WaitForStatus(ServiceControllerStatus.Stopped);
+            }
+        }
+
+        
+        
+
     }
 }

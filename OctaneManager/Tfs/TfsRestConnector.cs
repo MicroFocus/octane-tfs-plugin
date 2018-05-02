@@ -24,6 +24,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
