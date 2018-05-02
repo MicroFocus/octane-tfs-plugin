@@ -111,6 +111,7 @@
 
             <Line Grid.Row="2" Stroke="#EEEEEE" StrokeThickness="2" X1="0" Y1="15" X2="620" Y2="15" Grid.ColumnSpan="2"/>
 
+            <Label Margin="10" Grid.Row="3" Grid.Column="0" FontWeight="Bold" x:Name="lbl_Version">ver 1.0.0</Label>
             <DockPanel Grid.Row="3" Grid.Column="1"  HorizontalAlignment="Right" Margin="0,1.728,0,0.4">
                 <Button Style="{StaticResource MainButtons}" Width="120" Click="TestConnectionButton_OnClick" x:Name="TestConnectionButton">Test Connection</Button>
                 <Button Style="{StaticResource MainButtons}" Width="80" Click="SaveButton_OnClick" x:Name="SaveButton" >Save</Button>

@@ -41,7 +41,7 @@ namespace OctaneTFSPluginConfiguratorUI
             LogUtils.ConfigureLog4NetForPluginMode(false);
 
             _tfsVersion = Helpers.GetInstalledTfsVersion();
-
+            lbl_Version.Content = $"ver {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}";
             switch (_tfsVersion)
             {
                 case TfsVersion.Tfs2015:
