@@ -1,0 +1,75 @@
+{
+    "manifestVersion": 1,
+    "id": "tfsalmoctaneplugin",
+    "version": "1.0.3",
+    "name": "ALM Octane TFS Plugin",
+    "publisher": "ALMOctane",
+    "description": "ALM Octane TFS ci pugin",
+    "targets": [
+        {
+            "id": "Microsoft.TeamFoundation.Server"
+        }
+    ],
+    "icons": {
+        "default": "images/octane-logo.png"
+    },
+    "categories": [
+        "Build and release"
+    ],
+    "tags": [
+        "CI/CD",
+        "Octane",
+        "Build"
+    ],
+    "screenshots": [
+        {
+            "path": "images/screen1.png"
+        }
+    ],
+    "content": {
+        "details": {
+            "path": "overview.md"
+        },
+        "license": {
+            "path": "license.md"
+        }
+    },
+    "links": {
+        "getstarted": {
+            "uri": "https://github.com/Microfocus/octane-tfs-plugin"
+        },
+        "learn": {
+            "uri": "https://github.com/Microfocus/octane-tfs-plugin"
+        },
+        "support": {
+            "uri": "https://github.com/Microfocus/octane-tfs-plugin"
+        }
+    },
+    "branding": {
+        "color": "rgb(34, 34, 34)",
+        "theme": "dark"
+    },
+    "contributionTypes": [
+        {
+            "id": "hub",
+            "name": "Web Access Hub",
+            "description": "A hub that will appear in the hubs menu at the top of web pages.",
+            "properties": {
+                "name": {
+                    "description": "The text to display for the hub",
+                    "type": "string",
+                    "required": true
+                },
+                "uri": {
+                    "description": "URI of the contents of the hub page",
+                    "type": "string",
+                    "required": true
+                },
+                "order": {
+                    "description": "An optional ordering value which can indicate in which position to place the hub within the hub group",
+                    "type": "integer"
+                }
+            }
+        }
+    ]
+}
