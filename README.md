@@ -15,7 +15,7 @@ Latest release branch status:
 ## Installation instructions
 
 1. Download latest msi release setup from : [releases](https://github.com/MicroFocus/octane-tfs-plugin/releases)
-2. Run setup tfs_j46175nwmmmees0dr3e0k7l9g
+2. Run setup.exe
 3. Configure all relevant fields following the [Configure the setup](https://github.com/MicroFocus/octane-tfs-plugin#configure-the-setup) guide
 
 ### Configuring the TFS ci plugin to connect to ALM Octane
@@ -63,6 +63,8 @@ Plugin logs are located in C:\Users\Public\Documents\OctaneTfsPlugin\logs
 ## Relevent links
 -	**Download the most recent build version of the plugin** at [appveyor](https://ci.appveyor.com/project/MicroFocus/octane-tfs-plugin)
 
+## Limitations
+- The plugin does not support commits in ALM Octane under TFS 2015 if using TFVC
 
 ## Contribute to the TFS plugin
 - Contributions of code are always welcome!
