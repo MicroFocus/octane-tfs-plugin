@@ -1,14 +1,14 @@
-![HPE LOGO](https://upload.wikimedia.org/wikipedia/commons/4/4e/MicroFocus_logo_blue.png)
+![MICROFOCUS LOGO](https://upload.wikimedia.org/wikipedia/commons/4/4e/MicroFocus_logo_blue.png)
 
 # ALM Octane plugin for Microsoft Team Foundation Server CI                        
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fde28fd11a494839b50c2b49f2fd486a)](https://www.codacy.com/app/HPSoftware/octane-tfs-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MicroFocus/octane-tfs-plugin&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fde28fd11a494839b50c2b49f2fd486a)](https://www.codacy.com/app/MicroFocus/octane-tfs-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MicroFocus/octane-tfs-plugin&amp;utm_campaign=Badge_Grade)
 
 Project status:
-[![Build status](https://ci.appveyor.com/api/projects/status/ea529f2p7jit8m8t?svg=true)](https://ci.appveyor.com/project/m-seldin/octane-tfs-plugin-0ykgj)
+[![Build status](https://ci.appveyor.com/api/projects/status/uhl2cmsb7sngtkf5?svg=true)](https://ci.appveyor.com/project/OctaneCIPlugins/octane-tfs-plugin)
 
 Latest release branch status:
-[![Build status](https://ci.appveyor.com/api/projects/status/ea529f2p7jit8m8t?svg=true)](https://ci.appveyor.com/project/m-seldin/octane-tfs-plugin-0ykgj)
+[![Build status](https://ci.appveyor.com/api/projects/status/uhl2cmsb7sngtkf5/branch/master?svg=true)](https://ci.appveyor.com/project/OctaneCIPlugins/octane-tfs-plugin/branch/master)
 
 ##### This plugin integrates ALM Octane with TFS, enabling ALM Octane to display TFS build pipelines and track build and test run results.
 
