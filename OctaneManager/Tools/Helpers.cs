@@ -42,12 +42,17 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 #endif
             var rk2015 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\TeamFoundationServer\\14.0\\InstalledComponents\\ApplicationTier", false);
             var rk2017 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\TeamFoundationServer\\15.0\\InstalledComponents\\ApplicationTier", false);
+            var rk2018 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\TeamFoundationServer\\16.0\\InstalledComponents\\ApplicationTier", false);
 
             if (rk2015 != null)
             {
                 return TfsVersion.Tfs2015;
             }
             else if(rk2017 != null)
+            {
+                return TfsVersion.Tfs2017;
+            }
+            else if(rk2018 !=null)
             {
                 return TfsVersion.Tfs2017;
             }
