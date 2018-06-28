@@ -48,7 +48,28 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             
             var path= Path.Combine(instpath, "ALMOctaneTFSPluginConfiguratorUI.exe");
             System.Diagnostics.Process.Start(path);
-                        
+
+            var process = new System.Diagnostics.Process();
+            var startInfo =
+                new System.Diagnostics.ProcessStartInfo
+                {
+                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal,
+                    FileName = "cmd.exe",
+                    Arguments = "/C netsh http add urlacl url=http://+:4567// user=Everyone",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
+            process.StartInfo = startInfo;
+            process.Start();
+
+            var output = process.StandardOutput.ReadToEnd();
+
+            if (!output.Contains("reservation successfully added"))
+            {
+                LogUtils.WriteWindowsEvent("error adding reservation, restserver will not work!", EventLogEntryType.Error, "ALM Octane Setup");
+            }
+
+            LogUtils.WriteWindowsEvent("Reservation for rest server succesfully added ", EventLogEntryType.Information, "ALM Octane Setup");
         }
 
         protected override void OnBeforeUninstall(IDictionary savedState)
