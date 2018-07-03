@@ -12,6 +12,10 @@ Latest release branch status:
 
 ##### This plugin integrates ALM Octane with TFS, enabling ALM Octane to display TFS build pipelines and track build and test run results.
 
+## Relevent links
+-	**Download the most recent LTS version of the plugin** at [Github release page](https://github.com/MicroFocus/octane-tfs-plugin/releases)
+-	**Check the open issues (and add new issues)** at [Github issues](https://github.com/MicroFocus/octane-tfs-plugin/issues)
+
 ## Installation instructions
 
 1. Download latest msi release setup from : [releases](https://github.com/MicroFocus/octane-tfs-plugin/releases)
