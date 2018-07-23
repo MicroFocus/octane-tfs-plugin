@@ -64,9 +64,6 @@ There are several rest api operations that can be performed to monitor plugin he
 
 Plugin logs are located in C:\Users\Public\Documents\OctaneTfsPlugin\logs
 
-## Relevent links
--	**Download the most recent build version of the plugin** at [appveyor](https://ci.appveyor.com/project/MicroFocus/octane-tfs-plugin)
-
 ## Limitations
 - The plugin does not support commits in ALM Octane under TFS 2015 if using TFVC
 
