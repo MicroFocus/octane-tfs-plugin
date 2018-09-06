@@ -49,18 +49,15 @@ where 1002 is your shared space id and 8081 is the ALM Octane port service port
 For details, see Integrate with your CI server in the ALM Octane Help.
 
 ## Administer the plugin
-There are several rest api operations that can be performed to monitor plugin health.
-**The rest api is available only from the localhost address.**
+There are several operations that can be performed to monitor plugin health from the browser.
+**The urls are available only from the localhost address.**
 
-| URI           | Method           | Description  |
-| -------------         |:-------------:| -----:|
-| http://localhost:4567/      | GET      |   Get plugin status (on/off) |
-| http://localhost:4567/logs       | GET | Get plugin logs list  |
-| http://localhost:4567/logs/last | GET      |    Get last plugin logs |
-| http://localhost:4567/config       | GET |Configure plugin settings|
-| http://localhost:4567/start       | POST |Start plugin|
-| http://localhost:4567/stop       | POST |Stop plugin|
-| http://localhost:4567/version       | GET |Get plugin version|
+| URI           | Description  |
+| -------------         | -----:|
+| http://localhost:4567/      |   Plugin configuration main page |
+| http://localhost:4567/logs       | Plugin logs list  |
+| http://localhost:4567/logs/last |    Last plugin logs |
+| http://localhost:4567/config   |Configure plugin connection settings|
 
 Plugin logs are located in C:\Users\Public\Documents\OctaneTfsPlugin\logs
 
