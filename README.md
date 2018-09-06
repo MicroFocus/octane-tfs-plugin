@@ -22,6 +22,8 @@ Latest release branch status:
 2. Run setup.exe
 3. Configure all relevant fields following the [Configure the setup](https://github.com/MicroFocus/octane-tfs-plugin#configure-the-setup) guide
 
+**Pay attention to your TFS main and update version when downloading the setup. If the main and update version of your TFS does not match the version specified with the setup - the plugin may not work!**
+
 ### Configuring the TFS ci plugin to connect to ALM Octane
 #### Before you configure the connection:
 1. Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when
