@@ -52,6 +52,12 @@ For details, see Integrate with your CI server in the ALM Octane Help.
 
 ## Administer the plugin
 There are several operations that can be performed to monitor plugin health from the browser.
+
+Through the main configuration url (http://localhost:4567/) it is possible to perform the following :
+- Configure plugin connection settings
+- View logs
+- Start/Stop plugin
+
 **The urls are available only from the localhost address.**
 
 | URI           | Description  |
