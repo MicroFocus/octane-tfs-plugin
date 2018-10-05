@@ -20,6 +20,7 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
@@ -86,7 +87,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 				if (run.Status.Equals("Failed"))
 				{
-					run.Error = OctaneTestResultError.Create(testResult.FailureType, testResult.ErrorMessage, testResult.StackTrace);
+				    if (testResult.FailureType == "None" || String.IsNullOrEmpty(testResult.FailureType))
+				    {
+				        testResult.FailureType = FindExceptionName(testResult.StackTrace);
+				    }
+                    
+                    run.Error = OctaneTestResultError.Create(testResult.FailureType, testResult.ErrorMessage, testResult.StackTrace);
 				}
 
 				run.Started = OctaneUtils.ConvertToOctaneTime(testResult.StartedDate);
@@ -102,6 +108,18 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 			}
 			return octaneTestResult;
 		}
+
+	    public static string FindExceptionName(string input)
+	    {
+            var retVal = "Exception";
+            Log.Debug($"Finding exception name");
+            if (!string.IsNullOrEmpty(input) && input.IndexOf(":", StringComparison.Ordinal) > 0)
+	        {
+	            retVal  = input.Substring(0, input.IndexOf(":", StringComparison.Ordinal));
+	            Log.Debug($"Found : {retVal}");
+            }
+            return  retVal;
+	    }
 
 	}
 }
