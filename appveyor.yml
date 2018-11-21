@@ -27,7 +27,9 @@ install:
 before_build:
  - cmd: >-     
         cd .\tools-setup
+        
         target2017.cmd
+        
         cd..
 build:
   project: OctaneTFSPlugin.sln
