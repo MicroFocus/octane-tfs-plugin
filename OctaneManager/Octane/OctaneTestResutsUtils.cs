@@ -110,11 +110,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 	    public static string FindExceptionName(string input)
 	    {
             var retVal = "Exception";
-            //Log.Debug($"Finding exception name");
             if (!string.IsNullOrEmpty(input) && input.IndexOf(":", StringComparison.Ordinal) > 0)
 	        {
 	            retVal  = input.Substring(0, input.IndexOf(":", StringComparison.Ordinal));
-	            //Log.Debug($"Found : {retVal}");
             }
             return  retVal;
 	    }

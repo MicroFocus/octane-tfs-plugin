@@ -29,7 +29,6 @@ namespace SetupHelper
 
         private void SetPluginVersion()
         {
-            var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             txtVersion.Text = version;
         }

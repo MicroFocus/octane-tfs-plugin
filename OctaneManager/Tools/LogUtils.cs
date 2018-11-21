@@ -29,11 +29,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public class LogUtils
 	{
-		public static string SPECIAL_LOGGERS_PREFIX = "_";
-		public static string TFS_REST_CALLS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsRestCalls";
-        public static string TFS_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsTestResults";
-        public static string OCTANE_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "OctaneTestResults";
-        public static string TASK_POLLING_LOGGER = SPECIAL_LOGGERS_PREFIX + "OctaneTaskPolling";
+		public static readonly string SPECIAL_LOGGERS_PREFIX = "_";
+		public static readonly string TFS_REST_CALLS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsRestCalls";
+        public static readonly string TFS_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsTestResults";
+        public static readonly string OCTANE_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "OctaneTestResults";
+        public static readonly string TASK_POLLING_LOGGER = SPECIAL_LOGGERS_PREFIX + "OctaneTaskPolling";
 
         public static void WriteWindowsEvent(string msg, EventLogEntryType eventLogEntryType,string source= "TFSJobAgent")
 		{			
