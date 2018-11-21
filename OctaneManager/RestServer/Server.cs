@@ -69,7 +69,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
                 return;		       
 		    }
 
-			var hostConfigs = new HostConfiguration { UrlReservations = { CreateAutomatically = true } };
+            //Namespace Reservations : https://github.com/NancyFx/Nancy/wiki/Self-Hosting-Nancy
+            var hostConfigs = new HostConfiguration { UrlReservations = { CreateAutomatically = true } };
 			var serverUri = new Uri($"http://localhost:{_port}");
 			var myServer = new NancyHost(serverUri, new DefaultNancyBootstrapper(), hostConfigs);
 

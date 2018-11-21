@@ -322,6 +322,13 @@
         }
         "LaunchCondition"
         {
+            "{836E08B8-0285-4809-BA42-01DB6754A45D}:_8FD1963E8BE04A39A743F37665AF73CF"
+            {
+            "Name" = "8:AdminUser"
+            "Condition" = "8:AdminUser"
+            "Message" = "8:<Error Message>"
+            "InstallUrl" = "8:"
+            }
         }
         "Locator"
         {
@@ -343,7 +350,7 @@
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.0"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:MicroFocus"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -857,7 +864,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_37C1617AD80848ED99E0329661A9C540"
             {
-            "SourcePath" = "8:..\\OctaneTFSPlugin\\obj\\Package2018\\MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin.dll"
+            "SourcePath" = "8:..\\OctaneTFSPlugin\\obj\\Package2017\\MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D587EEF6C8DA40FAB2A2046FE1FDE9A3"
@@ -885,7 +892,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5EE455BBAA2C4DC8B0BD40FEEEF14B33"
             {
-            "SourcePath" = "8:..\\OctaneTFSPluginConfiguratorUI\\obj\\Package2018\\ALMOctaneTFSPluginConfiguratorUI.exe"
+            "SourcePath" = "8:..\\OctaneTFSPluginConfiguratorUI\\obj\\Package2017\\ALMOctaneTFSPluginConfiguratorUI.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D587EEF6C8DA40FAB2A2046FE1FDE9A3"

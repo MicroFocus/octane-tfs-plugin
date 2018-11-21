@@ -16,7 +16,7 @@
 using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Ci.Tfs.Octane;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Build.WebApi.Events;
@@ -25,13 +25,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
-	public class OctaneTfsPlugin : ISubscriber
+    public class OctaneTfsPlugin : ISubscriber
 	{
 		private static string PLUGIN_DISPLAY_NAME = "OctaneTfsPlugin";
 
@@ -44,7 +41,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 		    LogUtils.WriteWindowsEvent("Plugin loaded", EventLogEntryType.Information);
 
 
-            LogUtils.ConfigureLog4NetForPluginMode();
+            LogUtils.ConfigureLog4NetForPluginMode(false);
 			Log.Info("");
 			Log.Info("");
 			Log.Info("******************************************************************");
@@ -70,7 +67,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
 		public SubscriberPriority Priority => SubscriberPriority.Normal;
 
-#if TFS2015
         public EventNotificationStatus ProcessEvent(IVssRequestContext requestContext, NotificationType notificationType,
 			object notificationEventArgs, out int statusCode, out string statusMessage,
 			out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
@@ -105,42 +101,4 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 			return EventNotificationStatus.ActionPermitted;
 		}
 	}
-
-
-#else
-        public EventNotificationStatus ProcessEvent(IVssRequestContext requestContext, NotificationType notificationType,
-			object notificationEventArgs, out int statusCode, out string statusMessage,
-			out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
-		{
-			statusCode = 0;
-			properties = null;
-			statusMessage = String.Empty;
-			try
-			{
-				BuildUpdatedEvent updatedEvent = (BuildUpdatedEvent)notificationEventArgs;
-				Build build = updatedEvent.Build;
-				Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for build {updatedEvent.BuildId} (Build Number : {updatedEvent.Build.BuildNumber}, Build Definition: {updatedEvent.Build.Definition.Name})");
-
-				CiEvent ciEvent = CiEventUtils.ToCiEvent(build);
-				if (notificationEventArgs is BuildStartedEvent)
-				{
-					ciEvent.EventType = CiEventType.Started;
-					_pluginManager.GeneralEventsQueue.Add(ciEvent);
-				}
-				else if (notificationEventArgs is BuildCompletedEvent)
-				{
-					ciEvent.EventType = CiEventType.Finished;
-					_pluginManager.HandleFinishEvent(ciEvent);
-				}
-			}
-			catch (Exception e)
-			{
-				var msg = $"ProcessEvent {notificationEventArgs.GetType().Name} failed {e.Message}";
-				Log.Error(msg, e);
-				TeamFoundationApplicationCore.LogException(requestContext, msg, e);
-			}
-			return EventNotificationStatus.ActionPermitted;
-		}
-	}
-#endif
 }

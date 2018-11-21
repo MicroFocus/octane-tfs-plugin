@@ -17,6 +17,7 @@ using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Connectivity;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.Collections.Generic;
@@ -29,11 +30,13 @@ using System.Web;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
-	public class OctaneTaskManager
+    public class OctaneTaskManager
 	{
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly ILog LogPolling = LogManager.GetLogger(LogUtils.TASK_POLLING_LOGGER);
 
-		private const int DEFAULT_POLLING_GET_TIMEOUT = 20 * 1000; //20 seconds
+
+        private const int DEFAULT_POLLING_GET_TIMEOUT = 20 * 1000; //20 seconds
 
 		private readonly int _pollingGetTimeout;
 		private Task _taskPollingThread;
@@ -80,12 +83,14 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private void PollOctaneTasks(CancellationToken token)
 		{
 			Log.Debug("Task polling - started");
-			while (!token.IsCancellationRequested)
+            LogPolling.Debug("Task polling - started");
+            while (!token.IsCancellationRequested)
 			{
 				string taskDef = null;
 				try
 				{
-					taskDef = _octaneApis.GetTasks(_pollingGetTimeout);
+                    LogPolling.Debug("Task polling - before get task");
+                    taskDef = _octaneApis.GetTasks(_pollingGetTimeout);
 					if (!string.IsNullOrEmpty(taskDef))
 					{
 						Task.Factory.StartNew(() =>
@@ -103,8 +108,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 					if (myEx is WebException && ((WebException)myEx).Status == WebExceptionStatus.Timeout)
 					{
-						//known exception
-						//Log.Debug($"Task polling - no task received");
+                        //known exception
+                        LogPolling.Debug($"Task polling - no task received");
 					}
 					else
 					{
@@ -116,13 +121,15 @@ namespace MicroFocus.Ci.Tfs.Octane
 				}
 			}
 			Log.Debug("Task polling - finished");
-		}
+            LogPolling.Debug("Task polling - finished");
+        }
 
 
 		private void HandleTasks(string taskData)
 		{
 			Log.Info($"Received tasks : {taskData}");
-			OctaneTaskResult taskResult = null;
+            LogPolling.Debug($"Received tasks : {taskData}");
+            OctaneTaskResult taskResult = null;
 			OctaneTask octaneTask = null;
 			try
 			{
