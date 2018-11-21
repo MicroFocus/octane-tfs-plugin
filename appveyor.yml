@@ -25,7 +25,10 @@ install:
     nuget restore OctaneTFSPlugin.sln
 
 before_build:
-- cmd: '.\tools-setup\target2017.cmd'
+ - cmd: >-     
+        cd .\tools-setup
+        target2017.cmd
+        cd..
 build:
   project: OctaneTFSPlugin.sln
   verbosity: normal
