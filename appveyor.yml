@@ -20,13 +20,10 @@ before_build:
  - cmd: >-     
         cd .\tools-setup
         
-        echo %CD%
-        
         target2017.cmd
         
         cd..
-        
-        echo %CD%
+
 build:
   project: OctaneTFSPlugin.sln
   verbosity: normal
@@ -34,13 +31,10 @@ after_build:
 - cmd: >- 
         cd .\tools-setup
         
-        echo %CD%
-        
         package.cmd
         
         cd..
-        
-        echo %CD%    
+ 
 test: off
 artifacts:
 - path: .\OctaneTFSPlugin\bin\Debug
