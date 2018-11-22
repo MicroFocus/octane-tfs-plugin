@@ -23,7 +23,10 @@ before_build:
         target2017.cmd
         
         cd..
-
+        
+configuration:
+- Debug
+- Release
 build:
   project: OctaneTFSPlugin.sln
   verbosity: normal
