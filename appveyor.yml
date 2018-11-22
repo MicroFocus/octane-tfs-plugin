@@ -25,7 +25,6 @@ before_build:
         cd..
         
 configuration:
-- Debug
 - Release
 build:
   project: OctaneTFSPlugin.sln
@@ -40,13 +39,9 @@ after_build:
  
 test: off
 artifacts:
-- path: .\OctaneTFSPlugin\bin\Debug
-  name: alm-octane-tfs-plugin-debug.$(appveyor_build_version)
 - path: .\OctaneTFSPlugin\bin\Release
   name: alm-octane-tfs-plugin-release.$(appveyor_build_version)
 - path: .\TfsConsolePluginRunner\bin\Debug
-  name: alm-octane-tfs-plugin-console-debug.$(appveyor_build_version)
-- path: .\TfsConsolePluginRunner\bin\Release
   name: alm-octane-tfs-plugin-console-release.$(appveyor_build_version)
 - path: .\OctaneTfsPluginSetup\Package2015\
   name: alm-octane-tfs-plugin-setup-2015.$(appveyor_build_version)
