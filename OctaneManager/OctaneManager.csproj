@@ -99,6 +99,9 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MicroFocus.Adm.Octane.Api.Core, Version=12.60.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicroFocus.Adm.Octane.Api.Core.12.60.27\lib\net45\MicroFocus.Adm.Octane.Api.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nancy, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nancy.1.4.4\lib\net40\Nancy.dll</HintPath>
@@ -213,12 +216,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\config.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\alm-octane-csharp-rest-sdk\OctaneSdk\OctaneSdk.csproj">
-      <Project>{344d2ea6-c3e6-4a67-95c1-51b5e7647e89}</Project>
-      <Name>OctaneSdk</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\Resources\style.css" />

@@ -12,8 +12,6 @@ environment:
 install:
 - ps: >-
 
-    git submodule update --init --force --remote
-
     nuget restore OctaneTFSPlugin.sln
 
 before_build:
