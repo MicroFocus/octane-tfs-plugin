@@ -1,0 +1,2 @@
+1.install tfx 
+npm install -g tfx-cli (https://github.com/Microsoft/tfs-cli/issues/226)
