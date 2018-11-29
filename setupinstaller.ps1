@@ -24,7 +24,7 @@ switch($args[0])
         exit
     }
 }
-$installerProjectFile='..\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj'
+$installerProjectFile='.\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj'
 
 $newFile = Get-Content $installerProjectFile | Foreach-Object {$_ -replace $stringToReplace,$tfsLocation }
 
