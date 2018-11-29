@@ -16,17 +16,15 @@
 using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.TestResults;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml.Serialization;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 {
-	public static class OctaneTestResutsUtils
+    public static class OctaneTestResutsUtils
 	{
 		private static readonly ILog Log = LogManager.GetLogger(LogUtils.OCTANE_TEST_RESULTS_LOGGER);
 
@@ -112,11 +110,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 	    public static string FindExceptionName(string input)
 	    {
             var retVal = "Exception";
-            Log.Debug($"Finding exception name");
             if (!string.IsNullOrEmpty(input) && input.IndexOf(":", StringComparison.Ordinal) > 0)
 	        {
 	            retVal  = input.Substring(0, input.IndexOf(":", StringComparison.Ordinal));
-	            Log.Debug($"Found : {retVal}");
             }
             return  retVal;
 	    }

@@ -19,7 +19,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using log4net;
-using MicroFocus.Adm.Octane.Api.Core.Connector;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
@@ -116,14 +115,10 @@ namespace OctaneTFSPluginConfiguratorUI
 
         private void TestConnectionButton_OnClick(object sender, RoutedEventArgs e)
         {
-            NetworkSettings.EnableAllSecurityProtocols();
-            NetworkSettings.IgnoreServerCertificateValidation();
-            RestConnector.AwaitContinueOnCapturedContext = false;
-
             ReadFields();
             try
-            {           
-                
+            {
+                ConnectionCreator.InitRestConnectorForUI();
                 ConnectionCreator.CheckMissingValues(_conDetails);
                 ConnectionCreator.CreateOctaneConnection(_conDetails);
                 ConnectionCreator.CreateTfsConnection(_conDetails);                

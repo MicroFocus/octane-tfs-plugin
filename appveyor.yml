@@ -1,4 +1,4 @@
-version: 1.1.{build}
+version: 1.2.{build}
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -7,39 +7,39 @@ assembly_info:
   assembly_informational_version: '{version}'
 image: Visual Studio 2017
 environment:
-  priv_key:
-    secure: zL1BshyVv/M50KDSWtreKwr+ax1O9eE3b+FX08kb7W2NPJm7jioGsRsqj3lHMdXQMZxKU3ldG7qQa2tAIhoozDuGDAYrroXBiha/cGh/E3yL1PbsAPDp8WAQzUdkZiwO9aLA5O5yil21XgzTVgNK2I5oW14B4O5c9TD+GlQPDSN2uNX04OXMH9W8orDKvg+Vkl2hmAzYfrc21xWzyqoSFjeqE1pzQSId2WyScOGA1Q85HNXtodEmWxfjoLi2nnWuR7uhNAs1ixYTcTL0VUF0Eakj1gEfQfUSYHOe2QgnmSCxk/cncnVhXB0mH6nYDGlXdSBOXOho7naz3+cb5kpmNHeviCA+c4NWWBdeItxAu/GJn1HHnH1aJ7o7JOnuv/f1GFQEoHUbov5u6oqIvhTlWP7TX/nb5QMi9IpJFwS5sE2ZHrTPftnOOHOtr5ZJD7S+Tzc02fWUOx8xlXkilWMIIQ2iYSHwRzaKs7N5JKdmU4fs/qvoC6Zw8OVldzkxKnspWN3Ow6jF4g4pprkz5lxhzqVxLZKD67qQCPidCtyxuf4yYAcXSQ2UDEG6tAGzhZuC/gv8bPrS1RBkC9rOqQ5/ZO3L3NqJVqsYam42QlUgpGZrVw4O1xwou6UePwxTaASRSIodzKYd9m8wj5Sfoqh/3oxs00AQuXfnbghVhKDB5H08WDOFN1lPJiXx1G2/cZYo0eBTEs5tVUwBsQAFoA2QP3HuTLyGvep4I/epsaL3/BXcK27i1Rom7ZbCZxM445fb1FdfJGA9/tTw6v1zID0YMrAHKFopxe/0iL4B0GwxACvzVZxFPbOapkDh2lYOT0Qh/TaNCGSpIC/WTsqLEiHWl0XEMLM3eEKkPn561fMjbZAzTjd5UBAb+SkWDI4jKrM5mZHOkr/RYzjyi0S/h1UCrFJZKlVVrYoWK12aLkZ7fvrtYt2mZIe4T5ugECtI9NB5+IZhKsXeYddMbBcMX2pOyHyxlVXU4OQYWsuycit2H+G6s+Hs25stDViSglj2zZWEB1Tbg+IKZospkLovS84kTXhbCGYfTrDF+FoZl4fBvFr3K4uCDHCugAQ6gqBMB9HxuAv73COvpt3+SWF/uDxBjmnwH+x8g5qMVIV7XDpN9AOzrpK1RGtQZI5OTyoimqJWCePY6ni5BCJXZT1ICMANgniSexl2cqX1Mshto9qFopOE99269W471s+DCk1M+vQAhc5NeBO6PXJrcQPMaqhRcuQCIL0IHOVX8MED29/3zvDi3PuZeg0z4rn9OKAh1mcJiS4FFcHpqeJwaufn0EBp1CXSEQ7f61LH/ZZdzrETA//e/j//w10Qg903oSVLV5e7sVDUtE+qh4NGVqjSdIdMMzhEMy2QmWiDpu881akshBeDhJ1sHBHaQIQHkoniNuTmSbPc7gFTPAdeNrEmc8LbsaQPZ6vCwxXfvUqETH72dhwFngHR4FMluLftjVVpzFVpRPHjMjZSilGpwNP3LcYxeprLJBBX+XBHUMIvLQBHyNOmPsq813OSRyS6jxO/vHJix5xCVtmXwfUNyVMLnzCA2T4h147LiQu41kaPIOs/42ZjaFFuBt7y7okJ7sVlCShXZNbyoPvMcDZt23U4dD9/Nv9akClmdtOtFLb4VtHsDPhdM4bf8Bn355yLXx5tp8TaZzodsErvQc4zYGjYZ6B9j8SrULNjai7lnSRtsnzDG6S7XQp+TAxcPX4ceEoJyZlHmGI795F6x15CaRG9NtliPBmaTr8vBQi0v+L74T6dARfblLYRFwO+uqyQ6B7N7SSYUAKp648XrefSbO107hJ0UNDPPHPHsCZ68P+y3AwXZT6tBkbQJH1j5cS8USz9+gJnMGgtk3jCZ6jjwY//20wQXTynfUBCFy6PE9tnC6MeOrVGbAgx2p0Veq1m5iUgeKYFrS2bziP/VDI5rOt9uIX0xavIxpZEg3Uj+jpETwkAOCLG8NX/h5vto6atDAClyXaWXQdKCKkcL2SjifJsd5GxnqO9Lw+o94DpH3jwNAsesGHVjhzNNbYOtC/nqdikRcoIM17Vp/VdMC0XFrUlObgr6mnwIyZ0UIiJFXKS8tgLJ0EQqU1A8R1QsHJ2WdaPZvjEAtT+MlQh1428Cw8so4d2gfJnN4FDPAaVjXXxPjbVpHFjfCA8CIi/XUj1UDIU7WRD
+
   DEVENV_LOCATION: C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.com
 install:
 - ps: >-
-    $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n"
-
-    $fileContent += $env:priv_key.Replace(' ', "`n")
-
-    $fileContent += "`n-----END RSA PRIVATE KEY-----`n"
-
-    Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
-
-    git submodule update --init --force --remote
 
     nuget restore OctaneTFSPlugin.sln
 
 before_build:
-- cmd: 'target2017.cmd'
+ - cmd: >-     
+        cd .\tools-setup
+        
+        target2017.cmd
+        
+        cd..
+        
+configuration:
+- Release
 build:
   project: OctaneTFSPlugin.sln
   verbosity: normal
 after_build:
-- cmd: 'package.cmd'
+- cmd: >- 
+        cd .\tools-setup
+        
+        package.cmd
+        
+        cd..
+ 
 test: off
 artifacts:
-- path: .\OctaneTFSPlugin\bin\Debug
-  name: alm-octane-tfs-plugin-debug.$(appveyor_build_version)
 - path: .\OctaneTFSPlugin\bin\Release
   name: alm-octane-tfs-plugin-release.$(appveyor_build_version)
 - path: .\TfsConsolePluginRunner\bin\Debug
-  name: alm-octane-tfs-plugin-console-debug.$(appveyor_build_version)
-- path: .\TfsConsolePluginRunner\bin\Release
   name: alm-octane-tfs-plugin-console-release.$(appveyor_build_version)
 - path: .\OctaneTfsPluginSetup\Package2015\
   name: alm-octane-tfs-plugin-setup-2015.$(appveyor_build_version)

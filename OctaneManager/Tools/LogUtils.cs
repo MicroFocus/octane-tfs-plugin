@@ -29,12 +29,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 {
 	public class LogUtils
 	{
-		public static string SPECIAL_LOGGERS_PREFIX = "_";
-		public static string TFS_REST_CALLS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsRestCalls";
-		public static string OCTANE_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "MqmTestResults";
-		public static string TFS_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsTestResults";
+		public static readonly string SPECIAL_LOGGERS_PREFIX = "_";
+		public static readonly string TFS_REST_CALLS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsRestCalls";
+        public static readonly string TFS_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "TfsTestResults";
+        public static readonly string OCTANE_TEST_RESULTS_LOGGER = SPECIAL_LOGGERS_PREFIX + "OctaneTestResults";
+        public static readonly string TASK_POLLING_LOGGER = SPECIAL_LOGGERS_PREFIX + "OctaneTaskPolling";
 
-		public static void WriteWindowsEvent(string msg, EventLogEntryType eventLogEntryType,string source= "TFSJobAgent")
+        public static void WriteWindowsEvent(string msg, EventLogEntryType eventLogEntryType,string source= "TFSJobAgent")
 		{			
 			const string log = "Application";
 
@@ -111,13 +112,15 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 				}
 				if (fullPath != null)
 				{
-
-					XmlConfigurator.ConfigureAndWatch(new FileInfo(fullPath));
+                    Paths.CreateDirIfMissing(Paths.LogFolder);
+                    XmlConfigurator.ConfigureAndWatch(new FileInfo(fullPath));
 					WriteWindowsEvent($"Log4net configuration file {fullPath}", EventLogEntryType.Information);
 
-					//change path to log files
-
-					var repository = LogManager.GetRepository();
+                    
+                    
+                    /*
+                    //change path to log files
+                    var repository = LogManager.GetRepository();
 					foreach (log4net.Appender.IAppender appender in repository.GetAppenders())
 					{
 						if (appender is FileAppender fileAppender)
@@ -126,15 +129,15 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 							//it means - config file contains only name of log file, for example abc.log. Directory path was added automatically.
 							//usually app doesn't have permissions to write logs in plugin directory
 							{
-								Paths.CreateDirIfMissing(Paths.LogFolder);
+								
 								fileAppender.File = Path.Combine(Paths.LogFolder, Path.GetFileName(fileAppender.File));
 								fileAppender.ActivateOptions();
 							}
 							WriteWindowsEvent($"Log4net log file is  {fileAppender.File}", EventLogEntryType.Information);
 						}
-					}
-				}
-			}
+					}*/
+                }
+            }
 			catch (Exception e)
 			{
 				WriteWindowsEvent($"Failed to initialize log4net : e.Message.{Environment.NewLine}{e.StackTrace}", EventLogEntryType.Error);

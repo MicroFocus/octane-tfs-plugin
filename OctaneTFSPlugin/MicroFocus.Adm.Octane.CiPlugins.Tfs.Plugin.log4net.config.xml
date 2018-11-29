@@ -47,8 +47,8 @@
     </filter>
     <filter type="log4net.Filter.DenyAllFilter" />
   </appender>
-  <appender name="MqmTestResultsAppender" type="log4net.Appender.RollingFileAppender">
-    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\mqmTestResults.log" />
+  <appender name="OctaneTestResultsAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\octaneTestResults.log" />
     <appendToFile value="true" />
     <rollingStyle value="Size" />
     <maxSizeRollBackups value="3" />
@@ -58,7 +58,7 @@
       <conversionPattern value="%date**************************************************************************************************************************************************%newline%message%newline" />
     </layout>
     <filter type="log4net.Filter.LoggerMatchFilter">
-      <loggerToMatch value="_MqmTestResults" />
+      <loggerToMatch value="_OctaneTestResults" />
       <acceptOnMatch value="true" />
     </filter>
     <filter type="log4net.Filter.DenyAllFilter" />
@@ -79,11 +79,29 @@
     </filter>
     <filter type="log4net.Filter.DenyAllFilter" />
   </appender>
+  <appender name="OctaneTaskPollingAppender" type="log4net.Appender.RollingFileAppender">
+    <file value="C:\Users\Public\Documents\OctaneTfsPlugin\logs\octaneTaskPolling.log" />
+    <appendToFile value="true" />
+    <rollingStyle value="Size" />
+    <maxSizeRollBackups value="2" />
+    <maximumFileSize value="2MB" />
+    <staticLogFileName value="true" />
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date %message%newline" />
+    </layout>
+    <filter type="log4net.Filter.LoggerMatchFilter">
+      <loggerToMatch value="_OctaneTaskPolling" />
+      <acceptOnMatch value="true" />
+    </filter>
+    <filter type="log4net.Filter.DenyAllFilter" />
+  </appender>
   <root>
     <level value="DEBUG"/>
     <appender-ref ref="AppAppender"/>
     <appender-ref ref="TfsRestCallsAppender"/>
     <appender-ref ref="TfsTestResultsAppender"/>
-    <appender-ref ref="MqmTestResultsAppender"/>
+    <appender-ref ref="OctaneTestResultsAppender"/>
+    <appender-ref ref="OctaneTaskPollingAppender"/>
   </root>
+  <!--logger filter example http://www.claassen.net/geek/blog/2009/06/log4net-filtering-by-logger.html-->
 </log4net>

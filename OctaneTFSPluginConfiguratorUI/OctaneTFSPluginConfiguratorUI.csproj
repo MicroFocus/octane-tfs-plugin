@@ -157,10 +157,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\alm-octane-csharp-rest-sdk\OctaneSdk\OctaneSdk.csproj">
-      <Project>{344D2EA6-C3E6-4A67-95C1-51B5E7647E89}</Project>
-      <Name>OctaneSdk</Name>
-    </ProjectReference>
     <ProjectReference Include="..\OctaneManager\OctaneManager.csproj">
       <Project>{9d6fda4f-f77b-44db-9895-8b020690ef12}</Project>
       <Name>OctaneManager</Name>

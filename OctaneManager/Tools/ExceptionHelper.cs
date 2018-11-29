@@ -25,7 +25,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 	public static class ExceptionHelper
 	{
 		/// <summary>
-		/// Check if exception related to communication issues and restart plugin to obtaine new connections
+		/// Check if exception related to communication issues and restart plugin to obtain new connections
 		/// <returns>True if restart was done</returns>
 		public static bool HandleExceptionAndRestartIfRequired(Exception e, ILog log, string methodName)
 		{
