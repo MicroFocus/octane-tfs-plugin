@@ -322,13 +322,6 @@
         }
         "LaunchCondition"
         {
-            "{836E08B8-0285-4809-BA42-01DB6754A45D}:_8FD1963E8BE04A39A743F37665AF73CF"
-            {
-            "Name" = "8:AdminUser"
-            "Condition" = "8:AdminUser"
-            "Message" = "8:<Error Message>"
-            "InstallUrl" = "8:"
-            }
         }
         "Locator"
         {
@@ -350,7 +343,7 @@
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.2"
+        "ProductVersion" = "8:1.2.0.0"
         "Manufacturer" = "8:MicroFocus"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
