@@ -16,7 +16,9 @@ install:
 
 before_build:
  - cmd: >-     
-        target2017.cmd
+        mkdir .\tfs-server-dlls\current
+
+        copy /Y .\tfs-server-dlls\2017 .\tfs-server-dlls\current
         
 configuration:
 - Release
