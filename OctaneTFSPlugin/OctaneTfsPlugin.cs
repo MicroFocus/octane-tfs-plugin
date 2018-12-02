@@ -41,7 +41,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 		    LogUtils.WriteWindowsEvent("Plugin loaded", EventLogEntryType.Information);
 
 
-            LogUtils.ConfigureLog4NetForPluginMode(false);
+            LogUtils.ConfigureLog4NetForPluginMode();
 			Log.Info("");
 			Log.Info("");
 			Log.Info("******************************************************************");

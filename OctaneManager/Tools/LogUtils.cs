@@ -85,10 +85,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools
 			return logType2LogFilePath;
 		}
 
-		public static void ConfigureLog4NetForPluginMode(bool shouldSleep=true)
+		public static void ConfigureLog4NetForPluginMode()
 		{
-            if(shouldSleep)
-			    Thread.Sleep(10000);
 			try
 			{
 				//find config file to load
