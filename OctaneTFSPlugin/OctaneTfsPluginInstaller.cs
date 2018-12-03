@@ -14,10 +14,6 @@
 * limitations under the License.
 */
 using log4net;
-using log4net.Appender;
-using log4net.Core;
-using log4net.Layout;
-using log4net.Repository.Hierarchy;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 using System;
 using System.Collections;
@@ -37,7 +33,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         public OctaneTfsPluginInstaller()
         {
             InitializeComponent();
-            SetupLog4NetForSetup();
+            LogUtils.ConfigureLog4NetForSetup();
         }
 
 
@@ -195,34 +191,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             StopTfsJobAgentService();
         }
 
-        public static void SetupLog4NetForSetup()
-        {
-            String path = @"C:\Users\Public\Documents\OctaneTfsPlugin\logs\Setup.log";
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-            Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository();
-
-            PatternLayout patternLayout = new PatternLayout();
-            patternLayout.ConversionPattern = "%date [%thread] %-5level %logger - %message%newline";
-            patternLayout.ActivateOptions();
-
-            RollingFileAppender roller = new RollingFileAppender();
-            roller.AppendToFile = true;
-            roller.File = path;
-            roller.Layout = patternLayout;
-            roller.MaxSizeRollBackups = 2;
-            roller.MaximumFileSize = "3MB";
-            roller.RollingStyle = RollingFileAppender.RollingMode.Size;
-            roller.StaticLogFileName = true;
-            roller.ActivateOptions();
-            hierarchy.Root.AddAppender(roller);
-
-            MemoryAppender memory = new MemoryAppender();
-            memory.ActivateOptions();
-            hierarchy.Root.AddAppender(memory);
-
-            hierarchy.Root.Level = Level.Debug;
-            hierarchy.Configured = true;
-        }
+       
     }
 }
