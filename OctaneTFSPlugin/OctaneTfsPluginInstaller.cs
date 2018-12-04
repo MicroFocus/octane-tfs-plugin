@@ -15,13 +15,13 @@
 */
 using log4net;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
-using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Threading.Tasks;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 {
@@ -39,20 +39,27 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
         protected override void OnAfterInstall(IDictionary savedState)
         {
-            LogMessage("OnAfterInstall", EventLogEntryType.Information);
+            Log.Warn("OnAfterInstall");
 
             base.OnAfterInstall(savedState);
 
-            //DoNamespaceReservation();
-
-            StartTfsJobAgentService();
+            DoNamespaceReservation();
 
             StartConfigurator();
+
+            StartTfsJobAgentService();
+        }
+
+        private static void DoNamespaceReservation()
+        {
+            Log.Warn("Starting NamespaceReservation");
+            Task taskA = new Task(() => UrlReservation.DoUrlReservation());
+            taskA.Start();
         }
 
         private static void StartTfsJobAgentService()
         {
-            LogMessage("Starting TFSJobAgent service...", EventLogEntryType.Information);
+            Log.Warn("Starting TFSJobAgent service...");
             var sc = new ServiceController("TFSJobAgent");
             sc.Start();
             sc.WaitForStatus(ServiceControllerStatus.Running);
@@ -60,7 +67,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
         private static void StopTfsJobAgentService()
         {
-            LogMessage("Stopping TFSJobAgent service...", EventLogEntryType.Information);
+            Log.Warn("Stopping TFSJobAgent service...");
             var sc = new ServiceController("TFSJobAgent");
             if (sc.Status == ServiceControllerStatus.Running)
             {
@@ -71,101 +78,18 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
         private void StartConfigurator()
         {
+            Log.Warn("StartConfigurator");
+
             var instpath = this.Context.Parameters["targetdir"];
 
-            //start configurator
-            var path = Path.Combine(instpath, "ALMOctaneTFSPluginConfiguratorUI.exe");
+            string path = Path.Combine(instpath, "ALMOctaneTFSPluginConfiguratorUI.exe");
             Process.Start(path);
-        }
-
-        private static void DoNamespaceReservation()
-        {
-            LogMessage("Starting NamespaceReservation ...", EventLogEntryType.Information);
-            //see all reservations : netsh http show urlacl
-            //delete reservation   : netsh http delete urlacl url = http://+:4567/
-            //add reservation      : netsh http add urlacl url = http://+:4567/ user=Everyone
-
-            String msg = "";
-            String command = "netsh";
-            try
-            {
-                string output = ExecuteCommand(command, "http show urlacl");
-                string url = "http://+:4567/";
-                if (!output.Contains(url))
-                {
-                    String addCommand = $"http add urlacl url={url} user=Everyone";
-                    output = ExecuteCommand(command, addCommand);
-                    if (!output.Contains("reservation successfully added"))
-                    {
-                        msg = $"Error adding Namespace reservation, restserver will not work!. Error = {output}";
-                        LogMessage(msg, EventLogEntryType.Error);
-                    }
-                    else
-                    {
-                        msg = $"Namespace reservation for rest server succesfully added  to {url}";
-                        LogMessage(msg, EventLogEntryType.Information);
-                    }
-                }
-                else
-                {
-                    msg = $"Namespace Reservation already exist to {url}";
-                    LogMessage(msg, EventLogEntryType.Warning);
-                    return;
-                }
-            }
-            catch (Exception e)
-            {
-                msg = $"Failed to do DoNamespaceReservation :  {e.Message}";
-                LogMessage(msg, EventLogEntryType.Information);
-            }
-
-        }
-
-        private static void LogMessage(String msg, EventLogEntryType eventLogEntryType)
-        {
-            LogUtils.WriteWindowsEvent(msg, eventLogEntryType, "ALM Octane Setup");
-
-            switch (eventLogEntryType)
-            {
-                case EventLogEntryType.Error:
-                    Log.Error(msg);
-                    break;
-                case EventLogEntryType.Warning:
-                    Log.Warn(msg);
-                    break;
-                default:
-                    Log.Warn(msg);
-                    break;
-            }
-        }
-
-        private static string ExecuteCommand(string command, string argument)
-        {
-            var process = new Process();
-            var startInfo =
-                new ProcessStartInfo
-                {
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = command,
-                    //Verb = "runas",
-                    Arguments = argument,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
-            process.StartInfo = startInfo;
-            process.Start();
-            process.WaitForExit();
-
-            var output = process.StandardOutput.ReadToEnd();
-
-            return output;
         }
 
 
         protected override void OnBeforeUninstall(IDictionary savedState)
         {
-            LogMessage("OnBeforeUninstall", EventLogEntryType.Information);
+            Log.Warn("OnBeforeUninstall");
 
             base.OnBeforeUninstall(savedState);
 
@@ -175,7 +99,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
         protected override void OnAfterUninstall(IDictionary savedState)
         {
-            LogMessage("OnBeforeUninstall", EventLogEntryType.Information);
+            Log.Warn("OnAfterUninstall");
 
             base.OnAfterUninstall(savedState);
 
@@ -184,13 +108,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
         protected override void OnBeforeInstall(IDictionary savedState)
         {
-            LogMessage("OnBeforeUninstall", EventLogEntryType.Information);
+            Log.Warn("OnBeforeInstall");
 
             base.OnBeforeInstall(savedState);
 
             StopTfsJobAgentService();
         }
 
-       
+
     }
 }
