@@ -31,6 +31,7 @@ if defined Arr[%x%] (
    echo Updating %a%
    powershell -file replaceInFile.ps1 %a% %assemblyVersionRegex% %assemblyVersionReplacement% 
    powershell -file replaceInFile.ps1 %a% %assemblyFileVersionRegex% %assemblyFileVersionReplacement%
+   echo Updating %a% is finished
 
    set /a "x+=1"
    GOTO :SymLoop 
@@ -50,12 +51,39 @@ powershell -file replaceInFile.ps1 ./appveyor.yml %ymlVersionRegex% %ymlVersionR
 ECHO **********************************************************
 ECHO ****************UPDATE SETUP FILE*************************
 ECHO **********************************************************
-SET setupRegex="\"ProductName\" = \"8:ALM Octane TFS CI Plugin .*\""
-SET setupReplacement="\"ProductName\" = \"8:ALM Octane TFS CI Plugin "%version%"\""
-ECHO setupFile %setupRegex% , %setupReplacement%
-powershell -file replaceInFile.ps1 .\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj %setupRegex% %setupReplacement%
+rem see https://www.c-sharpcorner.com/article/how-to-perform-custom-actions-and-upgrade-using-visual-studio-installer
+rem update product name
+SET setupFilePath=.\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj
+SET productNameRegex="\"ProductName\" = \"8:ALM Octane TFS CI Plugin .*\""
+SET productNameReplacement="\"ProductName\" = \"8:ALM Octane TFS CI Plugin "%version%"\""
+ECHO update ProductName %productNameRegex% , %productNameReplacement%
+powershell -file replaceInFile.ps1 %setupFilePath% %productNameRegex% %productNameReplacement%
 
-ECHO !!!! UPDATE Setup version and UPGRADE CODE manually
-ECHO see https://www.c-sharpcorner.com/article/how-to-perform-custom-actions-and-upgrade-using-visual-studio-installer/
+
+rem update packageCode
+POWERSHELL [guid]::NewGuid().ToString().ToUpper() > uuid.tmp
+set /p uuid=<uuid.tmp
+SET packageCodeRegex="\"PackageCode\" = \"8:{.*}\""
+SET packageCodeReplacement="\"PackageCode\" = \"8:{"%uuid%}"\""
+ECHO update PackageCode %packageCodeRegex% , %packageCodeReplacement%
+powershell -file replaceInFile.ps1 %setupFilePath% %packageCodeRegex% %packageCodeReplacement%
+
+rem update ProductCode
+POWERSHELL [guid]::NewGuid().ToString().ToUpper() > uuid.tmp
+set /p uuid=<uuid.tmp
+SET productCodeRegex="\"ProductCode\" = \"8:{.*}\""
+SET productCodeReplacement="\"ProductCode\" = \"8:{"%uuid%}"\""
+ECHO update ProductCode %productCodeRegex% , %productCodeReplacement%
+powershell -file replaceInFile.ps1 %setupFilePath% %productCodeRegex% %productCodeReplacement%
+
+rem update product version
+SET productVersionRegex="\"ProductVersion\" = \"8:.*\""
+SET productVersionReplacement="\"ProductVersion\" = \"8:%version%.0"\""
+ECHO update ProductVersion %productVersionRegex% , %productVersionReplacement%
+powershell -file replaceInFile.ps1 %setupFilePath% %productVersionRegex% %productVersionReplacement%
+
+rem remove temp uuid file
+del uuid.tmp
+
 
 ECHO **********************DONE********************************
