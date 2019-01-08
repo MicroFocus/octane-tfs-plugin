@@ -21,7 +21,7 @@ ECHO assemblyFileVersion %assemblyFileVersionRegex% , %assemblyFileVersionReplac
 
 set Arr[0]=.\OctaneManager\Properties\AssemblyInfo.cs 
 set Arr[1]=.\OctaneTFSPlugin\Properties\AssemblyInfo.cs 
-set Arr[2]=.\OctaneTFSPluginConfiguratorUI\Properties\AssemblyInfo.cs 
+set Arr[2]=.\ConfigurationLauncher\Properties\AssemblyInfo.cs 
 set Arr[3]=.\TfsConsolePluginRunner\Properties\AssemblyInfo.cs
 set "x=0" 
 :SymLoop 
