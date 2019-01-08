@@ -28,13 +28,13 @@
         "Entry"
         {
         "MsmKey" = "8:_20182415465B75B48DA63DF6F18C5474"
-        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
+        "OwnerKey" = "8:_A4E28F5E7C3463E02A7B27659D022E79"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_20182415465B75B48DA63DF6F18C5474"
-        "OwnerKey" = "8:_A4E28F5E7C3463E02A7B27659D022E79"
+        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -52,29 +52,29 @@
         "Entry"
         {
         "MsmKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
-        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
-        "OwnerKey" = "8:_4591BC1AC02124BE2983FD664574CF6F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
-        "OwnerKey" = "8:_A4E28F5E7C3463E02A7B27659D022E79"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
         "OwnerKey" = "8:_20182415465B75B48DA63DF6F18C5474"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
+        "OwnerKey" = "8:_A4E28F5E7C3463E02A7B27659D022E79"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
+        "OwnerKey" = "8:_4591BC1AC02124BE2983FD664574CF6F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
+        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4591BC1AC02124BE2983FD664574CF6F"
         "OwnerKey" = "8:_98ECF630078EEB2A365C1D94D505A491"
         "MsmSig" = "8:_UNDEFINED"
@@ -89,18 +89,18 @@
         {
         "MsmKey" = "8:_4E24509EB98629520C5D0491432C49F0"
         "OwnerKey" = "8:_98ECF630078EEB2A365C1D94D505A491"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4E24509EB98629520C5D0491432C49F0"
-        "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_4E24509EB98629520C5D0491432C49F0"
         "OwnerKey" = "8:_4591BC1AC02124BE2983FD664574CF6F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4E24509EB98629520C5D0491432C49F0"
+        "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -112,13 +112,13 @@
         "Entry"
         {
         "MsmKey" = "8:_52A3F133B9E2541FBBB2ED29C83208E2"
-        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
+        "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_52A3F133B9E2541FBBB2ED29C83208E2"
-        "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
+        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -166,25 +166,7 @@
         "Entry"
         {
         "MsmKey" = "8:_77CFD997A8FEE100407B35154E03216D"
-        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_77CFD997A8FEE100407B35154E03216D"
-        "OwnerKey" = "8:_123A20765243A30109D7B203AD5E57E6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_77CFD997A8FEE100407B35154E03216D"
-        "OwnerKey" = "8:_4591BC1AC02124BE2983FD664574CF6F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_77CFD997A8FEE100407B35154E03216D"
-        "OwnerKey" = "8:_98ECF630078EEB2A365C1D94D505A491"
+        "OwnerKey" = "8:_701F8482A6C4FFD40886F683F77B37C6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -196,7 +178,25 @@
         "Entry"
         {
         "MsmKey" = "8:_77CFD997A8FEE100407B35154E03216D"
-        "OwnerKey" = "8:_701F8482A6C4FFD40886F683F77B37C6"
+        "OwnerKey" = "8:_98ECF630078EEB2A365C1D94D505A491"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_77CFD997A8FEE100407B35154E03216D"
+        "OwnerKey" = "8:_4591BC1AC02124BE2983FD664574CF6F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_77CFD997A8FEE100407B35154E03216D"
+        "OwnerKey" = "8:_123A20765243A30109D7B203AD5E57E6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_77CFD997A8FEE100407B35154E03216D"
+        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -238,31 +238,19 @@
         "Entry"
         {
         "MsmKey" = "8:_CBAFCD5986775775212011FBA571FB40"
-        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
+        "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_CBAFCD5986775775212011FBA571FB40"
-        "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CF6D49899A2583CD9228876593F9231E"
-        "OwnerKey" = "8:_A4E28F5E7C3463E02A7B27659D022E79"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CF6D49899A2583CD9228876593F9231E"
         "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_CF6D49899A2583CD9228876593F9231E"
-        "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
+        "OwnerKey" = "8:_A4E28F5E7C3463E02A7B27659D022E79"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -273,14 +261,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E4298CA303A6215DA4C58C6737B3D82F"
+        "MsmKey" = "8:_CF6D49899A2583CD9228876593F9231E"
         "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_E4298CA303A6215DA4C58C6737B3D82F"
+        "MsmKey" = "8:_CF6D49899A2583CD9228876593F9231E"
         "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E4298CA303A6215DA4C58C6737B3D82F"
+        "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -291,6 +285,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E4298CA303A6215DA4C58C6737B3D82F"
+        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_37C1617AD80848ED99E0329661A9C540"
         "MsmSig" = "8:_UNDEFINED"
@@ -298,91 +298,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_123A20765243A30109D7B203AD5E57E6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_98ECF630078EEB2A365C1D94D505A491"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4591BC1AC02124BE2983FD664574CF6F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4E24509EB98629520C5D0491432C49F0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A4E28F5E7C3463E02A7B27659D022E79"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CBAFCD5986775775212011FBA571FB40"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6EF6D3B9C5ABF4E5D9128C6EE10E8A05"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_52A3F133B9E2541FBBB2ED29C83208E2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CF6D49899A2583CD9228876593F9231E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E4298CA303A6215DA4C58C6737B3D82F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_701F8482A6C4FFD40886F683F77B37C6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_77CFD997A8FEE100407B35154E03216D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_20182415465B75B48DA63DF6F18C5474"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
+        "OwnerKey" = "8:_5D6D21FC95853BCADB84255A21AC24A4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -394,7 +310,91 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5D6D21FC95853BCADB84255A21AC24A4"
+        "OwnerKey" = "8:_4025A8E4B2AB485C94C68A4F991C0A53"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_20182415465B75B48DA63DF6F18C5474"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_77CFD997A8FEE100407B35154E03216D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_701F8482A6C4FFD40886F683F77B37C6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_E4298CA303A6215DA4C58C6737B3D82F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CF6D49899A2583CD9228876593F9231E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_52A3F133B9E2541FBBB2ED29C83208E2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6EF6D3B9C5ABF4E5D9128C6EE10E8A05"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CBAFCD5986775775212011FBA571FB40"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A4E28F5E7C3463E02A7B27659D022E79"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4E24509EB98629520C5D0491432C49F0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4591BC1AC02124BE2983FD664574CF6F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_98ECF630078EEB2A365C1D94D505A491"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_123A20765243A30109D7B203AD5E57E6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_64A6510A4BE7484D808289BDFCFCE369"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -587,11 +587,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.TeamFoundation.Build2.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_123A20765243A30109D7B203AD5E57E6"
-                    {
-                    "Name" = "8:Microsoft.TeamFoundation.Build2.WebApi.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.TeamFoundation.Build2.WebApi.dll"
             "TargetName" = "8:"
@@ -618,11 +613,6 @@
             "AssemblyAsmDisplayName" = "8:System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
                 "ScatterAssemblies"
                 {
-                    "_20182415465B75B48DA63DF6F18C5474"
-                    {
-                    "Name" = "8:System.IO.Compression.FileSystem.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.IO.Compression.FileSystem.dll"
             "TargetName" = "8:"
@@ -649,11 +639,6 @@
             "AssemblyAsmDisplayName" = "8:System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
                 "ScatterAssemblies"
                 {
-                    "_4025A8E4B2AB485C94C68A4F991C0A53"
-                    {
-                    "Name" = "8:System.IO.Compression.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.IO.Compression.dll"
             "TargetName" = "8:"
@@ -680,11 +665,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.TeamFoundation.Framework.Server, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4591BC1AC02124BE2983FD664574CF6F"
-                    {
-                    "Name" = "8:Microsoft.TeamFoundation.Framework.Server.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.TeamFoundation.Framework.Server.dll"
             "TargetName" = "8:"
@@ -711,11 +691,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.TeamFoundation.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4E24509EB98629520C5D0491432C49F0"
-                    {
-                    "Name" = "8:Microsoft.TeamFoundation.Common.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.TeamFoundation.Common.dll"
             "TargetName" = "8:"
@@ -742,11 +717,6 @@
             "AssemblyAsmDisplayName" = "8:Nancy.Hosting.Self, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_52A3F133B9E2541FBBB2ED29C83208E2"
-                    {
-                    "Name" = "8:Nancy.Hosting.Self.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Nancy.Hosting.Self.dll"
             "TargetName" = "8:"
@@ -804,11 +774,6 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6EF6D3B9C5ABF4E5D9128C6EE10E8A05"
-                    {
-                    "Name" = "8:Newtonsoft.Json.DLL"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.DLL"
             "TargetName" = "8:"
@@ -835,11 +800,6 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http.WebRequest, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_701F8482A6C4FFD40886F683F77B37C6"
-                    {
-                    "Name" = "8:System.Net.Http.WebRequest.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Net.Http.WebRequest.dll"
             "TargetName" = "8:"
@@ -866,11 +826,6 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_77CFD997A8FEE100407B35154E03216D"
-                    {
-                    "Name" = "8:System.Net.Http.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
@@ -897,11 +852,6 @@
             "AssemblyAsmDisplayName" = "8:System.IdentityModel.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
                 "ScatterAssemblies"
                 {
-                    "_96D1470F642CAA14BF8B21A5D507452D"
-                    {
-                    "Name" = "8:System.IdentityModel.Services.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.IdentityModel.Services.dll"
             "TargetName" = "8:"
@@ -928,11 +878,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.TeamFoundation.Build.Server, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_98ECF630078EEB2A365C1D94D505A491"
-                    {
-                    "Name" = "8:Microsoft.TeamFoundation.Build.Server.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.TeamFoundation.Build.Server.dll"
             "TargetName" = "8:"
@@ -959,11 +904,6 @@
             "AssemblyAsmDisplayName" = "8:MicroFocus.Adm.Octane.CiPlugins.Tfs.Core, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A4E28F5E7C3463E02A7B27659D022E79"
-                    {
-                    "Name" = "8:MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.dll"
             "TargetName" = "8:"
@@ -990,11 +930,6 @@
             "AssemblyAsmDisplayName" = "8:log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_CBAFCD5986775775212011FBA571FB40"
-                    {
-                    "Name" = "8:log4net.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -1021,11 +956,6 @@
             "AssemblyAsmDisplayName" = "8:Nancy, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_CF6D49899A2583CD9228876593F9231E"
-                    {
-                    "Name" = "8:Nancy.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Nancy.dll"
             "TargetName" = "8:"
@@ -1052,11 +982,6 @@
             "AssemblyAsmDisplayName" = "8:MicroFocus.Adm.Octane.Api.Core, Version=12.60.27.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E4298CA303A6215DA4C58C6737B3D82F"
-                    {
-                    "Name" = "8:MicroFocus.Adm.Octane.Api.Core.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:MicroFocus.Adm.Octane.Api.Core.dll"
             "TargetName" = "8:"
@@ -1457,8 +1382,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1202"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -1479,7 +1404,7 @@
                     }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_54AFD1D28FDF410689DD23C51193E9B0"
                     {
-                    "Sequence" = "3:110"
+                    "Sequence" = "3:200"
                     "DisplayName" = "8:Installation Folder"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -1506,7 +1431,263 @@
                             "ContextData" = "8:1;True=1;False=0"
                             "Attributes" = "3:0"
                             "Setting" = "3:0"
-                            "Value" = "3:1"
+                            "Value" = "3:0"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_7801E129AE474801A31C0E048E70C406"
+                    {
+                    "Sequence" = "3:210"
+                    "DisplayName" = "8:Checkboxes   (A)"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdCustomCheck1Dlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "BannerText"
+                            {
+                            "Name" = "8:BannerText"
+                            "DisplayName" = "8:#1014"
+                            "Description" = "8:#1114"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:Warning"
+                            "DefaultValue" = "8:#1214"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "BodyText"
+                            {
+                            "Name" = "8:BodyText"
+                            "DisplayName" = "8:#1015"
+                            "Description" = "8:#1115"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:During the installation process, the 'TFSJobAgent' service will be restarted to enable the plugin to load. "
+                            "DefaultValue" = "8:#1215"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox1Label"
+                            {
+                            "Name" = "8:Checkbox1Label"
+                            "DisplayName" = "8:#1034"
+                            "Description" = "8:#1134"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1234"
+                            "DefaultValue" = "8:#1234"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox1Property"
+                            {
+                            "Name" = "8:Checkbox1Property"
+                            "DisplayName" = "8:#1030"
+                            "Description" = "8:#1130"
+                            "Type" = "3:14"
+                            "ContextData" = "8:Public"
+                            "Attributes" = "3:2"
+                            "Setting" = "3:2"
+                            "Value" = "8:CHECKBOXA1"
+                            "DefaultValue" = "8:CHECKBOXA1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox1Value"
+                            {
+                            "Name" = "8:Checkbox1Value"
+                            "DisplayName" = "8:#1038"
+                            "Description" = "8:#1138"
+                            "Type" = "3:2"
+                            "ContextData" = "8:Unchecked=;Checked=1"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox1Visible"
+                            {
+                            "Name" = "8:Checkbox1Visible"
+                            "DisplayName" = "8:#1026"
+                            "Description" = "8:#1126"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:0"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox2Label"
+                            {
+                            "Name" = "8:Checkbox2Label"
+                            "DisplayName" = "8:#1035"
+                            "Description" = "8:#1135"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1235"
+                            "DefaultValue" = "8:#1235"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox2Property"
+                            {
+                            "Name" = "8:Checkbox2Property"
+                            "DisplayName" = "8:#1031"
+                            "Description" = "8:#1131"
+                            "Type" = "3:14"
+                            "ContextData" = "8:Public"
+                            "Attributes" = "3:2"
+                            "Setting" = "3:2"
+                            "Value" = "8:CHECKBOXA2"
+                            "DefaultValue" = "8:CHECKBOXA2"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox2Value"
+                            {
+                            "Name" = "8:Checkbox2Value"
+                            "DisplayName" = "8:#1039"
+                            "Description" = "8:#1139"
+                            "Type" = "3:2"
+                            "ContextData" = "8:Unchecked=;Checked=1"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox2Visible"
+                            {
+                            "Name" = "8:Checkbox2Visible"
+                            "DisplayName" = "8:#1027"
+                            "Description" = "8:#1127"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:0"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox3Label"
+                            {
+                            "Name" = "8:Checkbox3Label"
+                            "DisplayName" = "8:#1036"
+                            "Description" = "8:#1136"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1236"
+                            "DefaultValue" = "8:#1236"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox3Property"
+                            {
+                            "Name" = "8:Checkbox3Property"
+                            "DisplayName" = "8:#1032"
+                            "Description" = "8:#1132"
+                            "Type" = "3:14"
+                            "ContextData" = "8:Public"
+                            "Attributes" = "3:2"
+                            "Setting" = "3:2"
+                            "Value" = "8:CHECKBOXA3"
+                            "DefaultValue" = "8:CHECKBOXA3"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox3Value"
+                            {
+                            "Name" = "8:Checkbox3Value"
+                            "DisplayName" = "8:#1040"
+                            "Description" = "8:#1140"
+                            "Type" = "3:2"
+                            "ContextData" = "8:Unchecked=;Checked=1"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox3Visible"
+                            {
+                            "Name" = "8:Checkbox3Visible"
+                            "DisplayName" = "8:#1028"
+                            "Description" = "8:#1128"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:0"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox4Label"
+                            {
+                            "Name" = "8:Checkbox4Label"
+                            "DisplayName" = "8:#1037"
+                            "Description" = "8:#1137"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1237"
+                            "DefaultValue" = "8:#1237"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox4Property"
+                            {
+                            "Name" = "8:Checkbox4Property"
+                            "DisplayName" = "8:#1033"
+                            "Description" = "8:#1133"
+                            "Type" = "3:14"
+                            "ContextData" = "8:Public"
+                            "Attributes" = "3:2"
+                            "Setting" = "3:2"
+                            "Value" = "8:CHECKBOXA4"
+                            "DefaultValue" = "8:CHECKBOXA4"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox4Value"
+                            {
+                            "Name" = "8:Checkbox4Value"
+                            "DisplayName" = "8:#1041"
+                            "Description" = "8:#1141"
+                            "Type" = "3:2"
+                            "ContextData" = "8:Unchecked=;Checked=1"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Checkbox4Visible"
+                            {
+                            "Name" = "8:Checkbox4Visible"
+                            "DisplayName" = "8:#1029"
+                            "Description" = "8:#1129"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:0"
                             "DefaultValue" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -1514,7 +1695,7 @@
                     }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_DA0B2B47660940B997E229394AFA4FEB"
                     {
-                    "Sequence" = "3:400"
+                    "Sequence" = "3:300"
                     "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -1571,8 +1752,8 @@
                             "Type" = "3:15"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1258"
+                            "Setting" = "3:2"
+                            "Value" = "8:After the 'TFSJobAgent' service starts, the plugin configuration screen will appear."
                             "DefaultValue" = "8:#1258"
                             "UsePlugInResources" = "11:TRUE"
                             }
