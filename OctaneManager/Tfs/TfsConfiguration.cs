@@ -17,24 +17,18 @@ using System;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
-	public class TfsConfiguration
+    public class TfsConfiguration
     {
 
-        public Uri Uri{get; protected set; }
-        public string Pat { get; protected set; }
+        public Uri Uri { get; protected set; }
+        public string User { get; protected set; }
 
-        //public string UserName { get; protected set; }// = @"localhost\michael"; //= @"hpeswlab\_alm_octane_auto";
-        public string Password { get; protected set; }// = "michael";
+        public string Password { get; protected set; }
 
-        public TfsConfiguration(Uri uri, string pat)
+        public TfsConfiguration(Uri uri, string user, string password)
         {
             Uri = uri;
-            Pat = pat;
-        }
-
-
-        public TfsConfiguration(Uri uri, string pat ,string password) :this(uri,pat)
-        {
+            User = user;
             Password = password;
         }
     }

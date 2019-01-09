@@ -1,4 +1,4 @@
-﻿/*!
+/*!
 * (c) 2016-2018 EntIT Software LLC, a Micro Focus company
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,23 +15,31 @@
 */
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 {
-	public enum PluginRunMode
-	{
-		ConsoleApp,
-		ServerPlugin
-	}
+    public enum PluginRunMode
+    {
+        ConsoleApp,
+        ServerPlugin
+    }
 
-	public class RunModeManager
-	{
-		private static RunModeManager instance = new RunModeManager();
+    public enum TfsVersionEnum
+    {
+        Tfs2015,
+        Tfs2017
+    }
 
+    public class RunModeManager
+    {
+        private static RunModeManager instance = new RunModeManager();
 
-		public static RunModeManager GetInstance()
-		{
-			return instance;
-		}
+        public static RunModeManager GetInstance()
+        {
+            return instance;
+        }
 
-		public PluginRunMode RunMode { get; set; } = PluginRunMode.ServerPlugin;
+        public PluginRunMode RunMode { get; set; } = PluginRunMode.ServerPlugin;
 
-	}
+        public TfsVersionEnum TfsVersion => TfsVersionEnum.Tfs2017;
+
+        public bool RestrictConfigurationAccessFromLocalhost => true;
+    }
 }

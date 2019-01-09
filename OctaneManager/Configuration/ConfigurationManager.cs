@@ -68,7 +68,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 			var res = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
 			res.Decrypt();
 
-			if (printLogs)
+            res.TfsVersion = RunModeManager.GetInstance().TfsVersion.ToString();
+
+
+            if (printLogs)
 			{
 				Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(res.GetInstanceWithoutSensitiveInfo(), true)}");
 			}
