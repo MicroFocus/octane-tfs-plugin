@@ -21,14 +21,14 @@ namespace ConfigurationLauncher
 
         private static void StartConfigurator()
         {
-            Log.Warn("StartConfigurator");
+            Log.Warn("StartConfigurator at " + CONFIGURATION_URL);
 
             //Wait before start.
             //this method is called after service turned to status "running" 
             //but still required some time to application to start all components
             bool configurationUp = false;
             int counter = 0;
-            int MAX_COUNTER = 10;
+            int MAX_COUNTER = 15;
             int PAUSE_TIME = 2000;
             DateTime start = DateTime.Now;
 
