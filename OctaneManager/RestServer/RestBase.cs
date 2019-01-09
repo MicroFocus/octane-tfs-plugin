@@ -53,6 +53,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
                 Dictionary<string, object> map = new Dictionary<string, object>();
                 map["pluginStatus"] = PluginManager.GetInstance().Status.ToString();
                 map["pluginVersion"] = Helpers.GetPluginVersion();
+                map["tfsVersion"] = RunModeManager.GetInstance().TfsVersion.ToString();
                 map["generalEventsQueue"] = PluginManager.GetInstance().GeneralEventsQueue.Count;
                 map["scmEventsQueue"] = PluginManager.GetInstance().ScmEventsQueue.Count;
                 map["testResultsQueue"] = PluginManager.GetInstance().TestResultsQueue.Count;
