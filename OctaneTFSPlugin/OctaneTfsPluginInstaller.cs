@@ -40,6 +40,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         protected override void OnAfterInstall(IDictionary savedState)
         {
             Log.Warn("OnAfterInstall");
+            Log.Warn("targetdir=" + GetInstallationPath());
 
             base.OnAfterInstall(savedState);
 
@@ -80,10 +81,19 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         {
             Log.Warn("StartConfigurator");
 
-            var instpath = this.Context.Parameters["targetdir"];
-            string path = Path.Combine(instpath, "MicroFocus.Adm.Octane.CiPlugins.Tfs.ConfigurationLauncher.exe");
+           
+            string path = Path.Combine(GetInstallationPath(), "MicroFocus.Adm.Octane.CiPlugins.Tfs.ConfigurationLauncher.exe");
 
             Process.Start(path);
+        }
+
+        /// <summary>
+        /// Available in install step only
+        /// </summary>
+        /// <returns></returns>
+        private string GetInstallationPath()
+        {
+            return this.Context.Parameters["targetdir"];
         }
 
         protected override void OnBeforeUninstall(IDictionary savedState)
