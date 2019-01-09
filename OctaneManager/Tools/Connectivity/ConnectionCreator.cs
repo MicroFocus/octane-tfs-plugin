@@ -82,7 +82,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
         public static TfsApis CreateTfsConnection(ConnectionDetails connectionDetails)
         {
             var tfsServerUriStr = connectionDetails.TfsLocation ?? GetTfsLocationFromHostName();
-            var tfsManager = TfsVersionEnum.Tfs2015.ToString().Equals(connectionDetails.TfsVersion) ?
+            var tfsManager = TfsVersionEnum.Tfs2015.Equals(RunModeManager.GetInstance().TfsVersion) ?
                 TfsApis.CreateForUserPasswordAuthentication(tfsServerUriStr, connectionDetails.TfsUser, connectionDetails.TfsPassword) :
                 TfsApis.CreateForPatAuthentication(tfsServerUriStr, connectionDetails.Pat);
 
