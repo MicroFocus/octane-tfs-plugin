@@ -16,138 +16,154 @@
 using Newtonsoft.Json;
 using System;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration.Credentials;
+using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 {
-	public class ConnectionDetails : ICloneable
-	{
-		public static string SENSITIVE_VALUE_REPLACER = "**********";
+    public class ConnectionDetails : ICloneable
+    {
+        public static string SENSITIVE_VALUE_REPLACER = "**********";
 
-		[JsonIgnore]
-		public string Host
-		{
-			get
-			{
-				Uri uri = new Uri(ALMOctaneUrl);
-				string host = $"{uri.Scheme}://{uri.Host}:{uri.Port}";
-				return host;
-			}
-		}
+        [JsonIgnore]
+        public string Host
+        {
+            get
+            {
+                Uri uri = new Uri(ALMOctaneUrl);
+                string host = $"{uri.Scheme}://{uri.Host}:{uri.Port}";
+                return host;
+            }
+        }
 
-		[JsonIgnore]
-		public int SharedSpace
-		{
-			get
-			{
-				try
-				{
-					var index = ALMOctaneUrl.IndexOf("=", StringComparison.Ordinal);
-					var sharedSpaceStr = ALMOctaneUrl.Substring(index + 1);
-					var endIndex = sharedSpaceStr.IndexOf("/", StringComparison.Ordinal);
-					if (endIndex > -1)
-					{
-						sharedSpaceStr = sharedSpaceStr.Substring(0, endIndex);
-					}
-					var res = int.Parse(sharedSpaceStr);
-					return res;
-				}
-				catch (Exception)
-				{
-					throw new Exception($"Sharedspace id is expected, but not received in {ALMOctaneUrl}");
-				}
-			}
-		}
-		public string ALMOctaneUrl { get; set; }
-		public string ClientId { get; set; }
+        public String TfsVersion { get; set; } = "";
 
-		public string ClientSecret
-		{
-			get;
-			set;
-		}
+        [JsonIgnore]
+        public int SharedSpace
+        {
+            get
+            {
+                try
+                {
+                    var index = ALMOctaneUrl.IndexOf("=", StringComparison.Ordinal);
+                    var sharedSpaceStr = ALMOctaneUrl.Substring(index + 1);
+                    var endIndex = sharedSpaceStr.IndexOf("/", StringComparison.Ordinal);
+                    if (endIndex > -1)
+                    {
+                        sharedSpaceStr = sharedSpaceStr.Substring(0, endIndex);
+                    }
+                    var res = int.Parse(sharedSpaceStr);
+                    return res;
+                }
+                catch (Exception)
+                {
+                    throw new Exception($"Sharedspace id is expected, but not received in {ALMOctaneUrl}");
+                }
+            }
+        }
+        public string ALMOctaneUrl { get; set; }
 
+        public string ClientId { get; set; }
+
+        public string ClientSecret
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// For tfs 2017
+        /// </summary>
 		public string Pat
-		{
-			get;
-			set;
-		}
+        {
+            get;
+            set;
+        }
 
-	    public string Password { get; set; } = "";
+        /// <summary>
+        /// For tfs 2015
+        /// </summary>
+        public string TfsUser { get; set; } = "";
 
-		public string TfsLocation { get; set; }
-		public ConnectionDetails()
-		{
+        /// <summary>
+        /// For tfs 2015
+        /// </summary>
+        public string TfsPassword { get; set; } = "";
 
-		}
+        public string TfsLocation { get; set; }
 
-		public ConnectionDetails(string octaneUrl, string clientId, string clientSecret, string tfsLocation, string instanceId)
-		{
-			ALMOctaneUrl = octaneUrl;
-			ClientId = clientId;
-			ClientSecret = clientSecret;
-			InstanceId = (instanceId == null ? Guid.NewGuid().ToString() : instanceId);
-			TfsLocation = tfsLocation;
-		}
+        public ConnectionDetails()
+        {
 
-		public string InstanceId { get; set; } = Guid.NewGuid().ToString();
+        }
+
+        public ConnectionDetails(string octaneUrl, string clientId, string clientSecret, string tfsLocation, string instanceId)
+        {
+            ALMOctaneUrl = octaneUrl;
+            ClientId = clientId;
+            ClientSecret = clientSecret;
+            InstanceId = (instanceId == null ? Guid.NewGuid().ToString() : instanceId);
+            TfsLocation = tfsLocation;
+        }
+
+        public string InstanceId { get; set; } = Guid.NewGuid().ToString();
 
 
 
-		public object Clone()
-		{
-			return this.MemberwiseClone();
-		}
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
 
-		public void Encrypt()
-		{
-			Pat = Encryption.Encrypt(Pat);            
+        public void Encrypt()
+        {
+            Pat = Encryption.Encrypt(Pat);
             ClientSecret = Encryption.Encrypt(ClientSecret);
-            if(!string.IsNullOrEmpty(Password))
-		        Password = Encryption.Encrypt(Password);
+            if (!string.IsNullOrEmpty(TfsPassword))
+                TfsPassword = Encryption.Encrypt(TfsPassword);
         }
 
 
-		public void Decrypt()
-		{
-			Pat = Encryption.Decrypt(Pat);            
+        public void Decrypt()
+        {
+            Pat = Encryption.Decrypt(Pat);
             ClientSecret = Encryption.Decrypt(ClientSecret);
-            if(!string.IsNullOrEmpty(Password))
-		        Password = Encryption.Decrypt(Password);
+            if (!string.IsNullOrEmpty(TfsPassword))
+                TfsPassword = Encryption.Decrypt(TfsPassword);
         }
 
-		public void ResetSensitiveInfoTo(ConnectionDetails other)
-		{
-			if (SENSITIVE_VALUE_REPLACER.Equals(other.Pat))
-			{
-				other.Pat = this.Pat;
-			}
+        public void ResetSensitiveInfoTo(ConnectionDetails other)
+        {
+            if (SENSITIVE_VALUE_REPLACER.Equals(other.Pat))
+            {
+                other.Pat = this.Pat;
+            }
 
-		    if (SENSITIVE_VALUE_REPLACER.Equals(other.Password))
-		    {
-		        other.Password= this.Password;
-		    }
+            if (SENSITIVE_VALUE_REPLACER.Equals(other.TfsPassword))
+            {
+                other.TfsPassword = this.TfsPassword;
+            }
 
 
             if (SENSITIVE_VALUE_REPLACER.Equals(other.ClientSecret))
-			{
-				other.ClientSecret = this.ClientSecret;
-			}
-		}
+            {
+                other.ClientSecret = this.ClientSecret;
+            }
+        }
 
-		public ConnectionDetails GetInstanceWithoutSensitiveInfo()
-		{
-			var clone = Clone() as ConnectionDetails;
-			clone.ClientSecret = SENSITIVE_VALUE_REPLACER;
-			clone.Pat = SENSITIVE_VALUE_REPLACER;
-		    clone.Password = SENSITIVE_VALUE_REPLACER;
-			return clone;
-		}
+        public ConnectionDetails GetInstanceWithoutSensitiveInfo()
+        {
+            var clone = Clone() as ConnectionDetails;
+            clone.ClientSecret = SENSITIVE_VALUE_REPLACER;
+            clone.Pat = SENSITIVE_VALUE_REPLACER;
+            clone.TfsPassword = SENSITIVE_VALUE_REPLACER;
+            return clone;
+        }
 
-		public ConnectionDetails GetSecuredInstance()
-		{
-			var clone = Clone() as ConnectionDetails;
-			clone.Encrypt();
-			return clone;
-		}
-	}
+        public ConnectionDetails GetSecuredInstance()
+        {
+            var clone = Clone() as ConnectionDetails;
+            clone.Encrypt();
+            return clone;
+        }
+    }
 }

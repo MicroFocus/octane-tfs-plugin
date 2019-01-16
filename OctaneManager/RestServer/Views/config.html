@@ -74,6 +74,10 @@ table .itemCaption{
 	display :none;
 }
 
+.controlHidden{
+	display :none;
+}
+
 .helpVisible{
 	display :block;
 	border: solid #bbb 1px;
@@ -104,16 +108,28 @@ table .itemCaption{
 	<table>
 		<tr><td class="itemCaption">ALM Octane Location</td><td><div><input type="text" name="octaneLocation"></div></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#octaneLocationHelp')"/></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="octaneLocationHelp">The HTTP address of the ALM Octane application. You can copy the URL from the address bar of the browser in which you opened ALM Octane.</div></td><td></td></tr>
+		
 		<tr><td class="itemCaption">ALM Octane Client ID</td><td><input type="text" name="octaneClientId"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#octaneClientIdHelp')"></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="octaneClientIdHelp">A Client ID for API access to ALM Octane. Obtain a Client ID and Client secret from the ALM Octane shared space admin.</div></td><td></td></tr>
+		
 		<tr><td class="itemCaption">ALM Octane Client Secret</td><td><input type="password" name="octaneClientSecret"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#octaneClientSecretHelp')"></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="octaneClientSecretHelp">The Client secret that matches your API access Client ID.</div></td><td></td></tr>
+		
 		<tr><td class="itemCaption">TFS Location</td><td><input type="text" name="tfsLocation"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsLocationHelp')"></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="tfsLocationHelp">The HTTP address of the TFS, such as http://yourhost:8080/tfs/. <br />This address is used for: <ul><li>The plugin to collect information from the build server.</li><li>Links from ALM Octane to the build server.</li></ul></div></td><td></td></tr>
-		<tr><td class="itemCaption">TFS PAT (Personal Acess Token)</td><td><input type="password" name="tfsPat"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsPatHelp')"></td></tr>
-		<tr><td></td><td><div class="helpHidden" id="tfsPatHelp">Personal Acess Token to TFS. PAT  minimal permission set should contain :<ul><li>Build (read and execute)</li><li>Code (read)</li><li>Project and team (read)</li><li>Test management (read)</li></ul></div></td><td></td></tr>
+		
+		<tr class="Tfs2017"><td class="itemCaption">TFS PAT (Personal Acess Token)</td><td><input type="password" name="tfsPat"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsPatHelp')"></td></tr>
+		<tr class="Tfs2017"><td></td><td><div class="helpHidden" id="tfsPatHelp">Personal Acess Token to TFS. PAT  minimal permission set should contain :<ul><li>Build (read and execute)</li><li>Code (read)</li><li>Project and team (read)</li><li>Test management (read)</li></ul></div></td><td></td></tr>
+		
+		<tr class="Tfs2015"><td class="itemCaption">TFS user</td><td><input type="text" name="tfsUser"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsUserHelp')"></td></tr>
+		<tr class="Tfs2015"><td></td><td><div class="helpHidden" id="tfsUserHelp">User name for API access to TFS. User minimal permission set should contain :<ul><li>Build (read and execute)</li><li>Code (read)</li><li>Project and team (read)</li><li>Test management (read)</li></ul></div></td><td></td></tr>
+		
+		<tr class="Tfs2015"><td class="itemCaption">TFS password</td><td><input type="password" name="tfsPassword"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsPasswordHelp')"></td></tr>
+		<tr class="Tfs2015"><td></td><td><div class="helpHidden" id="tfsPasswordHelp">The password that matches your TFS user name</div></td><td></td></tr>
+		
 		<tr><td class="itemCaption">Instance ID</td><td><input type="text" name="instanceId"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#instanceIdHelp')"></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="instanceIdHelp">An ID to uniquely identify this instance of the plugin.</div></td><td></td></tr>
+		
 		<tr><td></td><td><div><p id="resultMessage"></p><button id="testConnection" type="button">Test Connection</button></div></td><td></td></tr>
 		<tr><td></td><td><div><button id="saveButton" type="button">Save</button></div></td><td></td></tr>
 	</table>
@@ -125,15 +141,26 @@ table .itemCaption{
 
 <script>
 $(document).ready(function(){
+	//replaced by rest service
 	//{defaultConf}
 
+	var tfsVersion = 'Tfs2017';
 	if(defaultConf){
 		$("input[name='octaneLocation']").val(defaultConf.ALMOctaneUrl);
 		$("input[name='octaneClientId']").val(defaultConf.ClientId);
 		$("input[name='octaneClientSecret']").val(defaultConf.ClientSecret);
 		$("input[name='tfsLocation']").val(defaultConf.TfsLocation);
 		$("input[name='tfsPat']").val(defaultConf.Pat);
+		$("input[name='tfsUser']").val(defaultConf.TfsUser);
+		$("input[name='tfsPassword']").val(defaultConf.TfsPassword);
 		$("input[name='instanceId']").val(defaultConf.InstanceId);
+		tfsVersion = defaultConf.TfsVersion;
+	}
+
+	if(tfsVersion === 'Tfs2015'){
+		$(".Tfs2017").addClass("controlHidden");
+	}else{//2017
+		$(".Tfs2015").addClass("controlHidden");
 	}
 
 	registerForButtonClick("#testConnection","/config/test","Validating...","Configuration validated successfully");
@@ -150,6 +177,8 @@ $(document).ready(function(){
 				"ClientSecret": $("input[name='octaneClientSecret']").val(),
 				"TfsLocation": $("input[name='tfsLocation']").val(),
 				"Pat": $("input[name='tfsPat']").val(),
+				"TfsUser": $("input[name='tfsUser']").val(),
+				"TfsPassword": $("input[name='tfsPassword']").val(),
 				"InstanceId": $("input[name='instanceId']").val()
 			};
 			var confJson = JSON.stringify(confObj);

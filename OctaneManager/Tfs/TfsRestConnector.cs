@@ -94,11 +94,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 			HttpStatusCode statusCode = 0;
 			var content = "";
 			try
-			{			    
+			{
                 //encode your personal access token                   
-			    var credentials =
-			        !string.IsNullOrEmpty(_tfsConfiguration.Password) ?
-			            $"{_tfsConfiguration.Pat}:{_tfsConfiguration.Password}": $":{_tfsConfiguration.Pat}";
+                var credentials = $"{_tfsConfiguration.User}:{_tfsConfiguration.Password}";
 			    credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
 
                 //use the httpclient

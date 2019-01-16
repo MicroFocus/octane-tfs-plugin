@@ -29,6 +29,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
     public partial class OctaneTfsPluginInstaller : System.Configuration.Install.Installer
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly string SERVICE_NAME = "TFSJobAgent";
 
         public OctaneTfsPluginInstaller()
         {
@@ -36,23 +37,23 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             LogUtils.ConfigureLog4NetForSetup();
         }
 
-
         protected override void OnAfterInstall(IDictionary savedState)
         {
             Log.Warn("OnAfterInstall");
+            Log.Warn("targetdir=" + GetInstallationPath());
 
             base.OnAfterInstall(savedState);
 
-            DoNamespaceReservation();
-
-            StartConfigurator();
+            DoUrlReservation();
 
             StartTfsJobAgentService();
+
+            StartConfigurator();
         }
 
-        private static void DoNamespaceReservation()
+        private static void DoUrlReservation()
         {
-            Log.Warn("Starting NamespaceReservation");
+            Log.Warn("Starting UrlReservation");
             Task taskA = new Task(() => UrlReservation.DoUrlReservation());
             taskA.Start();
         }
@@ -60,7 +61,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         private static void StartTfsJobAgentService()
         {
             Log.Warn("Starting TFSJobAgent service...");
-            var sc = new ServiceController("TFSJobAgent");
+            var sc = new ServiceController(SERVICE_NAME);
             sc.Start();
             sc.WaitForStatus(ServiceControllerStatus.Running);
         }
@@ -68,7 +69,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         private static void StopTfsJobAgentService()
         {
             Log.Warn("Stopping TFSJobAgent service...");
-            var sc = new ServiceController("TFSJobAgent");
+            var sc = new ServiceController(SERVICE_NAME);
             if (sc.Status == ServiceControllerStatus.Running)
             {
                 sc.Stop();
@@ -80,12 +81,20 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         {
             Log.Warn("StartConfigurator");
 
-            var instpath = this.Context.Parameters["targetdir"];
+           
+            string path = Path.Combine(GetInstallationPath(), "MicroFocus.Adm.Octane.CiPlugins.Tfs.ConfigurationLauncher.exe");
 
-            string path = Path.Combine(instpath, "ALMOctaneTFSPluginConfiguratorUI.exe");
             Process.Start(path);
         }
 
+        /// <summary>
+        /// Available in install step only
+        /// </summary>
+        /// <returns></returns>
+        private string GetInstallationPath()
+        {
+            return this.Context.Parameters["targetdir"];
+        }
 
         protected override void OnBeforeUninstall(IDictionary savedState)
         {
@@ -94,7 +103,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             base.OnBeforeUninstall(savedState);
 
             StopTfsJobAgentService();
-
         }
 
         protected override void OnAfterUninstall(IDictionary savedState)
@@ -114,7 +122,5 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
             StopTfsJobAgentService();
         }
-
-
     }
 }

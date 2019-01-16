@@ -74,6 +74,7 @@ table{
 	<table>
 		<tr><td class="itemHeader">Plugin status :</td><td class="itemValue"><div id="pluginStatus">Loading ...</div></td></tr>
 		<tr><td class="itemHeader">Plugin version :</td><td class="itemValue"><div id="pluginVersion">Loading ...</div></td></tr>
+		<tr><td class="itemHeader">TFS version :</td><td class="itemValue"><div id="tfsVersion">Loading ...</div></td></tr>
 	</table>
 	<h2>Queues</h2>
 		<table>
@@ -101,6 +102,7 @@ function refresh(){
 
 		$('#pluginStatus').text(data['pluginStatus']);
 		$('#pluginVersion').text(data['pluginVersion']);
+		$('#tfsVersion').text(data['tfsVersion']);
 		$('#generalEventsQueue').text(data['generalEventsQueue']);
 		$('#scmEventsQueue').text(data['scmEventsQueue']); 
 		$('#testResultsQueue').text(data['testResultsQueue']);
