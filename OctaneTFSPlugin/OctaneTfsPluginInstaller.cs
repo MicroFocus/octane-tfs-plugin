@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
@@ -35,6 +36,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         {
             InitializeComponent();
             LogUtils.ConfigureLog4NetForSetup();
+            Thread.Sleep(1000);
         }
 
         protected override void OnAfterInstall(IDictionary savedState)
@@ -64,6 +66,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             var sc = new ServiceController(SERVICE_NAME);
             sc.Start();
             sc.WaitForStatus(ServiceControllerStatus.Running);
+            Log.Warn("TFSJobAgent service is Running");
         }
 
         private static void StopTfsJobAgentService()
@@ -75,6 +78,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
                 sc.Stop();
                 sc.WaitForStatus(ServiceControllerStatus.Stopped);
             }
+            Log.Warn("TFSJobAgent service is Stopped");
         }
 
         private void StartConfigurator()
