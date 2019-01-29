@@ -64,8 +64,9 @@
     <Reference Include="Nancy.Hosting.Self, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nancy.Hosting.Self.1.4.1\lib\net40\Nancy.Hosting.Self.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\tfs-server-dlls\current\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -120,7 +121,6 @@
     <Compile Include="Dto\Events\CiBuildResult.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="RestServer\NancyGzipCompression.cs" />
-    <Compile Include="Tools\Connectivity\ProviderNotFoundException.cs" />
     <Compile Include="Tools\Helpers.cs" />
     <Compile Include="Tools\ExceptionHelper.cs" />
     <Compile Include="Tools\JsonHelper.cs" />

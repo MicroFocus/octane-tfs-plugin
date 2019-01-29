@@ -35,7 +35,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
             }
         }
 
-        public String TfsVersion { get; set; } = "";
+        public String TfsVersion
+        {
+            get
+            {
+                return RunModeManager.GetInstance().TfsVersion.ToString();
+            }
+        }
 
         [JsonIgnore]
         public int SharedSpace
