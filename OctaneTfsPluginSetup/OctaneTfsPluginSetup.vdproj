@@ -1053,7 +1053,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_D587EEF6C8DA40FAB2A2046FE1FDE9A3"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder]\\Microsoft Team Foundation Server 14.0\\Application Tier\\TFSJobAgent\\Plugins"
+            "DefaultLocation" = "8:[ProgramFiles64Folder]\\Microsoft Team Foundation Server 15.0\\Application Tier\\TFSJobAgent\\Plugins"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -1078,7 +1078,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:TFS 2015 Plugin for ALM Octane v1.3"
+        "ProductName" = "8:TFS 2017 Plugin for ALM Octane v1.3"
         "ProductCode" = "8:{14DB212B-E54E-4997-8E35-25ABCE5B3AFA}"
         "PackageCode" = "8:{977018B1-094A-4B85-BABC-707CBB88770C}"
         "UpgradeCode" = "8:{69EC5CA3-1DE8-4F5B-A38D-03C90DAA3829}"

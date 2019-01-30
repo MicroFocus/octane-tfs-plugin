@@ -29,6 +29,6 @@ powershell -file replaceInFile.ps1 %tfsVersionFile% %tfsVersionRegexToFind% %tfs
 ECHO update tfs version to %tfsVersionReplacement% 
 
 REM build setup files
-ECHO "%DEVENV_LOCATION%" .\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj /build Package2017
+"%DEVENV_LOCATION%" .\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj /build Package2017
 
 ECHO ***********************DONE*******************************

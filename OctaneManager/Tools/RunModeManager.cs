@@ -38,7 +38,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
         public PluginRunMode RunMode { get; set; } = PluginRunMode.ServerPlugin;
 
-        public TfsVersionEnum TfsVersion => TfsVersionEnum.Tfs2015;
+        public TfsVersionEnum TfsVersion => TfsVersionEnum.Tfs2017;
 
         public bool RestrictConfigurationAccessFromLocalhost => true;
     }
