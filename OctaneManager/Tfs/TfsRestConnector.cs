@@ -28,159 +28,163 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
-	public class TfsRestConnector
-	{
-		private static readonly ILog Log = LogManager.GetLogger(LogUtils.TFS_REST_CALLS_LOGGER);
+    public class TfsRestConnector
+    {
+        private static readonly ILog Log = LogManager.GetLogger(LogUtils.TFS_REST_CALLS_LOGGER);
 
-		private readonly TfsConfiguration _tfsConfiguration;
+        private readonly TfsConfiguration _tfsConfiguration;
 
-		public TfsRestConnector(TfsConfiguration tfsConfiguration)
-		{
-			_tfsConfiguration = tfsConfiguration;
-		}
+        public TfsRestConnector(TfsConfiguration tfsConfiguration)
+        {
+            _tfsConfiguration = tfsConfiguration;
+        }
 
-		public T SendPost<T>(string urlSuffix, string data)
-		{
-			return Send<T>(HttpMethodEnum.POST, urlSuffix, data, null);
-		}
+        public T SendPost<T>(string urlSuffix, string data)
+        {
+            return Send<T>(HttpMethodEnum.POST, urlSuffix, data, null);
+        }
 
-		public T SendGet<T>(string urlSuffix)
-		{
-			return SendGet<T>(urlSuffix, null);
-		}
+        public T SendGet<T>(string urlSuffix)
+        {
+            return SendGet<T>(urlSuffix, null);
+        }
 
-		public T SendGet<T>(string urlSuffix, string resultLoggerName)
-		{
-			return Send<T>(HttpMethodEnum.GET, urlSuffix, null, resultLoggerName);
-		}
+        public T SendGet<T>(string urlSuffix, string resultLoggerName)
+        {
+            return Send<T>(HttpMethodEnum.GET, urlSuffix, null, resultLoggerName);
+        }
 
-		public List<T> GetCollection<T>(string uriSuffix)
-		{
-			var collections = SendGet<TfsBaseCollection<T>>(uriSuffix, null);
-			return collections.Items;
-		}
+        public List<T> GetCollection<T>(string uriSuffix)
+        {
+            var collections = SendGet<TfsBaseCollection<T>>(uriSuffix, null);
+            return collections.Items;
+        }
 
-		public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize, int maxPages, string resultLoggerName)
-		{
-			var top = pageSize;
-			var skip = 0;
-			var completed = false;
-			List<T> finalResults = null;
-			var joiner = uriSuffix.Contains("?") ? "&" : "?";
-			var pages = 0;
-			while (!completed && pages < maxPages)
-			{
-				var uriSuffixWithPage = ($"{uriSuffix}{joiner}$skip={skip}&$top={top}");
-				var results = SendGet<TfsBaseCollection<T>>(uriSuffixWithPage, resultLoggerName);
-				skip += top;
+        public List<T> GetPagedCollection<T>(string uriSuffix, int pageSize, int maxPages, string resultLoggerName)
+        {
+            var top = pageSize;
+            var skip = 0;
+            var completed = false;
+            List<T> finalResults = null;
+            var joiner = uriSuffix.Contains("?") ? "&" : "?";
+            var pages = 0;
+            while (!completed && pages < maxPages)
+            {
+                var uriSuffixWithPage = ($"{uriSuffix}{joiner}$skip={skip}&$top={top}");
+                var results = SendGet<TfsBaseCollection<T>>(uriSuffixWithPage, resultLoggerName);
+                skip += top;
 
-				if (finalResults == null)
-				{
-					finalResults = results.Items;
-				}
-				else
-				{
-					finalResults.AddRange(results.Items);
-				}
-				pages++;
-				completed = results.Count < top;
-			}
-			return finalResults;
-		}
+                if (finalResults == null)
+                {
+                    finalResults = results.Items;
+                }
+                else
+                {
+                    finalResults.AddRange(results.Items);
+                }
+                pages++;
+                completed = results.Count < top;
+            }
+            return finalResults;
+        }
 
-		public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data, string resultLoggerName)
-		{
-			var start = DateTime.Now;
-			HttpStatusCode statusCode = 0;
-			var content = "";
-			try
-			{
-                //encode your personal access token                   
-                var credentials = $"{_tfsConfiguration.User}:{_tfsConfiguration.Password}";
-			    credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
+        public T Send<T>(HttpMethodEnum httpType, string urlSuffix, string data, string resultLoggerName)
+        {
+            var start = DateTime.Now;
+            HttpStatusCode statusCode = 0;
+            var responseContent = "";
+            try
+            {
+                //2017 use basic authentication, while 2015 use networkCredentials               
+                var basicAuthentication = $"{_tfsConfiguration.User}:{_tfsConfiguration.Password}";
+                basicAuthentication = Convert.ToBase64String(Encoding.ASCII.GetBytes(basicAuthentication));
+
+                var networkCredentials = new NetworkCredential(_tfsConfiguration.User, _tfsConfiguration.Password);
+                var clientHandler = new HttpClientHandler { Credentials = networkCredentials };
 
                 //use the httpclient
-                using (var client = new HttpClient())
-				{
-					client.BaseAddress = _tfsConfiguration.Uri;
-					client.DefaultRequestHeaders.Accept.Clear();
-					client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
-                    
-					HttpResponseMessage response = null;
+                using (var client = new HttpClient(clientHandler))
+                {
+                    client.BaseAddress = _tfsConfiguration.Uri;
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicAuthentication);
 
-					switch (httpType)
-					{
-						case HttpMethodEnum.GET:
-							response = client.GetAsync(urlSuffix, HttpCompletionOption.ResponseContentRead).Result;
-							break;
-						case HttpMethodEnum.POST:
-							var requestContent = new StringContent(data, Encoding.UTF8, "application/json");
-							response = client.PostAsync(urlSuffix, requestContent).Result;
-							break;
-					    case HttpMethodEnum.PUT:
-					        break;
-					    case HttpMethodEnum.DELETE:
-					        break;
-					    default:
-							Log.Warn("Not supported http type");
-                            break;					        
-					}
-
-
-
-					//check to see if we have a succesfull respond
-				    if (response != null)
-				    {
-				        statusCode = response.StatusCode;
-				        content = response.Content.ReadAsStringAsync().Result;
-                        if (response.IsSuccessStatusCode)
-				        {
-				            var result = JsonHelper.DeserializeObject<T>(content);
-				            return result;
-				        }
-				        else
-				            switch (response.StatusCode)
-				            {
-				                case HttpStatusCode.Unauthorized:
-				                    string errorMsg;
-				                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-				                    if (Helpers.GetInstalledTfsVersion()==TfsVersion.Tfs2015)
-				                        errorMsg =
-				                            "TFS Specified username/password are not valid or do not have required permissions to access TFS server";
-				                    else
-				                        errorMsg = "TFS PAT is not valid or does not have required permissions.";
-				                    throw new UnauthorizedAccessException(errorMsg);
-
-				                case HttpStatusCode.NotFound:
-				                    throw new HttpException(404,
-				                        $"Url is not found : {_tfsConfiguration.Uri.ToString()}{urlSuffix}");
-				                default:
-				                    var msg = $"Failed to set {httpType} {urlSuffix} : {content})";
-				                    Log.Error(msg);
-				                    throw new Exception(msg);
-				            }
-				    }
-				    else
-				    {
-				        var msg = $"Response object was null! {httpType} {urlSuffix} : {content})";
-				        Log.Error(msg);
-				        throw new Exception(msg);
+                    HttpResponseMessage response = null;
+                    switch (httpType)
+                    {
+                        case HttpMethodEnum.GET:
+                            response = client.GetAsync(urlSuffix, HttpCompletionOption.ResponseContentRead).Result;
+                            break;
+                        case HttpMethodEnum.POST:
+                            var requestContent = new StringContent(data, Encoding.UTF8, "application/json");
+                            response = client.PostAsync(urlSuffix, requestContent).Result;
+                            break;
+                        case HttpMethodEnum.PUT:
+                            break;
+                        case HttpMethodEnum.DELETE:
+                            break;
+                        default:
+                            Log.Warn("Not supported http type");
+                            break;
                     }
-				}
-			}
-			finally
-			{
-			    var end = DateTime.Now;
-			    var timeMsStr = $"{(long) (end - start).TotalMilliseconds,7} ms";
-			    var responseSize = $"{content.Length,7} B";
-			    Log.Info($"{(int)statusCode} | {timeMsStr} | {responseSize} |  {httpType}:{urlSuffix}");
 
-			    if (resultLoggerName != null)
-			    {
-			        LogManager.GetLogger(resultLoggerName).Debug($"{(int)statusCode} | {timeMsStr} | {responseSize} | {httpType}:{urlSuffix} | {content}");
-			    }
-			}
+                    //check to see if we have a succesfull respond
+                    if (response != null)
+                    {
+                        statusCode = response.StatusCode;
+                        responseContent = response.Content.ReadAsStringAsync().Result;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = JsonHelper.DeserializeObject<T>(responseContent);
+                            return result;
+                        }
+                        else
+                            switch (response.StatusCode)
+                            {
+                                case HttpStatusCode.Unauthorized:
+                                    string errorMsg = TfsVersionEnum.Tfs2015.Equals(RunModeManager.GetInstance().TfsVersion) ?
+                                        "TFS username/password are not valid or does not have required permissions." :
+                                        "TFS PAT is not valid or does not have required permissions.";
+
+                                    Log.Error($"Unauthorized status on getting requesting resource : {urlSuffix}");
+                                    throw new UnauthorizedAccessException(errorMsg);
+
+                                case HttpStatusCode.Forbidden:
+                                    string errorMsg2 = TfsVersionEnum.Tfs2015.Equals(RunModeManager.GetInstance().TfsVersion) ?
+                                         "TFS user  does not have required permissions." :
+                                           "TFS PAT does not have required permissions.";
+
+                                    Log.Error($"Forbidden status on requesting tfs resource : {urlSuffix}. Responce {responseContent}");
+                                    throw new UnauthorizedAccessException(errorMsg2);
+                                case HttpStatusCode.NotFound:
+                                    throw new HttpException(404, $"Url is not found : {_tfsConfiguration.Uri.ToString()}{urlSuffix}");
+                                default:
+                                    var msg = $"Failed to set {httpType} {urlSuffix} : {responseContent})";
+                                    Log.Error(msg);
+                                    throw new Exception(msg);
+                            }
+                    }
+                    else
+                    {
+                        var msg = $"Response object was null! {httpType} {urlSuffix} : {responseContent})";
+                        Log.Error(msg);
+                        throw new Exception(msg);
+                    }
+                }
+            }
+            finally
+            {
+                var end = DateTime.Now;
+                var timeMsStr = $"{(long)(end - start).TotalMilliseconds,7} ms";
+                var responseSize = $"{responseContent.Length,7} B";
+                Log.Info($"{(int)statusCode} | {timeMsStr} | {responseSize} |  {httpType}:{urlSuffix}");
+
+                if (resultLoggerName != null)
+                {
+                    LogManager.GetLogger(resultLoggerName).Debug($"{(int)statusCode} | {timeMsStr} | {responseSize} | {httpType}:{urlSuffix} | {responseContent}");
+                }
+            }
         }
-	}
+    }
 }

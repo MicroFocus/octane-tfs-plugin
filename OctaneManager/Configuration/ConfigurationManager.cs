@@ -68,9 +68,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 			var res = JsonHelper.DeserializeObject<ConnectionDetails>(configJson);
 			res.Decrypt();
 
-            res.TfsVersion = RunModeManager.GetInstance().TfsVersion.ToString();
-
-
             if (printLogs)
 			{
 				Log.Info($"Loaded configuration : {JsonHelper.SerializeObject(res.GetInstanceWithoutSensitiveInfo(), true)}");
@@ -123,8 +120,15 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 		 */
 		public static void ResetSensitiveInfo(ConnectionDetails connDetails)
 		{
-			ConnectionDetails connFromFs = Read(false);
-			connFromFs.ResetSensitiveInfoTo(connDetails);
+            try
+            {
+                ConnectionDetails connFromFs = Read(false);
+                connFromFs.ResetSensitiveInfoTo(connDetails);
+            }
+            catch(FileNotFoundException)
+            {
+                //do nothing, configuration file still not exist
+            }
 		}
 
 		private static void ConfigurationFileChanged(object sender, FileSystemEventArgs e)

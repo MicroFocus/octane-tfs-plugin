@@ -54,18 +54,22 @@
     <Reference Include="Microsoft.TeamFoundation.Build.Server">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build2.WebApi">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Framework.Server">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
