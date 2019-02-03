@@ -47,7 +47,7 @@ namespace ConfigurationLauncher
                     Log.Warn("Configuration page response status " + response.StatusCode);
                     configurationUp = response.StatusCode == HttpStatusCode.OK;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //Log.Warn("Ping failed " + e.Message);
                 }

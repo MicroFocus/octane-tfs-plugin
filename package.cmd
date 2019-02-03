@@ -1,7 +1,6 @@
 @echo off 
 regsvr32 /s ole32.dll
 
-mkdir .\tfs-server-dlls\current
 SET installerProjectFile=.\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj
 SET tfsVersionFile=.\OctaneManager\Tools\RunModeManager.cs
 SET installPathRegexToFind="\"DefaultLocation\" = \"8:.*\""

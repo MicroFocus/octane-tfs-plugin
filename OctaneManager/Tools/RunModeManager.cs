@@ -24,7 +24,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
     public enum TfsVersionEnum
     {
         Tfs2015,
-        Tfs2017
+        Tfs2017,
+        Tfs2018
     }
 
     public class RunModeManager
