@@ -160,10 +160,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
                 }
                 else
                 {
+                    string prefix = "Configuration is read-only. To modify configuration, access http://localhost:4567/config on the TFS machine.";
                     string config = JsonHelper.SerializeObject(ConfigurationManager.Read(false).GetInstanceWithoutSensitiveInfo(), true);
-                    return new TextResponse(config);
-                }
 
+                    return new TextResponse(prefix + Environment.NewLine + config);
+                }
             };
 
             Get["/resources/{resourceName}"] = parameters =>
