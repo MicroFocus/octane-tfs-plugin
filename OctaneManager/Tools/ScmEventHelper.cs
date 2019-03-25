@@ -34,15 +34,15 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			try
 			{
 				ScmData scmData = null;
-				var originalChanges = tfsManager.GetBuildChanges(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
+				var originalChanges = tfsManager.GetBuildChanges(buildInfo.ProjectId, buildInfo.BuildId);
 				if (originalChanges.Count > 0)
 				{
-					var build = tfsManager.GetBuild(buildInfo.CollectionName, buildInfo.Project, buildInfo.BuildId);
+					var build = tfsManager.GetBuild(buildInfo.ProjectId, buildInfo.BuildId);
 					ICollection<TfsScmChange> filteredChanges = GetFilteredBuildChanges(tfsManager, buildInfo, build, originalChanges);
 					if (filteredChanges.Count > 0)
 					{
 						scmData = new ScmData();
-						var repository = tfsManager.GetRepositoryById(buildInfo.CollectionName, build.Repository.Id);
+						var repository = tfsManager.GetRepositoryById(buildInfo.ProjectId, build.Repository.Id);
 						scmData.Repository = new ScmRepository();
 						scmData.Repository.Branch = build.SourceBranch;
 						scmData.Repository.Type = build.Repository.Type;
@@ -128,7 +128,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			}
 
 			//find previous failed build
-			IList<TfsBuild> previousBuilds = tfsManager.GetPreviousFailedBuilds(buildInfo.CollectionName, buildInfo.Project, build.StartTime);
+			IList<TfsBuild> previousBuilds = tfsManager.GetPreviousFailedBuilds(buildInfo.ProjectId, build.StartTime);
 			TfsBuild foundPreviousFailedBuild = null;
 			foreach (TfsBuild previousBuild in previousBuilds)
 			{
@@ -143,7 +143,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			if (foundPreviousFailedBuild != null)
 			{
 				//remove changes from previous build
-				var previousChanges = tfsManager.GetBuildChanges(buildInfo.CollectionName, buildInfo.Project, foundPreviousFailedBuild.Id.ToString());
+				var previousChanges = tfsManager.GetBuildChanges(buildInfo.ProjectId, foundPreviousFailedBuild.Id.ToString());
 				foreach (TfsScmChange previousChange in previousChanges)
 				{
 					changesMap.Remove(previousChange.Id);

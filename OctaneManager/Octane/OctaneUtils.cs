@@ -20,31 +20,31 @@ using System.Text;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 {
-	public static class OctaneUtils
-	{
-		public static long ConvertToOctaneTime(DateTime data)
-		{
-			var span = data.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, data.Kind));
-			return (long)span.TotalMilliseconds;
-		}
+    public static class OctaneUtils
+    {
+        public static long ConvertToOctaneTime(DateTime data)
+        {
+            var span = data.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, data.Kind));
+            return (long)span.TotalMilliseconds;
+        }
 
-		public static string GenerateOctaneJobCiId(string collectionName, string projectId, string buildDefId)
-		{
-			var id = $"{collectionName.Replace(" ", "-")}.{projectId}.{buildDefId}".ToLower();
-			return id;
-		}
+        public static string GenerateOctaneJobCiId(string collectionName, string projectId, string buildDefId)
+        {
+            var id = $"{collectionName.Replace(" ", "-")}.{projectId}.{buildDefId}".ToLower();
+            return id;
+        }
 
-		public static TfsCiEntity TranslateOctaneJobCiIdToObject(string id)
-		{
-			var parts = id.Split('.');
-			var tfsCiEntity = new TfsCiEntity(parts[0], parts[1], parts[2]);
+        public static TfsCiEntity TranslateOctaneJobCiIdToObject(string id)
+        {
+            var parts = id.Split('.');
+            var tfsCiEntity = new TfsCiEntity(parts[0], parts[1], parts[2]);
 
-			return tfsCiEntity;
-		}
-	}
+            return tfsCiEntity;
+        }
+    }
 
-	public class Utf8StringWriter : StringWriter
-	{
-		public override Encoding Encoding => Encoding.UTF8;
-	}
+    public class Utf8StringWriter : StringWriter
+    {
+        public override Encoding Encoding => Encoding.UTF8;
+    }
 }

@@ -187,7 +187,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 				case TaskType.ExecutePipelineRunRequest:
 					var joinedProjectName = taskUrl.Segments[taskUrl.Segments.Length - 2].Trim('/');
 					var buildParts = joinedProjectName.Split('.');
-					QueueNewBuild(taskResult, buildParts[0], buildParts[1], buildParts[2]);
+					QueueNewBuild(taskResult, buildParts[1], buildParts[2]);
 					break;
 				case TaskType.Undefined:
 					Log.Debug($"Undefined task : {taskUrl}");
@@ -200,11 +200,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Debug($"Task {taskType} executed in {(long)((end - start).TotalMilliseconds)} ms");
 		}
 
-		private void QueueNewBuild(OctaneTaskResult taskResult, string collectionName, string projectId, string buildDefinitionId)
+		private void QueueNewBuild(OctaneTaskResult taskResult, string projectId, string buildDefinitionId)
 		{
 			try
 			{
-				_tfsApis.QueueNewBuild(collectionName, projectId, buildDefinitionId);
+				_tfsApis.QueueNewBuild(projectId, buildDefinitionId);
 				taskResult.Body = "Job started";
 			}
 			catch (Exception e)

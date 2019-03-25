@@ -25,7 +25,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General
 
         public TfsCiEntity(string collectionName, string projectId, string buildDefId)
         {
-            CollectionName = collectionName;
             ProjectId = projectId;
             BuildDefId = buildDefId;
         }

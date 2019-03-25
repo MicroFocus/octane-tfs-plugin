@@ -22,7 +22,6 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.ApiItems;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1.SCM;
-using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -33,6 +32,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
     public class TfsApis
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static Dictionary<String, String> projectId2CollectionName = new Dictionary<string, string>();
 
         private CiJobList _cachedJobList = new CiJobList();
 
@@ -68,6 +68,38 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
             }
         }
 
+        private void RefreshProject2CollectionNameCache()
+        {
+            try
+            {
+                int counter = 0;
+                var collections = GetProjectCollections();
+
+                foreach (var collection in collections)
+                {
+                    foreach (var project in GetProjects(collection.Name))
+                    {
+                        projectId2CollectionName[project.Id] = collection.Name.ToLower();
+                        counter++;
+                    }
+                }
+                Log.Info($"RefreshProject2CollectionNameCache : Updated {counter} projects.");
+            }
+            catch (Exception e)
+            {
+                Log.Error($"RefreshProject2CollectionNameCache : Failed to update : {e.Message}");
+            }
+        }
+
+        public String GetCollectionNameByProjectId(String projectId)
+        {
+            if (!projectId2CollectionName.ContainsKey(projectId))
+            {
+                RefreshProject2CollectionNameCache();
+            }
+            return projectId2CollectionName[projectId];
+        }
+
         public IDtoBase GetJobsList()
         {
             var result = new CiJobList();
@@ -82,7 +114,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
                     var buildDefinitions = GetBuildDefinitions(collection.Name, project.Id);
                     foreach (var buildDefinition in buildDefinitions)
                     {
-                        var id = OctaneUtils.GenerateOctaneJobCiId(collection.Name, project.Id, buildDefinition.Id);
+                        var id = OctaneUtils.GenerateOctaneJobCiId(collection.Name.ToLower(), project.Id, buildDefinition.Id);
                         result.Jobs.Add(new PipelineNode(id, buildDefinition.Name));
                     }
                 }
@@ -101,30 +133,23 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
                 res = _cachedJobList[jobId];
             }
 
-            if (RunModeManager.GetInstance().RunMode == PluginRunMode.ConsoleApp)
-            {
-                var tfsCiEntity = OctaneUtils.TranslateOctaneJobCiIdToObject(jobId);
-                if (!_subscriptionManager.SubscriptionExists(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId))
-                {
-                    _subscriptionManager.AddSubscription(tfsCiEntity.CollectionName, tfsCiEntity.ProjectId);
-                }
-            }
-
             return res;
         }
 
-        public TfsBuild QueueNewBuild(string collectionName, string projectId, string buildDefinitionId)
+        public TfsBuild QueueNewBuild(string projectId, string buildDefinitionId)
         {
             //https://www.visualstudio.com/en-us/docs/integrate/api/build/builds#queueabuild
+            string collectionName = GetCollectionNameByProjectId(projectId);
             var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/?api-version=2.0");
             var body = $"{{\"definition\": {{ \"id\": {buildDefinitionId}}}}}";
             var build = _tfsRestConnector.SendPost<TfsBuild>(uriSuffix, body);
             return build;
         }
 
-        public List<TfsScmChange> GetBuildChanges(string collectionName, string projectId, string buildId)
+        public List<TfsScmChange> GetBuildChanges(string projectId, string buildId)
         {
             //https://www.visualstudio.com/en-us/docs/integrate/api/build/builds#changes
+            string collectionName = GetCollectionNameByProjectId(projectId);
             var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}/changes?api=version=2.0");
             const int pageSize = 200;
             const int maxPages = 5;
@@ -152,16 +177,18 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
             return repository;
         }
 
-        public TfsScmRepository GetRepositoryById(string collectionName, string repositoryId)
+        public TfsScmRepository GetRepositoryById(string projectId, string repositoryId)
         {
+            string collectionName = GetCollectionNameByProjectId(projectId);
             var url = $"{collectionName}/_apis/git/repositories/{repositoryId}";
             var repository = _tfsRestConnector.SendGet<TfsScmRepository>(url);
             return repository;
         }
 
-        public IList<TfsTestResult> GetTestResultsForRun(string collectionName, string projectName, string runId)
+        public IList<TfsTestResult> GetTestResultsForRun(string projectId, string runId)
         {
-            var url = $"{collectionName}/{projectName}/_apis/test/runs/{runId}/results?api-version=1.0";
+            string collectionName = GetCollectionNameByProjectId(projectId);
+            var url = $"{collectionName}/{projectId}/_apis/test/runs/{runId}/results?api-version=1.0";
             const int pageSize = 1000;
             const int maxPages = 100;
 
@@ -169,25 +196,28 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
             return testResults;
         }
 
-        public TfsRun GetRunForBuild(string collectionName, string projectName, string buildId)
+        public TfsRun GetRunForBuild(string projectId, string buildId)
         {
+            string collectionName = GetCollectionNameByProjectId(projectId);
             //var build = GetBuild(collectionName, projectName, buildId);
             var buildUri = "vstfs:///Build/Build/" + buildId;
-            var uriSuffix = ($"{collectionName}/{projectName}/_apis/test/runs?api-version=1.0&buildUri={buildUri}");
+            var uriSuffix = ($"{collectionName}/{projectId}/_apis/test/runs?api-version=1.0&buildUri={buildUri}");
             var runs = _tfsRestConnector.GetCollection<TfsRun>(uriSuffix);
             return runs.Count > 0 ? runs[0] : null;
         }
 
-        public TfsBuild GetBuild(string collectionName, string projectId, string buildId)
+        public TfsBuild GetBuild(string projectId, string buildId)
         {
+            string collectionName = GetCollectionNameByProjectId(projectId);
             var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds/{buildId}?api-version=2.0");
             var build = _tfsRestConnector.SendGet<TfsBuild>(uriSuffix);
             return build;
         }
 
-        public IList<TfsBuild> GetPreviousFailedBuilds(string collectionName, string projectId, string maxFinishTime)
+        public IList<TfsBuild> GetPreviousFailedBuilds(string projectId, string maxFinishTime)
         {
             //https://www.visualstudio.com/en-us/docs/integrate/api/build/builds
+            string collectionName = GetCollectionNameByProjectId(projectId);
             var uriSuffix = ($"{collectionName}/{projectId}/_apis/build/builds?api-version=2.0&resultFilter=failed&maxFinishTime={maxFinishTime}&$top=100");
             var builds = _tfsRestConnector.GetCollection<TfsBuild>(uriSuffix);
             return builds;

@@ -31,6 +31,19 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
     public class RunModeManager
     {
         private static RunModeManager instance = new RunModeManager();
+        private TfsVersionEnum tfsVersion;
+
+        private RunModeManager()
+        {
+            tfsVersion = TfsVersionEnum.Tfs2018;
+#if Package2015
+            tfsVersion= TfsVersionEnum.Tfs2015;
+#elif Package2017
+              tfsVersion= TfsVersionEnum.Tfs2017;
+#elif Package2018
+              tfsVersion= TfsVersionEnum.Tfs2018;
+#endif
+        }
 
         public static RunModeManager GetInstance()
         {
@@ -39,8 +52,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
         public PluginRunMode RunMode { get; set; } = PluginRunMode.ServerPlugin;
 
-        public TfsVersionEnum TfsVersion => TfsVersionEnum.Tfs2017;
-
+        public TfsVersionEnum TfsVersion
+        {
+            get
+            {
+                return tfsVersion;
+            }
+        }
+        
         public bool RestrictConfigurationAccessFromLocalhost => true;
     }
 }

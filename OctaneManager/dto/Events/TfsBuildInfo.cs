@@ -16,17 +16,24 @@
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.Events
 {
-	public class TfsBuildInfo
-	{
-		public string CollectionName { get; set; }
-		public string Project { get; set; }
-		public string BuildDefinitionId { get; set; }
-		public string BuildId { get; set; }
-		public string BuildName { get; set; }
+    public class TfsBuildInfo
+    {
+        public string ProjectId { get; private set; }
+        public string BuildDefinitionId { get; private set; }
+        public string BuildId { get; private set; }
+        public string BuildNumber { get; private set; }
 
-		public override string ToString()
-		{
-			return $"{CollectionName}.{Project}.{BuildDefinitionId}.{BuildId}.{BuildName}";
-		}
-	}
+        public TfsBuildInfo(string buildId, string buildNumber, string projectId, string buildDefinitionId)
+        {
+            ProjectId = projectId;
+            BuildDefinitionId = buildDefinitionId;
+            BuildId = buildId;
+            BuildNumber = buildNumber;
+        }
+
+        public override string ToString()
+        {
+            return $"{ProjectId}.{BuildDefinitionId}.{BuildId}.{BuildNumber}";
+        }
+    }
 }

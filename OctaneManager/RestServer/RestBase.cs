@@ -66,7 +66,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
             Post["/build-event/"] = _ =>
             {
                 RunModeManager runModeManager = RunModeManager.GetInstance();
-                if ((runModeManager.TfsVersion == TfsVersionEnum.Tfs2018) || (runModeManager.RunMode == PluginRunMode.ConsoleApp))
+                if (runModeManager.RunMode == PluginRunMode.ConsoleApp)
                 {
                     HandleBuildEvent();
                 }
