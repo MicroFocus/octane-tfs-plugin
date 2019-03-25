@@ -43,9 +43,11 @@ where 1002 is your shared space id and 8081 is the ALM Octane port service port
 
 **Client ID/Secret**: Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when communicating with ALM Octane
 
-**Client ID/Secret**: Ask the ALM Octane shared space admin for an API access Client ID and Client secret. The plugin uses these for authentication when communicating with ALM Octane
-
-**PAT (TFS Personal access token)**: The token should be configured by TFS admin (see [PAT](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate) )
+**PAT (TFS Personal access token)**: The token should be configured by TFS admin (see [PAT](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate) ). PAT minimal permission set should contain :
+- Build (read and execute)
+- Code (read)
+- Project and team (read)
+- Test management (read)
 
 **After the connection is set up**, open ALM Octane, define a CI server and create pipelines.
 For details, see Integrate with your CI server in the ALM Octane Help.
