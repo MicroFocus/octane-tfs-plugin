@@ -25,7 +25,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
     {
         Tfs2015,
         Tfs2017,
-        Tfs2018
+        Tfs2018,
+        Tfs2019
     }
 
     public class RunModeManager
@@ -37,11 +38,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
         {
             tfsVersion = TfsVersionEnum.Tfs2018;
 #if Package2015
-            tfsVersion= TfsVersionEnum.Tfs2015;
+            tfsVersion = TfsVersionEnum.Tfs2015;
 #elif Package2017
-              tfsVersion= TfsVersionEnum.Tfs2017;
+            tfsVersion = TfsVersionEnum.Tfs2017;
 #elif Package2018
-              tfsVersion= TfsVersionEnum.Tfs2018;
+            tfsVersion = TfsVersionEnum.Tfs2018;
+#elif Package2019
+            tfsVersion = TfsVersionEnum.Tfs2019;
 #endif
         }
 
@@ -59,7 +62,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
                 return tfsVersion;
             }
         }
-        
+
         public bool RestrictConfigurationAccessFromLocalhost => true;
     }
 }

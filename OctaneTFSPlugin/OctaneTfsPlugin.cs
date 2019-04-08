@@ -57,8 +57,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 #if Package2015 || Package2017
             Log.Info("Mode Package2015 || Package2017");
 #endif
-#if Package2018
-            Log.Info("Mode Package2018");
+#if Package2018 || Package2019
+            Log.Info("Mode Package2018 || Package2019");
 #endif
 
         }
@@ -71,7 +71,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
                 typeof(Microsoft.TeamFoundation.Build.WebApi.Events.BuildStartedEvent),
                 typeof(Microsoft.TeamFoundation.Build.WebApi.Events.BuildCompletedEvent)
 #endif
-#if Package2018
+#if Package2018 || Package2019
                 typeof(Microsoft.TeamFoundation.Build2.Server.BuildStartedEvent),
                 typeof(Microsoft.TeamFoundation.Build2.Server.BuildCompletedEvent)
 #endif
@@ -112,7 +112,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
                     _pluginManager.HandleFinishEvent(ciEvent);
                 }
 #endif
-#if Package2018
+#if Package2018 || Package2019
                 if (notificationEventArgs is Microsoft.TeamFoundation.Build2.Server.BuildEventBase)
                 {
                     Microsoft.TeamFoundation.Build2.Server.BuildData build = ((Microsoft.TeamFoundation.Build2.Server.BuildEventBase)notificationEventArgs).Build;
@@ -178,7 +178,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         }
 #endif
 
-#if Package2018
+#if Package2018 || Package2019
         private static CiEvent ConvertToCiEvent2018(Microsoft.TeamFoundation.Build2.Server.BuildData build)
         {
             TfsBuildInfo buildInfo = new TfsBuildInfo(build.Id.ToString(), build.BuildNumber, build.ProjectId.ToString(), build.Definition.Id.ToString());

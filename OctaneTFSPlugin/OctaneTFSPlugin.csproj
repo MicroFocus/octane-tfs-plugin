@@ -54,6 +54,12 @@
     <OutputPath>bin\Package2018\</OutputPath>
     <DefineConstants>Package2018</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2019|AnyCPU'">
+    <OutputPath>bin\Package2019\</OutputPath>
+    <DefineConstants>Package2018</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.TeamFoundation.Build.Server">
       <SpecificVersion>False</SpecificVersion>

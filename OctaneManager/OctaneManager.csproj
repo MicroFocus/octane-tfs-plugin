@@ -34,7 +34,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2015|AnyCPU'">
     <OutputPath>bin\Package2015\</OutputPath>
-    <DefineConstants>TRACE;Package2015</DefineConstants>
+    <DefineConstants>Package2015</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -43,7 +43,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2017|AnyCPU'">
     <OutputPath>bin\Package2017\</OutputPath>
-    <DefineConstants>TRACE;Package2017</DefineConstants>
+    <DefineConstants>Package2017</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,6 +53,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2018|AnyCPU'">
     <OutputPath>bin\Package2018\</OutputPath>
     <DefineConstants>Package2018</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2019|AnyCPU'">
+    <OutputPath>bin\Package2019\</OutputPath>
+    <DefineConstants>Package2019</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
