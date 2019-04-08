@@ -135,10 +135,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             {
                 var msg = $"ProcessEvent {notificationEventArgs.GetType().Name} failed {e.Message}";
                 Log.Error(msg, e);
-
-#if Package2018
-                TeamFoundationApplicationCore.LogException(requestContext, msg, e);
-#endif
             }
             return EventNotificationStatus.ActionPermitted;
         }
