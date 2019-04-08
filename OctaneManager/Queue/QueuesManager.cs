@@ -169,7 +169,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
             {
                 String collectionName = _tfsApis.GetCollectionNameByProjectId(ev.BuildInfo.ProjectId);
                 ev.Project = OctaneUtils.GenerateOctaneJobCiId(collectionName, ev.BuildInfo.ProjectId, ev.BuildInfo.BuildDefinitionId);
-                Log.Debug($"Enrich event - {ev.EventType} {ev.BuildInfo} : {ev.Project}");
             }
         }
 

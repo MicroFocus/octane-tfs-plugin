@@ -95,6 +95,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.Events
                 case "succeeded":
                     ciEvent.BuildResult = CiBuildResult.Success;
                     break;
+                case "partiallySucceeded":
+                    ciEvent.BuildResult = CiBuildResult.Unstable;
+                    break;
                 case "failed":
                     ciEvent.BuildResult = CiBuildResult.Failure;
                     break;
