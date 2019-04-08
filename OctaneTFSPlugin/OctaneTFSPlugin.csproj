@@ -56,7 +56,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2019|AnyCPU'">
     <OutputPath>bin\Package2019\</OutputPath>
-    <DefineConstants>Package2018</DefineConstants>
+    <DefineConstants>Package2019</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

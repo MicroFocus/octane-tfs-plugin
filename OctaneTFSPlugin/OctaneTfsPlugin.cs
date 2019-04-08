@@ -115,7 +115,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 #if Package2018 || Package2019
                 if (notificationEventArgs is Microsoft.TeamFoundation.Build2.Server.BuildEventBase)
                 {
-                    Microsoft.TeamFoundation.Build2.Server.BuildData build = ((Microsoft.TeamFoundation.Build2.Server.BuildEventBase)notificationEventArgs).Build;
+                    Microsoft.TeamFoundation.Build2.Server.BuildData build = (Microsoft.TeamFoundation.Build2.Server.BuildData)((Microsoft.TeamFoundation.Build2.Server.BuildEventBase)notificationEventArgs).Build;
                     Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for project {build.ProjectId}, status: {build.Status}, BuildNumber: {build.BuildNumber}, DefinitionName: {build.Definition.Name}, DefinitionId: {build.Definition.Id}");
                     CiEvent ciEvent = ConvertToCiEvent2018(build);
                     if (notificationEventArgs is Microsoft.TeamFoundation.Build2.Server.BuildStartedEvent)
@@ -135,7 +135,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             {
                 var msg = $"ProcessEvent {notificationEventArgs.GetType().Name} failed {e.Message}";
                 Log.Error(msg, e);
+
+#if Package2018
                 TeamFoundationApplicationCore.LogException(requestContext, msg, e);
+#endif
             }
             return EventNotificationStatus.ActionPermitted;
         }
