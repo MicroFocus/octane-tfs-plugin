@@ -3,7 +3,7 @@ regsvr32 /s ole32.dll
 
 SET installerProjectFile=.\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj
 SET installPathRegexToFind="\"DefaultLocation\" = \"8:.*\""
-SET installProductNameRegex="\"ProductName\" = \"8:TFS .* Plugin for ALM Octane"
+SET installProductNameRegex="\"ProductName\" = \"8:.*\""
 SET tfsVersionRegexToFind="TfsVersionEnum.Tfs20.+;"
 
 ECHO **********************************************************
@@ -17,7 +17,7 @@ powershell -file replaceInFile.ps1 %installerProjectFile% %installPathRegexToFin
 ECHO update install path to %installPathReplacement% 
 
 REM update setup title with correct version of tfs
-SET installProductNameReplacement="\"ProductName\" = \"8:TFS 2019 Plugin for ALM Octane"
+SET installProductNameReplacement="\"ProductName\" = \"8:ALM Octane CI Plugin v1.3 for Azure DevOps Server 2019\""
 powershell -file replaceInFile.ps1 %installerProjectFile% %installProductNameRegex% %installProductNameReplacement%
 ECHO update product name in installer to %installProductNameReplacement% 
 

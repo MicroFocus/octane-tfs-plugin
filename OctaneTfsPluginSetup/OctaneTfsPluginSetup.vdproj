@@ -1411,7 +1411,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:ALM Octane CI Plugin"
+        "ProductName" = "8:ALM Octane CI Plugin v1.3 for Azure DevOps Server 2019"
         "ProductCode" = "8:{14DB212B-E54E-4997-8E35-25ABCE5B3AFA}"
         "PackageCode" = "8:{977018B1-094A-4B85-BABC-707CBB88770C}"
         "UpgradeCode" = "8:{69EC5CA3-1DE8-4F5B-A38D-03C90DAA3829}"

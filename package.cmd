@@ -3,7 +3,7 @@ regsvr32 /s ole32.dll
 
 SET installerProjectFile=.\OctaneTfsPluginSetup\OctaneTfsPluginSetup.vdproj
 SET installPathRegexToFind="\"DefaultLocation\" = \"8:.*\""
-SET installProductNameRegex="\"ProductName\" = \"8:TFS .* Plugin for ALM Octane"
+SET installProductNameRegex="\"ProductName\" = \"8:.*\""
 SET tfsVersionRegexToFind="TfsVersionEnum.Tfs20.+;"
 
 ECHO **********************************************************
@@ -17,7 +17,7 @@ powershell -file replaceInFile.ps1 %installerProjectFile% %installPathRegexToFin
 ECHO update install path to %installPathReplacement% 
 
 REM update setup title with correct version of tfs
-SET installProductNameReplacement="\"ProductName\" = \"8:TFS 2015 Plugin for ALM Octane"
+SET installProductNameReplacement="\"ProductName\" = \"8:ALM Octane CI Plugin for TFS 2015 (v1.3)"\"
 powershell -file replaceInFile.ps1 %installerProjectFile% %installProductNameRegex% %installProductNameReplacement%
 ECHO update product name in installer to %installProductNameReplacement% 
 
@@ -36,7 +36,7 @@ powershell -file replaceInFile.ps1 %installerProjectFile% %installPathRegexToFin
 ECHO update install path to %installPathReplacement% 
 
 REM update setup title with correct version of tfs
-SET installProductNameReplacement="\"ProductName\" = \"8:TFS 2017 Plugin for ALM Octane"
+SET installProductNameReplacement="\"ProductName\" = \"8:ALM Octane CI Plugin for TFS 2017 (v1.3)"\"
 powershell -file replaceInFile.ps1 %installerProjectFile% %installProductNameRegex% %installProductNameReplacement%
 ECHO update product name in installer to %installProductNameReplacement% 
 
@@ -55,7 +55,7 @@ powershell -file replaceInFile.ps1 %installerProjectFile% %installPathRegexToFin
 ECHO update install path to %installPathReplacement% 
 
 REM update setup title with correct version of tfs
-SET installProductNameReplacement="\"ProductName\" = \"8:TFS 2018 Plugin for ALM Octane"
+SET installProductNameReplacement="\"ProductName\" = \"8:ALM Octane CI Plugin for TFS 2018 (v1.3)"\"
 powershell -file replaceInFile.ps1 %installerProjectFile% %installProductNameRegex% %installProductNameReplacement%
 ECHO update product name in installer to %installProductNameReplacement% 
 
@@ -74,7 +74,7 @@ powershell -file replaceInFile.ps1 %installerProjectFile% %installPathRegexToFin
 ECHO update install path to %installPathReplacement% 
 
 REM update setup title with correct version of tfs
-SET installProductNameReplacement="\"ProductName\" = \"8:TFS 2019 Plugin for ALM Octane"
+SET installProductNameReplacement="\"ProductName\" = \"8:ALM Octane CI Plugin for Azure DevOps Server 2019 (v1.3)"\"
 powershell -file replaceInFile.ps1 %installerProjectFile% %installProductNameRegex% %installProductNameReplacement%
 ECHO update product name in installer to %installProductNameReplacement% 
 
