@@ -72,7 +72,7 @@ Through the main configuration url (http://localhost:4567/) it is possible to pe
 Plugin logs are located in C:\Users\Public\Documents\OctaneTfsPlugin\logs
 
 ## Limitations
-- The plugin does not support commits in ALM Octane under TFS 2015 if using TFVC
+- The plugin does not support commits to ALM Octane if using TFVC
 
 ## Contribute to the TFS plugin
 - Contributions of code are always welcome!
