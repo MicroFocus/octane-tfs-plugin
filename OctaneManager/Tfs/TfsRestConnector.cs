@@ -99,11 +99,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
                 var basicAuthentication = $"{_tfsConfiguration.User}:{_tfsConfiguration.Password}";
                 basicAuthentication = Convert.ToBase64String(Encoding.ASCII.GetBytes(basicAuthentication));
 
-                var networkCredentials = new NetworkCredential(_tfsConfiguration.User, _tfsConfiguration.Password);
-                var clientHandler = new HttpClientHandler { Credentials = networkCredentials };
-
                 //use the httpclient
-                using (var client = new HttpClient(clientHandler))
+                using (var client = new HttpClient())
                 {
                     client.BaseAddress = _tfsConfiguration.Uri;
                     client.DefaultRequestHeaders.Accept.Clear();
@@ -143,17 +140,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
                             switch (response.StatusCode)
                             {
                                 case HttpStatusCode.Unauthorized:
-                                    string errorMsg = TfsVersionEnum.Tfs2015.Equals(RunModeManager.GetInstance().TfsVersion) ?
-                                        "TFS username/password are not valid or does not have required permissions." :
-                                        "TFS PAT is not valid or does not have required permissions.";
+                                    string errorMsg = "TFS PAT is not valid or does not have required permissions.";
 
                                     Log.Error($"Unauthorized status on getting requesting resource : {urlSuffix}");
                                     throw new UnauthorizedAccessException(errorMsg);
 
                                 case HttpStatusCode.Forbidden:
-                                    string errorMsg2 = TfsVersionEnum.Tfs2015.Equals(RunModeManager.GetInstance().TfsVersion) ?
-                                         "TFS user  does not have required permissions." :
-                                           "TFS PAT does not have required permissions.";
+                                    string errorMsg2 = "TFS PAT does not have required permissions.";
 
                                     Log.Error($"Forbidden status on requesting tfs resource : {urlSuffix}. Responce {responseContent}");
                                     throw new UnauthorizedAccessException(errorMsg2);
