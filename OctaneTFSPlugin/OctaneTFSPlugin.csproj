@@ -61,11 +61,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.TeamFoundation.Build.Server">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build2.Server">
       <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build2.Server.dll</HintPath>
     </Reference>
