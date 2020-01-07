@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Linq;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin

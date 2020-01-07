@@ -64,11 +64,6 @@
     <Reference Include="Microsoft.TeamFoundation.Build2.Server">
       <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build2.Server.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Build2.WebApi">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Common.dll</HintPath>
