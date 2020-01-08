@@ -16,7 +16,7 @@ install:
 
 before_build:
  - cmd: >-     
-        copy /Y .\tfs-server-dlls\2017 .\tfs-server-dlls\current
+        copy /Y .\tfs-server-dlls\2019 .\tfs-server-dlls\current
         
 configuration:
 - Release
@@ -34,7 +34,5 @@ artifacts:
   name: alm-octane-tfs-plugin-release.$(appveyor_build_version)
 - path: .\TfsConsolePluginRunner\bin\Debug
   name: alm-octane-tfs-plugin-console-release.$(appveyor_build_version)
-- path: .\OctaneTfsPluginSetup\Package2015\
-  name: alm-octane-tfs-plugin-setup-2015.$(appveyor_build_version)
-- path: .\OctaneTfsPluginSetup\Package2017\
-  name: alm-octane-tfs-plugin-setup-2017.$(appveyor_build_version)
+- path: .\OctaneTfsPluginSetup\Package2019\
+  name: alm-octane-tfs-plugin-setup-2019.$(appveyor_build_version)

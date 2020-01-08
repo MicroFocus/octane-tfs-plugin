@@ -32,29 +32,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2015|AnyCPU'">
-    <OutputPath>bin\Package2015\</OutputPath>
-    <DefineConstants>Package2015</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2017|AnyCPU'">
-    <OutputPath>bin\Package2017\</OutputPath>
-    <DefineConstants>Package2017</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2018|AnyCPU'">
-    <OutputPath>bin\Package2018\</OutputPath>
-    <DefineConstants>Package2018</DefineConstants>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2019|AnyCPU'">
     <OutputPath>bin\Package2019\</OutputPath>
     <DefineConstants>Package2019</DefineConstants>
