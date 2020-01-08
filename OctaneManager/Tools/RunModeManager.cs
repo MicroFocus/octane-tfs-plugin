@@ -23,7 +23,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
     public enum TfsVersionEnum
     {
-        Tfs2019
+        AzureDevOps2019
     }
 
     public class RunModeManager
@@ -33,7 +33,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
         private RunModeManager()
         {
-            tfsVersion = TfsVersionEnum.Tfs2019;
+            tfsVersion = TfsVersionEnum.AzureDevOps2019;
 /*#if Package2020
             tfsVersion = TfsVersionEnum.Tfs2020;
 #elif Package2021

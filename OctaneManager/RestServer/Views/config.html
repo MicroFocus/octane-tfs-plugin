@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>ALM Octane CI plugin for TFS</title>
-	<meta name="description" content="ALM Octane CI plugin for TFS">
-	<meta name="author" content="Microfocus">
+	<title>ALM Octane CI plugin for Azure DevOps Server - Configuration</title>
+	<meta name="description" content=">ALM Octane CI plugin for Azure DevOps Server - Configuration">
+	<meta name="author" content="MicroFocus">
 
 	<link rel="stylesheet" type="text/css" href="resources/style.css">
 	<link rel="shortcut icon" href="resources/f-ci-tfs.png">
@@ -101,7 +101,7 @@ table .itemCaption{
 	<div id="header">
 		<img id="octaneIcon" src="resources/s-octane-logo.svg" alt="ALM Octane">
 		<a href="../" id="home"><img class="linkIcon" src="resources/home-white.svg" alt="Home"></a>
-		<div id="title">ALM Octane CI plugin for TFS - Configuration</div>
+		<div id="title">ALM Octane CI plugin for Azure DevOps Server - Configuration</div>
 	</div>
 
 
@@ -115,11 +115,11 @@ table .itemCaption{
 		<tr><td class="itemCaption">ALM Octane Client Secret</td><td><input type="password" name="octaneClientSecret"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#octaneClientSecretHelp')"></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="octaneClientSecretHelp">The Client secret that matches your API access Client ID.</div></td><td></td></tr>
 		
-		<tr><td class="itemCaption">TFS Location</td><td><input type="text" name="tfsLocation"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsLocationHelp')"></td></tr>
-		<tr><td></td><td><div class="helpHidden" id="tfsLocationHelp">The HTTP address of the TFS, such as http://yourhost:8080/tfs/. <br />This address is used for: <ul><li>The plugin to collect information from the build server.</li><li>Links from ALM Octane to the build server.</li></ul></div></td><td></td></tr>
+		<tr><td class="itemCaption">Azure DevOps Server Location</td><td><input type="text" name="tfsLocation"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsLocationHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="tfsLocationHelp">The HTTP address of the Azure DevOps Server, such as http://yourhost:8080/tfs/. <br />This address is used for: <ul><li>The plugin to collect information from the build server.</li><li>Links from ALM Octane to the build server.</li></ul></div></td><td></td></tr>
 		
-		<tr><td class="itemCaption">TFS PAT (Personal Acess Token)</td><td><input type="password" name="tfsPat"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsPatHelp')"></td></tr>
-		<tr><td></td><td><div class="helpHidden" id="tfsPatHelp">Personal Acess Token to TFS. PAT  minimal permission set should contain :<ul><li>Build (read and execute)</li><li>Code (read)</li><li>Project and team (read)</li><li>Test management (read)</li></ul></div></td><td></td></tr>
+		<tr><td class="itemCaption">Azure DevOps Server PAT (Personal Acess Token)</td><td><input type="password" name="tfsPat"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#tfsPatHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="tfsPatHelp"><a href="https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate" target="_blank">Personal Acess Token</a> to Azure DevOps Server. PAT  minimal permission set should contain :<ul><li>Build (read and execute)</li><li>Code (read)</li><li>Project and team (read)</li><li>Test management (read)</li></ul></div></td><td></td></tr>
 				
 		<tr><td class="itemCaption">Instance ID</td><td><input type="text" name="instanceId"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#instanceIdHelp')"></td></tr>
 		<tr><td></td><td><div class="helpHidden" id="instanceIdHelp">An ID to uniquely identify this instance of the plugin.</div></td><td></td></tr>
@@ -138,7 +138,7 @@ $(document).ready(function(){
 	//replaced by rest service
 	//{defaultConf}
 
-	var tfsVersion = 'Tfs2019';
+	var tfsVersion = 'AzureDevOps2019';
 	if(defaultConf){
 		$("input[name='octaneLocation']").val(defaultConf.ALMOctaneUrl);
 		$("input[name='octaneClientId']").val(defaultConf.ClientId);
