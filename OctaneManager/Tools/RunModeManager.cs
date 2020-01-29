@@ -23,9 +23,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
     public enum TfsVersionEnum
     {
-        Tfs2015,
-        Tfs2017,
-        Tfs2018
+        AzureDevOps2019
     }
 
     public class RunModeManager
@@ -35,14 +33,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 
         private RunModeManager()
         {
-            tfsVersion = TfsVersionEnum.Tfs2018;
-#if Package2015
-            tfsVersion= TfsVersionEnum.Tfs2015;
-#elif Package2017
-              tfsVersion= TfsVersionEnum.Tfs2017;
-#elif Package2018
-              tfsVersion= TfsVersionEnum.Tfs2018;
-#endif
+            tfsVersion = TfsVersionEnum.AzureDevOps2019;
+/*#if Package2020
+            tfsVersion = TfsVersionEnum.Tfs2020;
+#elif Package2021
+            tfsVersion = TfsVersionEnum.Tfs2021;
+#endif*/
         }
 
         public static RunModeManager GetInstance()
@@ -59,7 +55,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
                 return tfsVersion;
             }
         }
-        
+
         public bool RestrictConfigurationAccessFromLocalhost => true;
     }
 }

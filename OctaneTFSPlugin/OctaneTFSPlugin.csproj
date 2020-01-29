@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin</RootNamespace>
     <AssemblyName>MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -32,41 +32,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2015|AnyCPU'">
-    <OutputPath>bin\Package2015\</OutputPath>
-    <DefineConstants>TRACE;Package2015</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2019|AnyCPU'">
+    <OutputPath>bin\Package2019\</OutputPath>
+    <DefineConstants>Package2019</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2017|AnyCPU'">
-    <OutputPath>bin\Package2017\</OutputPath>
-    <DefineConstants>TRACE;Package2017</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package2018|AnyCPU'">
-    <OutputPath>bin\Package2018\</OutputPath>
-    <DefineConstants>Package2018</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.TeamFoundation.Build.Server">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build2.Server">
       <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build2.Server.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Build2.WebApi">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\tfs-server-dlls\current\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common">
       <SpecificVersion>False</SpecificVersion>
@@ -88,10 +62,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OctaneTfsPlugin.cs" />

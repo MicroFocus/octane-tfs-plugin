@@ -265,7 +265,5 @@ __pycache__/
 
 /OctaneTfsPluginSetup/PackageDebug
 /OctaneTfsPluginSetup/PackageRelease
-OctaneTfsPluginSetup/Package2015/
-OctaneTfsPluginSetup/Package2017/
-/OctaneTfsPluginSetup/Package2018
+/OctaneTfsPluginSetup/Package2019
 /tools/tfs-server-dlls/current

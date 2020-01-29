@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Linq;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
@@ -54,11 +53,9 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
 
 
             Log.Info("Tfs Version : " + RunModeManager.GetInstance().TfsVersion);
-#if Package2015 || Package2017
-            Log.Info("Mode Package2015 || Package2017");
-#endif
-#if Package2018
-            Log.Info("Mode Package2018");
+
+#if Package2019
+            Log.Info("Package2019");
 #endif
 
         }
@@ -67,11 +64,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
         {
             var subscribedEventsList = new List<Type>()
             {
-#if Package2015 || Package2017
-                typeof(Microsoft.TeamFoundation.Build.WebApi.Events.BuildStartedEvent),
-                typeof(Microsoft.TeamFoundation.Build.WebApi.Events.BuildCompletedEvent)
-#endif
-#if Package2018
+#if Package2019
                 typeof(Microsoft.TeamFoundation.Build2.Server.BuildStartedEvent),
                 typeof(Microsoft.TeamFoundation.Build2.Server.BuildCompletedEvent)
 #endif
@@ -95,29 +88,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             statusMessage = String.Empty;
             try
             {
-#if Package2015 || Package2017
-                Microsoft.TeamFoundation.Build.WebApi.Events.BuildUpdatedEvent updatedEvent = (Microsoft.TeamFoundation.Build.WebApi.Events.BuildUpdatedEvent)notificationEventArgs;
-                Microsoft.TeamFoundation.Build.WebApi.Build build = updatedEvent.Build;
-                Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for build {updatedEvent.BuildId} (Build Number : {updatedEvent.Build.BuildNumber}, Build Definition: {updatedEvent.Build.Definition.Name})");
-
-                CiEvent ciEvent = ConvertToCiEvent2015_2017(build);
-                if (notificationEventArgs is Microsoft.TeamFoundation.Build.WebApi.Events.BuildStartedEvent)
-                {
-                    ciEvent.EventType = CiEventType.Started;
-                    _pluginManager.GeneralEventsQueue.Add(ciEvent);
-                }
-                else if (notificationEventArgs is Microsoft.TeamFoundation.Build.WebApi.Events.BuildCompletedEvent)
-                {
-                    ciEvent.EventType = CiEventType.Finished;
-                    _pluginManager.HandleFinishEvent(ciEvent);
-                }
-#endif
-#if Package2018
+#if Package2019
                 if (notificationEventArgs is Microsoft.TeamFoundation.Build2.Server.BuildEventBase)
                 {
-                    Microsoft.TeamFoundation.Build2.Server.BuildData build = ((Microsoft.TeamFoundation.Build2.Server.BuildEventBase)notificationEventArgs).Build;
+                    Microsoft.TeamFoundation.Build2.Server.BuildData build = (Microsoft.TeamFoundation.Build2.Server.BuildData)((Microsoft.TeamFoundation.Build2.Server.BuildEventBase)notificationEventArgs).Build;
                     Log.Info($"ProcessEvent {notificationEventArgs.GetType().Name} for project {build.ProjectId}, status: {build.Status}, BuildNumber: {build.BuildNumber}, DefinitionName: {build.Definition.Name}, DefinitionId: {build.Definition.Id}");
-                    CiEvent ciEvent = ConvertToCiEvent2018(build);
+                    CiEvent ciEvent = ConvertToCiEvent2019(build);
                     if (notificationEventArgs is Microsoft.TeamFoundation.Build2.Server.BuildStartedEvent)
                     {
                         ciEvent.EventType = CiEventType.Started;
@@ -135,51 +111,13 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Plugin
             {
                 var msg = $"ProcessEvent {notificationEventArgs.GetType().Name} failed {e.Message}";
                 Log.Error(msg, e);
-                TeamFoundationApplicationCore.LogException(requestContext, msg, e);
             }
             return EventNotificationStatus.ActionPermitted;
         }
 
-#if Package2015 || Package2017
-        private static CiEvent ConvertToCiEvent2015_2017(Microsoft.TeamFoundation.Build.WebApi.Build build)
-        {
-            //create  build info
-            var elements = build.Definition.Url.Split('/').ToList();
-            var i = elements.FindIndex(x => x == "_apis");
-            var projectId = elements[i - 1];
 
-            TfsBuildInfo buildInfo = new TfsBuildInfo(build.Id.ToString(), build.BuildNumber, projectId, build.Definition.Id.ToString());
-            bool isManualCause = Microsoft.TeamFoundation.Build.WebApi.BuildReason.Manual.Equals(build.Reason);
-            var ciEvent = createEvent(buildInfo, build.Definition.Name, isManualCause, build.StartTime, build.FinishTime);
-
-            if (build.Result.HasValue)
-            {
-                switch (build.Result)
-                {
-                    case Microsoft.TeamFoundation.Build.WebApi.BuildResult.Succeeded:
-                        ciEvent.BuildResult = CiBuildResult.Success;
-                        break;
-                    case Microsoft.TeamFoundation.Build.WebApi.BuildResult.Failed:
-                        ciEvent.BuildResult = CiBuildResult.Failure;
-                        break;
-                    case Microsoft.TeamFoundation.Build.WebApi.BuildResult.Canceled:
-                        ciEvent.BuildResult = CiBuildResult.Aborted;
-                        break;
-                    case Microsoft.TeamFoundation.Build.WebApi.BuildResult.PartiallySucceeded:
-                        ciEvent.BuildResult = CiBuildResult.Unstable;
-                        break;
-                    default:
-                        ciEvent.BuildResult = CiBuildResult.Unavailable;
-                        break;
-                }
-            }
-
-            return ciEvent;
-        }
-#endif
-
-#if Package2018
-        private static CiEvent ConvertToCiEvent2018(Microsoft.TeamFoundation.Build2.Server.BuildData build)
+#if Package2019
+        private static CiEvent ConvertToCiEvent2019(Microsoft.TeamFoundation.Build2.Server.BuildData build)
         {
             TfsBuildInfo buildInfo = new TfsBuildInfo(build.Id.ToString(), build.BuildNumber, build.ProjectId.ToString(), build.Definition.Id.ToString());
 

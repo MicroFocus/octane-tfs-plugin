@@ -42,11 +42,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 
         //private const string TfsUrl = "http://localhost:8080/tfs";
 
-        public static TfsApis CreateForUserPasswordAuthentication(string tfsLocation, string user, string password)
-        {
-            return new TfsApis(tfsLocation, user, password);
-        }
-
         public static TfsApis CreateForPatAuthentication(string tfsLocation, string pat)
         {
             return new TfsApis(tfsLocation, "", pat);

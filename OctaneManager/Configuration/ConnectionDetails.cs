@@ -76,24 +76,11 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
             set;
         }
 
-        /// <summary>
-        /// For tfs 2017
-        /// </summary>
-		public string Pat
+        public string Pat
         {
             get;
             set;
         }
-
-        /// <summary>
-        /// For tfs 2015
-        /// </summary>
-        public string TfsUser { get; set; } = "";
-
-        /// <summary>
-        /// For tfs 2015
-        /// </summary>
-        public string TfsPassword { get; set; } = "";
 
         public string TfsLocation { get; set; }
 
@@ -124,8 +111,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
         {
             Pat = Encryption.Encrypt(Pat);
             ClientSecret = Encryption.Encrypt(ClientSecret);
-            if (!string.IsNullOrEmpty(TfsPassword))
-                TfsPassword = Encryption.Encrypt(TfsPassword);
         }
 
 
@@ -133,8 +118,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
         {
             Pat = Encryption.Decrypt(Pat);
             ClientSecret = Encryption.Decrypt(ClientSecret);
-            if (!string.IsNullOrEmpty(TfsPassword))
-                TfsPassword = Encryption.Decrypt(TfsPassword);
         }
 
         public void ResetSensitiveInfoTo(ConnectionDetails other)
@@ -143,12 +126,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
             {
                 other.Pat = this.Pat;
             }
-
-            if (SENSITIVE_VALUE_REPLACER.Equals(other.TfsPassword))
-            {
-                other.TfsPassword = this.TfsPassword;
-            }
-
 
             if (SENSITIVE_VALUE_REPLACER.Equals(other.ClientSecret))
             {
@@ -161,7 +138,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
             var clone = Clone() as ConnectionDetails;
             clone.ClientSecret = SENSITIVE_VALUE_REPLACER;
             clone.Pat = SENSITIVE_VALUE_REPLACER;
-            clone.TfsPassword = SENSITIVE_VALUE_REPLACER;
             return clone;
         }
 

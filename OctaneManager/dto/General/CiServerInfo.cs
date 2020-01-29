@@ -23,7 +23,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto.General
         [JsonProperty("type")]
         public string Type => "tfs";
         [JsonProperty("version")]
-        public string Version => "2017"; //TODO : Get programaticly!
+        public string Version => "2019"; //TODO : Get programatically!
         [JsonProperty("url")]
         public string Url { get; set; }
         [JsonProperty("instanceId")]
