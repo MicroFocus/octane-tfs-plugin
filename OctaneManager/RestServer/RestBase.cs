@@ -127,6 +127,8 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
 
                     ConnectionCreator.CheckMissingValues(config);
                     ConfigurationManager.ResetSensitiveInfo(config);
+                    ConnectionCreator.CheckProxySettings(config.TfsLocation);
+                    ConnectionCreator.CheckProxySettings(config.ALMOctaneUrl);
                     ConnectionCreator.CreateTfsConnection(config);
                     ConnectionCreator.CreateOctaneConnection(config);
                 }

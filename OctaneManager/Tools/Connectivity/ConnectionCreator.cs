@@ -79,6 +79,26 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
             }
         }
 
+
+        public static void ; isByPassed {isByPassed
+    }
+    (String url)
+        {
+            try
+            {
+                IWebProxy defaultProxy = WebRequest.DefaultWebProxy;
+                Uri uri = new Uri(url);
+                var proxyUri = defaultProxy.GetProxy(uri).Host;
+                bool isByPassed = defaultProxy.IsBypassed(uri);
+                Log.Debug($"Proxy setting for URL : {url}; proxy host {proxyUri}; isByPassed {isByPassed}");
+            }
+            catch (Exception e)
+            {
+                Log.Debug($"Failed to check proxy settings : {e.Message}");
+            }
+        }
+
+
         public static TfsApis CreateTfsConnection(ConnectionDetails connectionDetails)
         {
             var tfsServerUriStr = connectionDetails.TfsLocation ?? GetTfsLocationFromHostName();
