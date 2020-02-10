@@ -80,9 +80,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
         }
 
 
-        public static void ; isByPassed {isByPassed
-    }
-    (String url)
+        public static void CheckProxySettings(String url)
         {
             try
             {
