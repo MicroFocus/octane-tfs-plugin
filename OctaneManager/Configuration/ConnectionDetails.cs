@@ -53,6 +53,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
                     var index = ALMOctaneUrl.IndexOf("=", StringComparison.Ordinal);
                     var sharedSpaceStr = ALMOctaneUrl.Substring(index + 1);
                     var endIndex = sharedSpaceStr.IndexOf("/", StringComparison.Ordinal);
+                    if (endIndex == -1 && sharedSpaceStr.Contains("%"))//%2f==>/
+                    {
+                        endIndex = sharedSpaceStr.IndexOf("%", StringComparison.Ordinal);
+                    }
                     if (endIndex > -1)
                     {
                         sharedSpaceStr = sharedSpaceStr.Substring(0, endIndex);
