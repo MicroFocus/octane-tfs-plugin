@@ -1,6 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
-/*
+﻿/*!
 * (c) 2016-2018 EntIT Software LLC, a Micro Focus company
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +13,20 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
--->
-<packages>
-  <package id="log4net" version="2.0.8" targetFramework="net461" />
-  <package id="Nancy" version="1.4.4" targetFramework="net461" />
-  <package id="Nancy.Hosting.Self" version="1.4.1" targetFramework="net461" />
-</packages>
+
+
+
+namespace MicroFocus.Adm.Octane.Api.Core.Entities
+{
+	/// <summary>
+	/// Wrapper for Phase entity. One or more phases might be grouped to on phase. 
+	/// For example , metaphase "Done" contains of "Closed", "Duplicated", "Rejected" phases.
+	/// Each entity type has its own phases, that means phases of defects are different from phases of story and tests.
+	/// More fields might be supported by entity that still are not exposed in the class
+	/// </summary>
+	public class Phase : BaseEntity
+    {
+        public static string ENTITY_FIELD = "entity";
+
+    }
+}

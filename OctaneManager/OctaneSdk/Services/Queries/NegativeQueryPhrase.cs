@@ -1,6 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
-/*
+﻿/*!
 * (c) 2016-2018 EntIT Software LLC, a Micro Focus company
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +13,23 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
--->
-<packages>
-  <package id="log4net" version="2.0.8" targetFramework="net461" />
-  <package id="Nancy" version="1.4.4" targetFramework="net461" />
-  <package id="Nancy.Hosting.Self" version="1.4.1" targetFramework="net461" />
-</packages>
+
+
+namespace MicroFocus.Adm.Octane.Api.Core.Services.Query
+
+{
+	/// <summary>
+	/// Used to execute negative filter, for example : get all defects except defects in closed metaphase  
+	/// </summary>
+	public class NegativeQueryPhrase : QueryPhrase
+    {
+
+        public QueryPhrase QueryPhrase { get; set; }
+
+        public NegativeQueryPhrase(QueryPhrase phrase)
+           
+        {
+            this.QueryPhrase = phrase;
+        }
+    }
+}

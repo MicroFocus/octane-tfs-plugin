@@ -109,7 +109,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
             int port = Int32.Parse(Port);
             WebProxy wp = new WebProxy(Host, port);
             wp.BypassProxyOnLocal = BypassLocal;
-            if (String.IsNullOrEmpty(BypassList))
+            if (!String.IsNullOrEmpty(BypassList))
             {
                 wp.BypassList = BypassList.Split(';');
             }

@@ -114,12 +114,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
         {
             try
             {
-                bool customProxyUsed = NetworkSettings.CustomProxy!=null;
-                IWebProxy proxy = customProxyUsed? NetworkSettings.CustomProxy : WebRequest.DefaultWebProxy;
+                bool customProxyUsed = NetworkSettings.CustomProxy != null;
+                IWebProxy proxy = customProxyUsed ? NetworkSettings.CustomProxy : WebRequest.DefaultWebProxy;
                 Uri uri = new Uri(url);
                 var proxyUri = proxy.GetProxy(uri).Host;
                 bool isByPassed = proxy.IsBypassed(uri);
-                Log.Debug($"Proxy setting for URL : {url}; proxy host={proxyUri}; isByPassed={isByPassed}; custom proxy used={customProxyUsed}");
+                Log.Debug($"{(customProxyUsed ? "Custom" : "Default")} Proxy setting for URL: {url}; proxy host: {proxyUri}; isByPassed: {isByPassed}");
             }
             catch (Exception e)
             {
