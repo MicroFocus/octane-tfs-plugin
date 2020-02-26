@@ -170,6 +170,56 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
                 }
             };
 
+            Get["/proxy"] = _ =>
+            {
+                if (AllowConfigurationModifyAccess(Request))
+                {
+                    String view = GetView("proxy.html");
+                    ProxyDetails conf = null;
+                    try
+                    {
+                        conf = ProxyManager.Read(false).GetInstanceWithoutSensitiveInfo();
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        conf = new ProxyDetails();
+                    }
+
+                    string confJson = JsonHelper.SerializeObject(conf);
+                    view = view.Replace("//{defaultConf}", "var defaultConf =" + confJson);
+
+                    return view;
+                }
+                else
+                {
+                    string prefix = "Proxy is read-only. To modify proxy, access http://localhost:4567/proxy on the TFS machine.";
+                    string config = JsonHelper.SerializeObject(ProxyManager.Read(false).GetInstanceWithoutSensitiveInfo(), true);
+
+                    return new TextResponse(prefix + Environment.NewLine + config);
+                }
+            };
+
+            Post["/proxy", AllowConfigurationModifyAccess] = _ =>
+            {
+                var configStr = Context.Request.Body.AsString();
+                Log.Debug($"Received new proxy settings");//dont log received log configuration as it contains plain passwords
+                try
+                {
+                    var proxyDetails = JsonHelper.DeserializeObject<ProxyDetails>(configStr);
+                    ConnectionCreator.CheckMissingValues(proxyDetails);
+                    ProxyManager.ResetSensitiveInfo(proxyDetails);
+                    ProxyManager.WriteConfig(proxyDetails);
+                }
+                catch (Exception e)
+                {
+                    string msg = "Failed to save proxy settings: " + e.Message;
+                    Log.Error(msg, e);
+                    return new TextResponse(msg).WithStatusCode(HttpStatusCode.BadRequest);
+                }
+
+                return "Configuration changed";
+            };
+
             Get["/resources/{resourceName}"] = parameters =>
             {
                 var assembly = Assembly.GetExecutingAssembly();

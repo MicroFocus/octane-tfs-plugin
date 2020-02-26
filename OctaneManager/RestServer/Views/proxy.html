@@ -1,0 +1,205 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>ALM Octane CI plugin for Azure DevOps Server - Configuration</title>
+	<meta name="description" content=">ALM Octane CI plugin for Azure DevOps Server - Proxy Settings">
+	<meta name="author" content="MicroFocus">
+
+	<link rel="stylesheet" type="text/css" href="resources/style.css">
+	<link rel="shortcut icon" href="resources/f-ci-tfs.png">
+	<style>
+
+
+input[type=text], input[type=password] {
+
+	border: 1px solid #ccc;
+    border-radius: 4px;
+	padding: 5px;
+    margin: 1px;
+	width:700px;
+	font-size: 17px;
+}
+
+button {
+
+	float: right;
+    width: 250px;
+    background-color: #0079ef;
+    color: white;
+    border: none;
+    height: 30px;
+    margin: 10px 0;
+	border-radius: 4px;
+	font-size: 17px;
+}
+
+button:hover{
+ background-color: #009fef;
+ font-weight: bold;
+}
+
+
+button:active {
+  transform: translateY(1px);
+  background-color: #009fef;
+  font-weight: bold;
+}
+
+table{
+	margin : 18px 0 0 20px;
+	font-size: 17px;
+}
+table .itemCaption{
+	padding:10px 10px 10px 0;
+
+}
+
+#resultMessage{
+	float: left;
+    width: 400px;
+    margin: 10px 0 0 0;
+}
+
+.helpButton{
+	margin: 5px 0 0 5px;
+    height: 20px;
+    width: 20px;
+}
+.helpButton:hover{
+	cursor: pointer;
+}
+
+.helpHidden{
+	display :none;
+}
+
+.controlHidden{
+	display :none;
+}
+
+.helpVisible{
+	display :block;
+	border: solid #bbb 1px;
+    background-color: #f0f0f0;
+
+	padding: 5px;
+    margin: 1px;
+	width:700px;
+	border-radius: 4px;
+}
+
+
+</style>
+
+	<noscript>Sorry, your browser does not support JavaScript!</noscript>
+</head>
+
+
+<body>
+
+	<div id="header">
+		<img id="octaneIcon" src="resources/s-octane-logo.svg" alt="ALM Octane">
+		<a href="../" id="home"><img class="linkIcon" src="resources/home-white.svg" alt="Home"></a>
+		<div id="title">ALM Octane CI plugin for Azure DevOps Server - Proxy Settings</div>
+	</div>
+
+
+	<table>
+		<tr><td class="itemCaption">Host</td><td><div><input type="text" name="host"></div></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#hostHelp')"/></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="hostHelp">The proxy host name without http:// and without port</div></td><td></td></tr>
+		
+		<tr><td class="itemCaption">Port</td><td><input type="text" name="port"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#portHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="portHelp">This field works in conjunction with the proxy server field to specify the HTTP proxy port.</div></td><td></td></tr>
+		
+		<tr><td class="itemCaption">User name</td><td><input type="text" name="user"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#userHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="userHelp">This field works in conjunction with the proxy server field to specify the username used to authenticate with the proxy.</div></td><td></td></tr>
+		
+		<tr><td class="itemCaption">Password</td><td><input type="password" name="password"></td><td></td></tr>
+
+		<tr><td class="itemCaption">Bypass list</td><td><input type="text" name="bypassList"></td><td><img src="resources/help.svg" class="helpButton" onclick="toggleHelp('#bypassListHelp')"></td></tr>
+		<tr><td></td><td><div class="helpHidden" id="bypassListHelp">Use the proxy server except for addresses that start with the following entries. Use semicolon (;) to separate entries.</div></td><td></td></tr>
+
+		<tr><td class="itemCaption">Bypass local addresses</td><td><input type="checkbox" name="bypassLocal"></td><td></td></tr>
+		<tr><td class="itemCaption">Enabled</td><td><input type="checkbox" name="enabled"></td><td></td></tr>
+
+		<tr><td></td><td><div><p id="resultMessage"></p><button id="saveButton" type="button">Save</button></div></td><td></td></tr>
+		
+	</table>
+
+</body>
+
+<script src="resources/jquery-3.2.1.min.js"></script>
+
+
+<script>
+$(document).ready(function(){
+	//replaced by rest service
+	//{defaultConf};
+
+	console.log("proxy",defaultConf);
+	if(defaultConf){
+		$("input[name='host']").val(defaultConf.Host);
+		if(defaultConf.Port>0){
+			$("input[name='port']").val(defaultConf.Port);
+		}
+		
+		$("input[name='user']").val(defaultConf.User);
+		$("input[name='password']").val(defaultConf.Password);
+		$("input[name='bypassList']").val(defaultConf.BypassList);
+
+		if(!!defaultConf.BypassLocal){
+			$("input[name='bypassLocal']").prop('checked', true);
+		}
+		if(!!defaultConf.Enabled){
+			$("input[name='enabled']").prop('checked', true);
+		}
+		
+	}
+
+	registerForButtonClick("#saveButton","/proxy","Saving...","Configuration saved successfully");
+	
+	function registerForButtonClick(buttonName, postUrl, processMessage, successMessage){
+
+		$(buttonName).click(function(){
+			$("#resultMessage").css('color', '#0079ef');
+			$("#resultMessage").text(processMessage);
+			var confObj = {
+				"User": $("input[name='user']").val(),
+				"Password": $("input[name='password']").val(),
+				"BypassList": $("input[name='bypassList']").val(),
+				"Host": $("input[name='host']").val(),
+				"Port": $("input[name='port']").val(),
+				"Enabled": $("input[name='enabled']").prop("checked"),
+				"BypassLocal": $("input[name='bypassLocal']").prop("checked")
+			};
+			console.log("proxy for save",confObj);
+			var confJson = JSON.stringify(confObj);
+			$(buttonName).prop('disabled', true);
+			var jqxhr = $.post(postUrl, confJson, function(a,b) {
+				console.log( "proxy save is successful" );
+				$("#resultMessage").css('color', 'green');
+				$("#resultMessage").text(successMessage);
+			})
+			  .fail(function(err) {
+				console.log("failed to save proxy", err );
+				$("#resultMessage").css('color', 'red');
+				var errMsg = err.responseText;
+				var maxLength = 200;
+				if(errMsg.length > maxLength){
+					errMsg = errMsg.substr(0, maxLength-3) + "...";
+				}
+				$("#resultMessage").text(errMsg);
+			  }).always(function() {
+				$(buttonName).prop('disabled', false);
+			});
+		});
+	}	
+});	
+
+function toggleHelp(elId){
+	$(elId).toggleClass("helpHidden");
+	$(elId).toggleClass("helpVisible");
+}
+</script>
+</html>

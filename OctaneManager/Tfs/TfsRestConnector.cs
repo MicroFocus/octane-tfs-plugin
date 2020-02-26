@@ -18,13 +18,13 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs.Beans.v1;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools;
+using MicroFocus.Adm.Octane.Api.Core.Connector;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
 {
@@ -103,7 +103,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
                 var clientHandler = new HttpClientHandler { Credentials = networkCredentials };
 
                 //use the httpclient
-                using (var client = new HttpClient(clientHandler))
+                var httpClientHandler = new HttpClientHandler();
+                if (NetworkSettings.CustomProxy != null)
+                {
+                    httpClientHandler.Proxy = NetworkSettings.CustomProxy;
+                }
+
+                using (var client = new HttpClient(httpClientHandler))
+
                 {
                     client.BaseAddress = _tfsConfiguration.Uri;
                     client.DefaultRequestHeaders.Accept.Clear();

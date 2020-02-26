@@ -25,6 +25,8 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+using MicroFocus.Adm.Octane.Api.Core.Connector;
+using System.Net;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -56,11 +58,13 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			Thread.Sleep(5000);
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
+            ProxyManager.ConfigurationChanged += OnProxyChanged;
 			ReadConfigurationFile();
+            ReadProxy();
 			StartRestServer();
 		}
 
-		public EventList GeneralEventsQueue => _generalEventsQueue;
+        public EventList GeneralEventsQueue => _generalEventsQueue;
 
 		public EventsQueue TestResultsQueue => _testResultsQueue;
 
@@ -92,7 +96,25 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		public static PluginManager GetInstance()
+        private void ReadProxy()
+        {
+            WebProxy webProxy = null;
+            try
+            {
+                webProxy = ProxyManager.Read(true).ToWebProxy();
+                
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Failed to load proxy file : {e.Message}");
+            }
+            finally
+            {
+                NetworkSettings.CustomProxy = webProxy;
+            }
+        }
+
+        public static PluginManager GetInstance()
 		{
 			return instance;
 		}
@@ -234,7 +256,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-		private void OnConfigurationChanged(object sender, EventArgs e)
+        private void OnProxyChanged(object sender, EventArgs e)
+        {
+            ReadProxy();
+        }
+
+        private void OnConfigurationChanged(object sender, EventArgs e)
 		{
 			ReadConfigurationFile();
 			RestartPlugin();
