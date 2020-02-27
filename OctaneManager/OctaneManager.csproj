@@ -43,6 +43,9 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MicroFocus.Adm.Octane.Api.Core, Version=15.0.40.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicroFocus.Adm.Octane.Api.Core.15.0.40\lib\net45\MicroFocus.Adm.Octane.Api.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nancy, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nancy.1.4.4\lib\net40\Nancy.dll</HintPath>
@@ -61,113 +64,16 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ProxyManager.cs" />
-    <Compile Include="Configuration\ProxyDetails.cs" />
     <Compile Include="Configuration\ConnectionDetails.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Configuration\Credentials\CredentialsManager.cs" />
     <Compile Include="Configuration\Credentials\Encryption.cs" />
     <Compile Include="Configuration\Paths.cs" />
-    <Compile Include="OctaneSdk\Connector\Authentication\AuthenticationStrategy.cs" />
-    <Compile Include="OctaneSdk\Connector\Authentication\ConnectionListener.cs" />
-    <Compile Include="OctaneSdk\Connector\Authentication\LwssoAuthenticationStrategy.cs" />
-    <Compile Include="OctaneSdk\Connector\Authentication\SsoAuthenticationStrategy.cs" />
-    <Compile Include="OctaneSdk\Connector\Credentials\APIKeyConnectionInfo.cs" />
-    <Compile Include="OctaneSdk\Connector\Credentials\ConnectionInfo.cs" />
-    <Compile Include="OctaneSdk\Connector\Credentials\SsoConnectionInfo.cs" />
-    <Compile Include="OctaneSdk\Connector\Credentials\UserPassConnectionInfo.cs" />
-    <Compile Include="OctaneSdk\Connector\Exceptions\GeneralHttpException.cs" />
-    <Compile Include="OctaneSdk\Connector\Exceptions\MqmRestException.cs" />
-    <Compile Include="OctaneSdk\Connector\Exceptions\NotConnectedException.cs" />
-    <Compile Include="OctaneSdk\Connector\Exceptions\RestExceptionInfo.cs" />
-    <Compile Include="OctaneSdk\Connector\Exceptions\RestExceptionInfos.cs" />
-    <Compile Include="OctaneSdk\Connector\Exceptions\ServerUnavailableException.cs" />
-    <Compile Include="OctaneSdk\Connector\NetworkSettings.cs" />
-    <Compile Include="OctaneSdk\Connector\RequestAdditionalData.cs" />
-    <Compile Include="OctaneSdk\Connector\RequestType.cs" />
-    <Compile Include="OctaneSdk\Connector\ResponseWrapper.cs" />
-    <Compile Include="OctaneSdk\Connector\RestConnector.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\Attachment.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\BaseEntity.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\CommitPattern.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\EntityId.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\EntityIdExtensions.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\EntityLabelMetadata.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\FieldMetadata.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\ListNode.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\Metaphase.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\Phase.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\SharedSpace.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\Transition.cs" />
-    <Compile Include="OctaneSdk\Entities\Base\Workspace.cs" />
-    <Compile Include="OctaneSdk\Entities\General\Comment.cs" />
-    <Compile Include="OctaneSdk\Entities\Helpers\EntityHelper.cs" />
-    <Compile Include="OctaneSdk\Entities\Releases\Milestone.cs" />
-    <Compile Include="OctaneSdk\Entities\Releases\Release.cs" />
-    <Compile Include="OctaneSdk\Entities\Releases\Sprint.cs" />
-    <Compile Include="OctaneSdk\Entities\Requirements\Requirement.cs" />
-    <Compile Include="OctaneSdk\Entities\Requirements\RequirementDocument.cs" />
-    <Compile Include="OctaneSdk\Entities\Tasks\Task.cs" />
-    <Compile Include="OctaneSdk\Entities\Teams\Team.cs" />
-    <Compile Include="OctaneSdk\Entities\Teams\TeamMember.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\Run.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\RunAutomated.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\RunManual.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\RunSuite.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\Test.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\TestAutomated.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\TestGherkin.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\TestManual.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\TestScript.cs" />
-    <Compile Include="OctaneSdk\Entities\Tests\TestSuite.cs" />
-    <Compile Include="OctaneSdk\Entities\UserItems\UserItem.cs" />
-    <Compile Include="OctaneSdk\Entities\Users\BaseUserEntity.cs" />
-    <Compile Include="OctaneSdk\Entities\Users\Role.cs" />
-    <Compile Include="OctaneSdk\Entities\Users\SharedSpaceUser.cs" />
-    <Compile Include="OctaneSdk\Entities\Users\WorkspaceRole.cs" />
-    <Compile Include="OctaneSdk\Entities\Users\WorkspaceUser.cs" />
-    <Compile Include="OctaneSdk\Entities\WorkItems\Defect.cs" />
-    <Compile Include="OctaneSdk\Entities\WorkItems\Epic.cs" />
-    <Compile Include="OctaneSdk\Entities\WorkItems\Feature.cs" />
-    <Compile Include="OctaneSdk\Entities\WorkItems\QualityStory.cs" />
-    <Compile Include="OctaneSdk\Entities\WorkItems\Story.cs" />
-    <Compile Include="OctaneSdk\Entities\WorkItems\WorkItem.cs" />
-    <Compile Include="OctaneSdk\Entities\WorkItems\WorkItemRoot.cs" />
-    <Compile Include="OctaneSdk\Services\Attributes\CustomCollectionPathAttribute.cs" />
-    <Compile Include="OctaneSdk\Services\Attributes\CustomEntityPathAttribute.cs" />
-    <Compile Include="OctaneSdk\Services\Core\DictionaryBasedEntity.cs" />
-    <Compile Include="OctaneSdk\Services\Core\EntityIdJsonConverter.cs" />
-    <Compile Include="OctaneSdk\Services\Core\EntityJsonConverter.cs" />
-    <Compile Include="OctaneSdk\Services\Core\EntityTypeRegistry.cs" />
-    <Compile Include="OctaneSdk\Services\EntityList.cs" />
-    <Compile Include="OctaneSdk\Services\EntityListResult.cs" />
-    <Compile Include="OctaneSdk\Services\EntityService.cs" />
-    <Compile Include="OctaneSdk\Services\GenericEntityListResult.cs" />
-    <Compile Include="OctaneSdk\Services\GroupBy\Group.cs" />
-    <Compile Include="OctaneSdk\Services\GroupBy\GroupByValue.cs" />
-    <Compile Include="OctaneSdk\Services\GroupBy\GroupResult.cs" />
-    <Compile Include="OctaneSdk\Services\ListResult.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\ComparisonOperator.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\CrossQueryPhrase.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\InQueryPhrase.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\LogicalQueryPhrase.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\NegativeQueryPhrase.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\NullQueryPhrase.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\QueryBuilder.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\QueryCondition.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\QueryExpression.cs" />
-    <Compile Include="OctaneSdk\Services\Queries\QueryPhrase.cs" />
-    <Compile Include="OctaneSdk\Services\RequestContext\IRequestContext.cs" />
-    <Compile Include="OctaneSdk\Services\RequestContext\SharedSpaceContext.cs" />
-    <Compile Include="OctaneSdk\Services\RequestContext\SiteAdminContext.cs" />
-    <Compile Include="OctaneSdk\Services\RequestContext\SiteContext.cs" />
-    <Compile Include="OctaneSdk\Services\RequestContext\WorkspaceContext.cs" />
-    <Compile Include="OctaneSdk\Services\Version\OctaneVersion.cs" />
-    <Compile Include="OctaneSdk\Services\Version\OctaneVersionMetadata.cs" />
+    <Compile Include="Configuration\ProxyDetails.cs" />
+    <Compile Include="Configuration\ProxyManager.cs" />
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
     <Compile Include="Octane\OctaneTestResutsUtils.cs" />
@@ -291,10 +197,8 @@
     <EmbeddedResource Include="RestServer\Views\Resources\download.svg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="RestServer\Views\Resources\environment.svg" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\proxy.html" />
+    <EmbeddedResource Include="RestServer\Views\Resources\environment.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
