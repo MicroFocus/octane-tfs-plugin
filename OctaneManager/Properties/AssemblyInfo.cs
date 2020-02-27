@@ -20,12 +20,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TFS plugin ALM Octane Manager")]
-[assembly: AssemblyDescription("Alm Octane Ci plugin Core")]
+[assembly: AssemblyTitle("ALM Octane Manager for Azure DevOps Server")]
+[assembly: AssemblyDescription("ALM Octane Manager for Azure DevOps Server")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microfocus")]
-[assembly: AssemblyProduct("ALM Octane Tfs Plugin")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyProduct("ALM Octane Azure DevOps Plugin")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -46,6 +46,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyFileVersion("1.3.0.0")]
+// [assembly: AssemblyVersion("1.4.0.0")]
+[assembly: AssemblyVersion("1.4.0.0")]
+[assembly: AssemblyFileVersion("1.4.0.0")]

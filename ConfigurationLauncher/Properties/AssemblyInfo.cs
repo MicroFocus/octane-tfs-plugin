@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ConfigurationLauncher")]
-[assembly: AssemblyDescription("Application for launching the ALM Octane TFS Plugin")]
+[assembly: AssemblyDescription("Application for launching the ALM Octane Azure DevOps Plugin")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microfocus")]
-[assembly: AssemblyProduct("ConfigurationLauncher")]
-[assembly: AssemblyCopyright("Microfocus Copyright ©  2018")]
+[assembly: AssemblyProduct("ALM Octane Azure DevOps Plugin")]
+[assembly: AssemblyCopyright("Microfocus Copyright ©  2020")]
 [assembly: AssemblyTrademark("Micro Focus")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +28,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyFileVersion("1.3.0.0")]
+[assembly: AssemblyVersion("1.4.0.0")]
+[assembly: AssemblyFileVersion("1.4.0.0")]
