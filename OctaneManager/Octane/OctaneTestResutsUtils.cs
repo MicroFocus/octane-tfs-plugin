@@ -25,97 +25,133 @@ using System.Xml.Serialization;
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 {
     public static class OctaneTestResutsUtils
-	{
-		private static readonly ILog Log = LogManager.GetLogger(LogUtils.OCTANE_TEST_RESULTS_LOGGER);
+    {
+        private static readonly ILog Log = LogManager.GetLogger(LogUtils.OCTANE_TEST_RESULTS_LOGGER);
 
-		public static string SerializeToXml(OctaneTestResult octaneTestResult)
-		{
-			var xmlSerializer = new XmlSerializer(typeof(OctaneTestResult));
-			using (StringWriter textWriter = new Utf8StringWriter())
-			{
-				var ns = new XmlSerializerNamespaces();
-				ns.Add("", "");
-				xmlSerializer.Serialize(textWriter, octaneTestResult, ns);
-				string result = textWriter.ToString();
-				Log.Debug(result);
+        public static string SerializeToXml(OctaneTestResult octaneTestResult)
+        {
+            var xmlSerializer = new XmlSerializer(typeof(OctaneTestResult));
+            using (StringWriter textWriter = new Utf8StringWriter())
+            {
+                var ns = new XmlSerializerNamespaces();
+                ns.Add("", "");
+                xmlSerializer.Serialize(textWriter, octaneTestResult, ns);
+                string result = textWriter.ToString();
+                Log.Debug(result);
 
-				return result;
-			}
-		}
+                return result;
+            }
+        }
 
-		public static OctaneTestResult ConvertToOctaneTestResult(string serverId, string projectCiId, string buildCiId, IList<TfsTestResult> testResults, string runWebAccessUrl)
-		{
-			if (testResults.Count <= 0) return null;
-			//Serialization prepare
-			var octaneTestResult = new OctaneTestResult();
-			var build = testResults[0].Build;
-			var project = testResults[0].Project;
-			octaneTestResult.Build = OctaneTestResultBuild.Create(serverId, buildCiId, projectCiId);
-			/*octaneTestResult.TestFields = new List<OctaneTestResultTestField>(new[] {
+        public static OctaneTestResult ConvertToOctaneTestResult(string serverId, string projectCiId, string buildCiId, IList<TfsTestResult> testResults, string runWebAccessUrl)
+        {
+            if (testResults.Count <= 0) return null;
+            //Serialization prepare
+            var octaneTestResult = new OctaneTestResult();
+            var build = testResults[0].Build;
+            var project = testResults[0].Project;
+            octaneTestResult.Build = OctaneTestResultBuild.Create(serverId, buildCiId, projectCiId);
+            /*octaneTestResult.TestFields = new List<OctaneTestResultTestField>(new[] {
 		        OctaneTestResultTestField.Create(OctaneTestResultTestField.TEST_LEVEL_TYPE, "UnitTest")
 		    });*/
 
-			octaneTestResult.TestRuns = new List<OctaneTestResultTestRun>();
-			foreach (var testResult in testResults)
-			{
-				var run = new OctaneTestResultTestRun();
-				if (testResult.AutomatedTestType.Equals("JUnit"))
-				{
-					var testNameParts = testResult.AutomatedTestStorage.Split('.');
-					run.Name = testResult.AutomatedTestName;
-					run.Class = testNameParts[testNameParts.Length - 1];
-					run.Package = String.Join(".", new ArraySegment<String>(testNameParts, 0, testNameParts.Length - 1));
-				}
-				else // UnitTest
-				{
-					var testNameParts = testResult.AutomatedTestName.Split('.');
-					run.Name = testNameParts[testNameParts.Length - 1];
-					run.Class = testNameParts[testNameParts.Length - 2];
-					run.Package = String.Join(".", new ArraySegment<String>(testNameParts, 0, testNameParts.Length - 2));
-					run.Module = Path.GetFileNameWithoutExtension(testResult.AutomatedTestStorage);
-				}
+            octaneTestResult.TestRuns = new List<OctaneTestResultTestRun>();
+            foreach (var testResult in testResults)
+            {
+                var run = new OctaneTestResultTestRun();
+                if (testResult.AutomatedTestType.Equals("JUnit"))
+                {
+                    var testNameParts = testResult.AutomatedTestStorage.Split('.');
+                    run.Name = testResult.AutomatedTestName;
+                    run.Class = testNameParts[testNameParts.Length - 1];
+                    run.Package = String.Join(".", new ArraySegment<String>(testNameParts, 0, testNameParts.Length - 1));
+                }
+                else // UnitTest
+                {
+                    var testNameParts = testResult.AutomatedTestName.Split('.');
+                    run.Name = testNameParts[testNameParts.Length - 1];
+                    run.Class = testNameParts[testNameParts.Length - 2];
+                    run.Package = String.Join(".", new ArraySegment<String>(testNameParts, 0, testNameParts.Length - 2));
+                    run.Module = Path.GetFileNameWithoutExtension(testResult.AutomatedTestStorage);
+                }
 
 
-				run.Duration = (long)testResult.DurationInMs;
-				run.Status = testResult.Outcome;
-				if (run.Status.Equals("NotExecuted"))
-				{
-					run.Status = "Skipped";
-				}
+                run.Duration = (long)testResult.DurationInMs;
+                run.Status = testResult.Outcome;
+                if (run.Status.Equals("NotExecuted"))
+                {
+                    run.Status = "Skipped";
+                }
 
-				if (run.Status.Equals("Failed"))
-				{
-				    if (testResult.FailureType == "None" || String.IsNullOrEmpty(testResult.FailureType))
-				    {
-				        testResult.FailureType = FindExceptionName(testResult.StackTrace);
-				    }
-                    
+                if (run.Status.Equals("Failed"))
+                {
+                    if (testResult.FailureType == "None" || String.IsNullOrEmpty(testResult.FailureType))
+                    {
+                        testResult.FailureType = FindExceptionName(testResult);
+                    }
+
                     run.Error = OctaneTestResultError.Create(testResult.FailureType, testResult.ErrorMessage, testResult.StackTrace);
-				}
+                }
 
-				run.Started = OctaneUtils.ConvertToOctaneTime(testResult.StartedDate);
+                run.Started = OctaneUtils.ConvertToOctaneTime(testResult.StartedDate);
 
-				if (!string.IsNullOrEmpty(runWebAccessUrl))
-				{
-					//Run WebAccessUrl        http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=runCharts
-					//Run Result WebAccessUrl http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=resultSummary&resultId=100000
-					run.ExternalReportUrl = runWebAccessUrl.Replace("_a=runCharts", ($"_a=resultSummary&resultId={testResult.Id}"));
-				}
+                if (!string.IsNullOrEmpty(runWebAccessUrl))
+                {
+                    //Run WebAccessUrl        http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=runCharts
+                    //Run Result WebAccessUrl http://berkovir:8080/tfs/DefaultCollection/Test2/_TestManagement/Runs#runId=8&_a=resultSummary&resultId=100000
+                    run.ExternalReportUrl = runWebAccessUrl.Replace("_a=runCharts", ($"_a=resultSummary&resultId={testResult.Id}"));
+                }
 
-				octaneTestResult.TestRuns.Add(run);
-			}
-			return octaneTestResult;
-		}
-
-	    public static string FindExceptionName(string input)
-	    {
-            var retVal = "Exception";
-            if (!string.IsNullOrEmpty(input) && input.IndexOf(":", StringComparison.Ordinal) > 0)
-	        {
-	            retVal  = input.Substring(0, input.IndexOf(":", StringComparison.Ordinal));
+                octaneTestResult.TestRuns.Add(run);
             }
-            return  retVal;
-	    }
+            return octaneTestResult;
+        }
 
-	}
+        public static string FindExceptionName(TfsTestResult testResult)
+        {
+            var retVal = "";
+            if ("JUnit".Equals(testResult.AutomatedTestType))
+            {
+                var input = testResult.StackTrace;
+                if (!string.IsNullOrEmpty(input) && input.IndexOf(":", StringComparison.Ordinal) > 0)
+                {
+                    retVal = input.Substring(0, input.IndexOf(":", StringComparison.Ordinal));
+                }
+            }
+            if ("UnitTest".Equals(testResult.AutomatedTestType))
+            {
+                var input = testResult.ErrorMessage;
+                bool found = false;
+                //case1 : error message : Assert.AreEqual failed. Expected:<5>. Actual:<6>. 5 should be equal to 6
+                if (input.StartsWith("Assert."))
+                {
+                    int endIndex = input.IndexOf(" ");
+                    if (endIndex > -1)
+                    {
+                        retVal = input.Substring(0, endIndex);
+                        found = true;
+                    }
+                }
+                //case2 : error message : Test method UnitTestProject1.UnitTest1.TestMethod3 threw exception: System.InvalidOperationException: not allowed operation
+                if (!found)
+                {
+                    string msgToFind = "threw exception: ";
+                    int exceptionStartIndex = input.IndexOf(msgToFind);
+                    if (exceptionStartIndex > -1)
+                    {
+                        int startIndex = exceptionStartIndex + msgToFind.Length;
+                        int endIndex = input.IndexOf(":", startIndex);
+                        if (endIndex > -1)
+                        {
+                            retVal = input.Substring(startIndex, endIndex - startIndex).Trim();
+                            found = true;
+                        }
+                    }
+                }
+            }
+
+            return retVal;
+        }
+
+    }
 }
