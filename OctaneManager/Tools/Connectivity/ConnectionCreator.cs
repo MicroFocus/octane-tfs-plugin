@@ -32,13 +32,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void InitRestConnectorForUI()
-        {
-            NetworkSettings.EnableAllSecurityProtocols();
-            NetworkSettings.IgnoreServerCertificateValidation();
-            RestConnector.AwaitContinueOnCapturedContext = false;
-        }
-
         public static void CheckMissingValues(ConnectionDetails connectionDetails)
         {
             if (string.IsNullOrEmpty(connectionDetails.ALMOctaneUrl))

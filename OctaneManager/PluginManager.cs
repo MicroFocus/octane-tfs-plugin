@@ -59,10 +59,18 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Thread.Sleep(5000);
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
             ProxyManager.ConfigurationChanged += OnProxyChanged;
-			ReadConfigurationFile();
+            InitRestConnector();
+            ReadConfigurationFile();
             ReadProxy();
 			StartRestServer();
 		}
+
+        private static void InitRestConnector()
+        {
+            NetworkSettings.EnableAllSecurityProtocols();
+            NetworkSettings.IgnoreServerCertificateValidation();
+            RestConnector.AwaitContinueOnCapturedContext = false;
+        }
 
         public EventList GeneralEventsQueue => _generalEventsQueue;
 
