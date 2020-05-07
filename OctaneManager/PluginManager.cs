@@ -58,21 +58,21 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			Thread.Sleep(5000);
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
-            ProxyManager.ConfigurationChanged += OnProxyChanged;
-            InitRestConnector();
-            ReadConfigurationFile();
-            ReadProxy();
+			ProxyManager.ConfigurationChanged += OnProxyChanged;
+			InitRestConnector();
+			ReadConfigurationFile();
+			ReadProxy();
 			StartRestServer();
 		}
 
-        private static void InitRestConnector()
-        {
-            NetworkSettings.EnableAllSecurityProtocols();
-            NetworkSettings.IgnoreServerCertificateValidation();
-            RestConnector.AwaitContinueOnCapturedContext = false;
-        }
+		private static void InitRestConnector()
+		{
+			NetworkSettings.EnableAllSecurityProtocols();
+			NetworkSettings.IgnoreServerCertificateValidation();
+			RestConnector.AwaitContinueOnCapturedContext = false;
+		}
 
-        public EventList GeneralEventsQueue => _generalEventsQueue;
+		public EventList GeneralEventsQueue => _generalEventsQueue;
 
 		public EventsQueue TestResultsQueue => _testResultsQueue;
 
@@ -104,25 +104,25 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-        private void ReadProxy()
-        {
-            WebProxy webProxy = null;
-            try
-            {
-                webProxy = ProxyManager.Read(true).ToWebProxy();
-                
-            }
-            catch (Exception e)
-            {
-                Log.Error($"Failed to load proxy file : {e.Message}");
-            }
-            finally
-            {
-                NetworkSettings.CustomProxy = webProxy;
-            }
-        }
+		private void ReadProxy()
+		{
+			WebProxy webProxy = null;
+			try
+			{
+				webProxy = ProxyManager.Read(true).ToWebProxy();
 
-        public static PluginManager GetInstance()
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Failed to load proxy file : {e.Message}");
+			}
+			finally
+			{
+				NetworkSettings.CustomProxy = webProxy;
+			}
+		}
+
+		public static PluginManager GetInstance()
 		{
 			return instance;
 		}
@@ -132,51 +132,35 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Info("PluginManager Shutdown");
 			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
 			StopRestServer();
-			StopPlugin(false);
+			StopPlugin();
 		}
 
 
-		private void StopAllThreads()
+		public void StopPlugin()
 		{
-			_cancellationTokenSource.Cancel();
+			Log.Info("StopPlugin");
 
-			if (_queuesManager != null)
-			{
-				_queuesManager.ShutDown();
-			}
+			Status = StatusEnum.Stopping;
+
+			_cancellationTokenSource.Cancel();
 
 			if (_taskManager != null)
 			{
 				_taskManager.ShutDown();
+				_taskManager = null;
 			}
-		}
 
-		public void StopPlugin(bool waitShutdown)
-		{
-			Status = StatusEnum.Stopping;
-			StopAllThreads();
-			if (waitShutdown)
+			if (_queuesManager != null)
 			{
-				if (_octaneInitializationThread != null)
-				{
-					_octaneInitializationThread.Wait();
-				}
-
-				if (_queuesManager != null)
-				{
-					_queuesManager.WaitShutdown();
-				}
-
-				if (_taskManager != null)
-				{
-					_taskManager.WaitShutdown();
-				}
+				_queuesManager.ShutDown();
+				_queuesManager = null;
 			}
+
 
 			_octaneInitializationThread = null;
-			_taskManager = null;
-			_queuesManager = null;
 			Status = StatusEnum.Stopped;
+
+			Log.Info("StopPlugin Done");
 		}
 
 		public void StartPlugin()
@@ -193,6 +177,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 				_cancellationTokenSource = new CancellationTokenSource();
 				_octaneInitializationThread = Task.Factory.StartNew(() => StartPluginInternal(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
 			}
+
+			Log.Info("StartPlugin Done");
 		}
 
 		private void StartRestServer()
@@ -264,12 +250,12 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
-        private void OnProxyChanged(object sender, EventArgs e)
-        {
-            ReadProxy();
-        }
+		private void OnProxyChanged(object sender, EventArgs e)
+		{
+			ReadProxy();
+		}
 
-        private void OnConfigurationChanged(object sender, EventArgs e)
+		private void OnConfigurationChanged(object sender, EventArgs e)
 		{
 			ReadConfigurationFile();
 			RestartPlugin();
@@ -279,10 +265,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			Log.Info($"Plugin is restarting");
 
-			StopAllThreads();
 			Task.Factory.StartNew(() =>
 			{
-				StopPlugin(true);
+				StopPlugin();
 				StartPlugin();
 			});
 		}

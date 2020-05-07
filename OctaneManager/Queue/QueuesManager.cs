@@ -255,7 +255,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue
     public class SleepTimeWrapper
     {
         public static readonly int DEFAULT_SLEEP_TIME = 2; //2 seconds
-        public static readonly int MAX_SLEEP_TIME = 120; //120 seconds
+        public static readonly int MAX_SLEEP_TIME = 30; //30 seconds
 
         public int SleepTime { get; set; } = DEFAULT_SLEEP_TIME;
 

@@ -248,7 +248,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.RestServer
             Post["/stop", AllowConfigurationModifyAccess] = _ =>
             {
                 Log.Debug("Plugin stop requested");
-                PluginManager.GetInstance().StopPlugin(false);
+                PluginManager.GetInstance().StopPlugin();
                 return "Stopping ALM Octane plugin";
             };
 
