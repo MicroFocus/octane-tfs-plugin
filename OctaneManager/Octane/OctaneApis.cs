@@ -43,6 +43,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 		private RestConnector _restConnector;
 		private ConnectionDetails _connectionDetails;
+		private int DEFAULT_TIMEOUT = 60 * 1000; //60 seconds;
 
 		public OctaneApis(RestConnector restConnector, ConnectionDetails connectionDetails)
 		{
@@ -74,7 +75,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 		public void SendTaskResult(string taskId, OctaneTaskResult octaneTaskResult)
 		{
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_SERVERS}{_connectionDetails.InstanceId}/tasks/{taskId}/result";
-			ResponseWrapper res = _restConnector.ExecutePut(baseUri, null, octaneTaskResult.ToString());
+			ResponseWrapper res = _restConnector.ExecutePut(baseUri, null, octaneTaskResult.ToString(), RequestConfiguration.Create().SetTimeout(DEFAULT_TIMEOUT));
 			ValidateExpectedStatusCode(res, HttpStatusCode.NoContent);
 		}
 
@@ -82,7 +83,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 		{
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_SERVERS}{_connectionDetails.InstanceId}/jobs/{jobName}/tests-result-preflight";
 			bool result = false;
-			ResponseWrapper res = _restConnector.ExecuteGet(baseUri, null);
+			ResponseWrapper res = _restConnector.ExecuteGet(baseUri, null, RequestConfiguration.Create().SetTimeout(DEFAULT_TIMEOUT));
 			if (res.StatusCode == HttpStatusCode.OK)
 			{
 				result = Boolean.Parse(res.Data);
@@ -104,7 +105,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_EVENTS}";
 			var body = JsonHelper.SerializeObject(eventList);
-			var res = _restConnector.ExecutePut(baseUri, null, body);
+			var res = _restConnector.ExecutePut(baseUri, null, body, RequestConfiguration.Create().SetTimeout(DEFAULT_TIMEOUT));
 			ValidateExpectedStatusCode(res, HttpStatusCode.OK);
 		}
 
@@ -123,7 +124,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 			String xml = OctaneTestResutsUtils.SerializeToXml(octaneTestResult);
 			ResponseWrapper res = _restConnector.ExecutePost(baseUri, null, xml,
-						 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
+						 RequestConfiguration.Create()
+						 .SetGZipCompression(true)
+						 .AddHeader("ContentType", "application/xml")
+						 .SetTimeout(DEFAULT_TIMEOUT));
 
 			ValidateExpectedStatusCode(res, HttpStatusCode.Accepted);
 		}

@@ -36,7 +36,7 @@ namespace MicroFocus.Ci.Tfs.Octane
         protected static readonly ILog LogPolling = LogManager.GetLogger(LogUtils.TASK_POLLING_LOGGER);
 
 
-        private const int DEFAULT_POLLING_GET_TIMEOUT = 20 * 1000; //20 seconds
+        private const int DEFAULT_POLLING_GET_TIMEOUT = 30 * 1000; //30 seconds
 
 		private readonly int _pollingGetTimeout;
 		private Task _taskPollingThread;
