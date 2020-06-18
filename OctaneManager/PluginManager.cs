@@ -46,6 +46,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private QueuesManager _queuesManager;
 		private OctaneTaskManager _taskManager;
+		private OctaneApis _octaneApis;
 
 		private StatusEnum _pluginStatus = StatusEnum.Stopped;
 
@@ -156,6 +157,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 				_queuesManager = null;
 			}
 
+			if (_octaneApis != null)
+			{
+				_octaneApis.ShutDown();
+				_octaneApis = null;
+			}
 
 			_octaneInitializationThread = null;
 			Status = StatusEnum.Stopped;
@@ -213,11 +219,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 				try
 				{
 					TfsApis tfsApis = ConnectionCreator.CreateTfsConnection(_connectionDetails);
-					OctaneApis octaneApis = ConnectionCreator.CreateOctaneConnection(_connectionDetails);
+					_octaneApis = ConnectionCreator.CreateOctaneConnection(_connectionDetails);
 
-					_taskManager = new OctaneTaskManager(tfsApis, octaneApis);
+					_taskManager = new OctaneTaskManager(tfsApis, _octaneApis);
 					_taskManager.Start();
-					_queuesManager = new QueuesManager(tfsApis, octaneApis);
+					_queuesManager = new QueuesManager(tfsApis, _octaneApis);
 					_queuesManager.Start();
 
 					_initFailCounter = 0;

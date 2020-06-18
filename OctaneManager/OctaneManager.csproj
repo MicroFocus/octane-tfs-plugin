@@ -43,8 +43,8 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MicroFocus.Adm.Octane.Api.Core, Version=15.0.40.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MicroFocus.Adm.Octane.Api.Core.15.0.40\lib\net45\MicroFocus.Adm.Octane.Api.Core.dll</HintPath>
+    <Reference Include="MicroFocus.Adm.Octane.Api.Core, Version=15.0.60.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicroFocus.Adm.Octane.Api.Core.15.0.60\lib\net45\MicroFocus.Adm.Octane.Api.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nancy, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
