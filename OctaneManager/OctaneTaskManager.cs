@@ -30,15 +30,11 @@ using System.Web;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
-    public class OctaneTaskManager
+	public class OctaneTaskManager
 	{
 		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected static readonly ILog LogPolling = LogManager.GetLogger(LogUtils.TASK_POLLING_LOGGER);
+		protected static readonly ILog LogPolling = LogManager.GetLogger(LogUtils.TASK_POLLING_LOGGER);
 
-
-        private const int DEFAULT_POLLING_GET_TIMEOUT = 30 * 1000; //30 seconds
-
-		private readonly int _pollingGetTimeout;
 		private Task _taskPollingThread;
 
 		private readonly CancellationTokenSource _pollTasksCancellationToken = new CancellationTokenSource();
@@ -54,11 +50,10 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Undefined
 		}
 
-		public OctaneTaskManager(TfsApis tfsApis, OctaneApis octaneApis, int pollingTimeout = DEFAULT_POLLING_GET_TIMEOUT)
+		public OctaneTaskManager(TfsApis tfsApis, OctaneApis octaneApis)
 		{
 			_tfsApis = tfsApis;
 			_octaneApis = octaneApis;
-			_pollingGetTimeout = pollingTimeout;
 		}
 
 		public void ShutDown()
@@ -83,14 +78,14 @@ namespace MicroFocus.Ci.Tfs.Octane
 		private void PollOctaneTasks(CancellationToken token)
 		{
 			Log.Debug("Task polling - started");
-            LogPolling.Debug("Task polling - started");
-            while (!token.IsCancellationRequested)
+			LogPolling.Debug("Task polling - started");
+			while (!token.IsCancellationRequested)
 			{
 				string taskDef = null;
 				try
 				{
-                    LogPolling.Debug("Task polling - before get task");
-                    taskDef = _octaneApis.GetTasks(_pollingGetTimeout);
+					LogPolling.Debug("Task polling - before get task");
+					taskDef = _octaneApis.GetTasks();
 					if (!string.IsNullOrEmpty(taskDef))
 					{
 						Task.Factory.StartNew(() =>
@@ -108,28 +103,28 @@ namespace MicroFocus.Ci.Tfs.Octane
 					}
 					if (myEx is WebException && ((WebException)myEx).Status == WebExceptionStatus.Timeout)
 					{
-                        //known exception
-                        LogPolling.Debug($"Task polling - no task received");
+						//known exception
+						LogPolling.Debug($"Task polling - no task received");
 					}
 					else
 					{
-						if (!ExceptionHelper.HandleExceptionAndRestartIfRequired(myEx, Log, "Task polling"))
-						{
-							Thread.Sleep(DEFAULT_POLLING_GET_TIMEOUT);//wait before next pool
-						}
+						ExceptionHelper.HandleExceptionAndRestartIfRequired(myEx, Log, "Task polling");
+						LogPolling.Debug($"Task polling - waiting before next polling");
+						Thread.Sleep(30000);
+
 					}
 				}
 			}
 			Log.Debug("Task polling - finished");
-            LogPolling.Debug("Task polling - finished");
-        }
+			LogPolling.Debug("Task polling - finished");
+		}
 
 
 		private void HandleTasks(string taskData)
 		{
 			Log.Info($"Received tasks : {taskData}");
-            LogPolling.Debug($"Received tasks : {taskData}");
-            OctaneTaskResult taskResult = null;
+			LogPolling.Debug($"Received tasks : {taskData}");
+			OctaneTaskResult taskResult = null;
 			OctaneTask octaneTask = null;
 			try
 			{

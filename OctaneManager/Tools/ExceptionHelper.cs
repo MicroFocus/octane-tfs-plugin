@@ -27,7 +27,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 		/// <summary>
 		/// Check if exception related to communication issues and restart plugin to obtain new connections
 		/// <returns>True if restart was done</returns>
-		public static bool HandleExceptionAndRestartIfRequired(Exception e, ILog log, string methodName)
+		public static void HandleExceptionAndRestartIfRequired(Exception e, ILog log, string methodName)
 		{
 
 			Exception myEx = e;
@@ -38,19 +38,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
 			if (myEx is ServerUnavailableException || myEx is InvalidCredentialException || myEx is UnauthorizedAccessException)
 			{
 				log.Error($"{methodName} failed with {myEx.GetType().Name} : {myEx.Message}");
-				PluginManager.GetInstance().RestartPlugin();
-				return true;
+				//	PluginManager.GetInstance().RestartPlugin();
+				//	return true;
 			}
-			//else if (myEx is GeneralHttpException)
-			//{
-			//	HttpStatusCode status = ((GeneralHttpException)myEx).StatusCode;
-			//	log.Error($"{methodName} failed with {myEx.GetType().Name} : {(int)status} {status} - {myEx.Message}");
-			//	return false;
-			//}
 			else
 			{
 				log.Error($"{methodName} failed with {myEx.GetType().ToString()} : {myEx.Message}", myEx);
-				return false;
 			}
 
 		}
