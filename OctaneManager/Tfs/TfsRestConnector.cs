@@ -103,14 +103,12 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs
                 var clientHandler = new HttpClientHandler { Credentials = networkCredentials };
 
                 //use the httpclient
-                var httpClientHandler = new HttpClientHandler();
                 if (NetworkSettings.CustomProxy != null)
                 {
-                    httpClientHandler.Proxy = NetworkSettings.CustomProxy;
+                    clientHandler.Proxy = NetworkSettings.CustomProxy;
                 }
 
-                using (var client = new HttpClient(httpClientHandler))
-
+                using (var client = new HttpClient(clientHandler))
                 {
                     client.BaseAddress = _tfsConfiguration.Uri;
                     client.DefaultRequestHeaders.Accept.Clear();

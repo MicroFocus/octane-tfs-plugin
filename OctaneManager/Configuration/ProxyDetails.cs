@@ -28,7 +28,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
 
         public string Host { get; set; }
 
-        public String Port { get; set; }
+        public string Port { get; set; }
 
         public string User { get; set; }
 
