@@ -263,7 +263,5 @@ paket-files/
 __pycache__/
 *.pyc
 
-/OctaneTfsPluginSetup/PackageDebug
-/OctaneTfsPluginSetup/PackageRelease
-/OctaneTfsPluginSetup/Package2019
+/OctaneTfsPluginSetup/Package*
 /tools/tfs-server-dlls/current
