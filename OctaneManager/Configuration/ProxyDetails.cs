@@ -24,7 +24,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
     {
         public static string SENSITIVE_VALUE_REPLACER = "**********";
 
-        public bool Enabled { get; set; } = true;
+        public bool Enabled { get; set; } = false;
 
         public string Host { get; set; }
 
