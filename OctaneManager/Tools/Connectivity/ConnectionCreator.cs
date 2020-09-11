@@ -32,13 +32,6 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void InitRestConnectorForUI()
-        {
-            NetworkSettings.EnableAllSecurityProtocols();
-            NetworkSettings.IgnoreServerCertificateValidation();
-            RestConnector.AwaitContinueOnCapturedContext = false;
-        }
-
         public static void CheckMissingValues(ConnectionDetails connectionDetails)
         {
             if (string.IsNullOrEmpty(connectionDetails.ALMOctaneUrl))
@@ -78,6 +71,55 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity
                 throw new ArgumentException("InstanceId length must be less than or equal to 40 characters");
             }
         }
+
+        public static void CheckMissingValues(ProxyDetails proxyDetails)
+        {
+            if (proxyDetails.Enabled)
+            {
+                if (String.IsNullOrEmpty(proxyDetails.Host))
+                {
+                    throw new ArgumentException("Host is not defined");
+                }
+                if (proxyDetails.Host.ToLower().StartsWith("http"))
+                {
+                    throw new ArgumentException("Enter host name without http://. ");
+                }
+
+
+                int port = 0;
+                try
+                {
+                    port = Int32.Parse(proxyDetails.Port);
+                }
+                catch (Exception)
+                {
+                    throw new ArgumentException("Port must be a number ranging from 0 to 65535");
+                }
+                if (port < 1 && port > 65535)
+                {
+                    throw new ArgumentException("Port must be a number ranging from 0 to 65535");
+                }
+            }
+
+        }
+
+        public static void CheckProxySettings(String url)
+        {
+            try
+            {
+                bool customProxyUsed = NetworkSettings.CustomProxy != null;
+                IWebProxy proxy = customProxyUsed ? NetworkSettings.CustomProxy : WebRequest.DefaultWebProxy;
+                Uri uri = new Uri(url);
+                var proxyUri = proxy.GetProxy(uri).Host;
+                bool isByPassed = proxy.IsBypassed(uri);
+                Log.Debug($"{(customProxyUsed ? "Custom" : "Default")} Proxy setting for URL: {url}; proxy host: {proxyUri}; isByPassed: {isByPassed}");
+            }
+            catch (Exception e)
+            {
+                Log.Debug($"Failed to check proxy settings : {e.Message}");
+            }
+        }
+
 
         public static TfsApis CreateTfsConnection(ConnectionDetails connectionDetails)
         {

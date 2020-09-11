@@ -13,6 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+using log4net;
 using MicroFocus.Adm.Octane.Api.Core.Connector;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
@@ -24,12 +25,16 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tools.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 {
 	public class OctaneApis
 	{
+		protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private const string INTERNAL_API = "/internal-api/shared_spaces/";
 		private const string ANALYTICS_CI_SERVERS = "/analytics/ci/servers/";
 		private const string ANALYTICS_CI_EVENTS = "/analytics/ci/events";
@@ -43,13 +48,56 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 		private RestConnector _restConnector;
 		private ConnectionDetails _connectionDetails;
+		private int DEFAULT_TIMEOUT = 60 * 1000; //60 seconds;
+		private int TASK_POLLING_TIMEOUT = 30 * 1000; //30 seconds;
+		private Task requestWatcher;
+		private readonly CancellationTokenSource _requestWatcherTaskCancellationToken = new CancellationTokenSource();
 
 		public OctaneApis(RestConnector restConnector, ConnectionDetails connectionDetails)
 		{
 			_restConnector = restConnector;
 			_connectionDetails = connectionDetails;
-            PLUGIN_VERSION = Helpers.GetPluginVersion();
-        }
+			PLUGIN_VERSION = Helpers.GetPluginVersion();
+			requestWatcher = Task.Factory.StartNew(() => WatchRequests(_requestWatcherTaskCancellationToken.Token), TaskCreationOptions.LongRunning);
+		}
+
+		public void ShutDown()
+		{
+			if (!_requestWatcherTaskCancellationToken.IsCancellationRequested)
+			{
+				_requestWatcherTaskCancellationToken.Cancel();
+				Log.Debug("OctaneApis - stopped");
+			}
+		}
+
+		private void WatchRequests(CancellationToken token)
+		{
+			Log.Debug("WatchRequests - started");
+			while (!token.IsCancellationRequested)
+			{
+				try
+				{
+					IList<OngoingRequest> ongoingRequests = _restConnector.GetOngoingRequests();
+					foreach (OngoingRequest ongoing in ongoingRequests)
+					{
+						int duration = (int)DateTime.Now.Subtract(ongoing.Started).TotalMilliseconds;
+						if (duration > ongoing.Request.Timeout)
+						{
+							Log.Warn($"Closing request after  {duration/1000} sec : { ongoing.Request.RequestUri}");
+							ongoing.Request.Abort();
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					Log.Error("Exception in WatchRequests : " + e.Message, e);
+				}
+
+				Thread.Sleep(10000);
+			}
+			Log.Debug("WatchRequests - finished");
+		}
+
 
 		public string PluginInstanceId
 		{
@@ -59,7 +107,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 			}
 		}
 
-		public string GetTasks(int pollingTimeout)
+		public string GetTasks()
 		{
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_SERVERS}{_connectionDetails.InstanceId}/tasks";
 			var queryParams =
@@ -67,14 +115,14 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 				$"&api-version={API_VERSION}&sdk-version={SDK_VERSION}" +
 				$"&plugin-version={PLUGIN_VERSION}" +
 				$"&client-id={_connectionDetails.ClientId}";
-			ResponseWrapper wrapper = _restConnector.ExecuteGet(baseUri, queryParams, RequestConfiguration.Create().SetTimeout(pollingTimeout));
+			ResponseWrapper wrapper = _restConnector.ExecuteGet(baseUri, queryParams, RequestConfiguration.Create().SetTimeout(TASK_POLLING_TIMEOUT)); 
 			return wrapper.Data;
 		}
 
 		public void SendTaskResult(string taskId, OctaneTaskResult octaneTaskResult)
 		{
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_SERVERS}{_connectionDetails.InstanceId}/tasks/{taskId}/result";
-			ResponseWrapper res = _restConnector.ExecutePut(baseUri, null, octaneTaskResult.ToString());
+			ResponseWrapper res = _restConnector.ExecutePut(baseUri, null, octaneTaskResult.ToString(), RequestConfiguration.Create().SetTimeout(DEFAULT_TIMEOUT));
 			ValidateExpectedStatusCode(res, HttpStatusCode.NoContent);
 		}
 
@@ -82,7 +130,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 		{
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_SERVERS}{_connectionDetails.InstanceId}/jobs/{jobName}/tests-result-preflight";
 			bool result = false;
-			ResponseWrapper res = _restConnector.ExecuteGet(baseUri, null);
+			ResponseWrapper res = _restConnector.ExecuteGet(baseUri, null, RequestConfiguration.Create().SetTimeout(DEFAULT_TIMEOUT));
 			if (res.StatusCode == HttpStatusCode.OK)
 			{
 				result = Boolean.Parse(res.Data);
@@ -104,7 +152,7 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 			var baseUri = $"{INTERNAL_API}{_connectionDetails.SharedSpace}{ANALYTICS_CI_EVENTS}";
 			var body = JsonHelper.SerializeObject(eventList);
-			var res = _restConnector.ExecutePut(baseUri, null, body);
+			var res = _restConnector.ExecutePut(baseUri, null, body, RequestConfiguration.Create().SetTimeout(DEFAULT_TIMEOUT));
 			ValidateExpectedStatusCode(res, HttpStatusCode.OK);
 		}
 
@@ -123,7 +171,10 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane
 
 			String xml = OctaneTestResutsUtils.SerializeToXml(octaneTestResult);
 			ResponseWrapper res = _restConnector.ExecutePost(baseUri, null, xml,
-						 RequestConfiguration.Create().SetGZipCompression(true).AddHeader("ContentType", "application/xml"));
+						 RequestConfiguration.Create()
+						 .SetGZipCompression(true)
+						 .AddHeader("ContentType", "application/xml")
+						 .SetTimeout(DEFAULT_TIMEOUT));
 
 			ValidateExpectedStatusCode(res, HttpStatusCode.Accepted);
 		}

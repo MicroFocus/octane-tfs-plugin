@@ -21,63 +21,63 @@ using System.Text;
 
 namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration.Credentials
 {
-	public class Encryption
-	{
-		static readonly string EncryptionPrefix = "AES:";
-		static readonly string PasswordHash = "heRWiCTi";
-		static readonly string SaltKey = "iNEchoAH";
-		static readonly string VIKey = "rATeRISmoretiCKE";
+    public class Encryption
+    {
+        static readonly string EncryptionPrefix = "AES:";
+        static readonly string PasswordHash = "heRWiCTi";
+        static readonly string SaltKey = "iNEchoAH";
+        static readonly string VIKey = "rATeRISmoretiCKE";
 
-		public static string Encrypt(string plainText)
-		{
-			byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+        public static string Encrypt(string plainText)
+        {
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
-			byte[] keyBytes = new Rfc2898DeriveBytes(PasswordHash, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
-			var encryptor = GetRijndaelManaged().CreateEncryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
+            byte[] keyBytes = new Rfc2898DeriveBytes(PasswordHash, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
+            var encryptor = GetRijndaelManaged().CreateEncryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
 
-			byte[] cipherTextBytes;
+            byte[] cipherTextBytes;
 
-			using (var memoryStream = new MemoryStream())
-			{
-				using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-				{
-					cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
-					cryptoStream.FlushFinalBlock();
-					cipherTextBytes = memoryStream.ToArray();
-				}
-			}
-			return EncryptionPrefix + Convert.ToBase64String(cipherTextBytes);
-		}
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                {
+                    cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+                    cryptoStream.FlushFinalBlock();
+                    cipherTextBytes = memoryStream.ToArray();
+                }
+            }
+            return EncryptionPrefix + Convert.ToBase64String(cipherTextBytes);
+        }
 
-		public static RijndaelManaged GetRijndaelManaged()
-		{
-			return new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros };
-		}
+        public static RijndaelManaged GetRijndaelManaged()
+        {
+            return new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros };
+        }
 
-		public static string Decrypt(string value)
-		{
-			if (value.StartsWith(EncryptionPrefix))
-			{
-				string encryptedValue = value.Substring(EncryptionPrefix.Length);
-				byte[] cipherTextBytes = Convert.FromBase64String(encryptedValue);
-				byte[] keyBytes = new Rfc2898DeriveBytes(PasswordHash, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
-				var decryptor = GetRijndaelManaged().CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
-				using (var memoryStream = new MemoryStream(cipherTextBytes))
-				{
-					using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-					{
-						byte[] plainTextBytes = new byte[cipherTextBytes.Length];
-						int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
-						return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
-					}
-				}
-			}
-			else
-			{
-				return value;
-			}
+        public static string Decrypt(string value)
+        {
+            if (value != null && value.StartsWith(EncryptionPrefix))
+            {
+                string encryptedValue = value.Substring(EncryptionPrefix.Length);
+                byte[] cipherTextBytes = Convert.FromBase64String(encryptedValue);
+                byte[] keyBytes = new Rfc2898DeriveBytes(PasswordHash, Encoding.ASCII.GetBytes(SaltKey)).GetBytes(256 / 8);
+                var decryptor = GetRijndaelManaged().CreateDecryptor(keyBytes, Encoding.ASCII.GetBytes(VIKey));
+                using (var memoryStream = new MemoryStream(cipherTextBytes))
+                {
+                    using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        byte[] plainTextBytes = new byte[cipherTextBytes.Length];
+                        int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+                        return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
+                    }
+                }
+            }
+            else
+            {
+                return value;
+            }
 
-		}
+        }
 
-	}
+    }
 }

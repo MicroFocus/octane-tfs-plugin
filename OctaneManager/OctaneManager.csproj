@@ -58,8 +58,8 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MicroFocus.Adm.Octane.Api.Core, Version=12.60.27.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MicroFocus.Adm.Octane.Api.Core.12.60.27\lib\net45\MicroFocus.Adm.Octane.Api.Core.dll</HintPath>
+    <Reference Include="MicroFocus.Adm.Octane.Api.Core, Version=15.0.60.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicroFocus.Adm.Octane.Api.Core.15.0.60\lib\net45\MicroFocus.Adm.Octane.Api.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nancy, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
@@ -89,6 +89,8 @@
     <Compile Include="Configuration\Credentials\CredentialsManager.cs" />
     <Compile Include="Configuration\Credentials\Encryption.cs" />
     <Compile Include="Configuration\Paths.cs" />
+    <Compile Include="Configuration\ProxyDetails.cs" />
+    <Compile Include="Configuration\ProxyManager.cs" />
     <Compile Include="OctaneTaskManager.cs" />
     <Compile Include="Octane\OctaneApis.cs" />
     <Compile Include="Octane\OctaneTestResutsUtils.cs" />
@@ -210,6 +212,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RestServer\Views\Resources\download.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RestServer\Views\proxy.html" />
+    <EmbeddedResource Include="RestServer\Views\Resources\environment.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

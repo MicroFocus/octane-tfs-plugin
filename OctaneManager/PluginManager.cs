@@ -25,6 +25,8 @@ using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Tfs;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Octane;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Queue;
 using MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Dto;
+using MicroFocus.Adm.Octane.Api.Core.Connector;
+using System.Net;
 
 namespace MicroFocus.Ci.Tfs.Octane
 {
@@ -44,6 +46,7 @@ namespace MicroFocus.Ci.Tfs.Octane
 
 		private QueuesManager _queuesManager;
 		private OctaneTaskManager _taskManager;
+		private OctaneApis _octaneApis;
 
 		private StatusEnum _pluginStatus = StatusEnum.Stopped;
 
@@ -56,8 +59,18 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			Thread.Sleep(5000);
 			ConfigurationManager.ConfigurationChanged += OnConfigurationChanged;
+			ProxyManager.ConfigurationChanged += OnProxyChanged;
+			InitRestConnector();
 			ReadConfigurationFile();
+			ReadProxy();
 			StartRestServer();
+		}
+
+		private static void InitRestConnector()
+		{
+			NetworkSettings.EnableAllSecurityProtocols();
+			NetworkSettings.IgnoreServerCertificateValidation();
+			RestConnector.AwaitContinueOnCapturedContext = false;
 		}
 
 		public EventList GeneralEventsQueue => _generalEventsQueue;
@@ -92,6 +105,24 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
+		private void ReadProxy()
+		{
+			WebProxy webProxy = null;
+			try
+			{
+				webProxy = ProxyManager.Read(true).ToWebProxy();
+
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Failed to load proxy file : {e.Message}");
+			}
+			finally
+			{
+				NetworkSettings.CustomProxy = webProxy;
+			}
+		}
+
 		public static PluginManager GetInstance()
 		{
 			return instance;
@@ -102,51 +133,40 @@ namespace MicroFocus.Ci.Tfs.Octane
 			Log.Info("PluginManager Shutdown");
 			ConfigurationManager.ConfigurationChanged -= OnConfigurationChanged;
 			StopRestServer();
-			StopPlugin(false);
+			StopPlugin();
 		}
 
 
-		private void StopAllThreads()
+		public void StopPlugin()
 		{
-			_cancellationTokenSource.Cancel();
+			Log.Info("StopPlugin");
 
-			if (_queuesManager != null)
-			{
-				_queuesManager.ShutDown();
-			}
+			Status = StatusEnum.Stopping;
+
+			_cancellationTokenSource.Cancel();
 
 			if (_taskManager != null)
 			{
 				_taskManager.ShutDown();
+				_taskManager = null;
 			}
-		}
 
-		public void StopPlugin(bool waitShutdown)
-		{
-			Status = StatusEnum.Stopping;
-			StopAllThreads();
-			if (waitShutdown)
+			if (_queuesManager != null)
 			{
-				if (_octaneInitializationThread != null)
-				{
-					_octaneInitializationThread.Wait();
-				}
+				_queuesManager.ShutDown();
+				_queuesManager = null;
+			}
 
-				if (_queuesManager != null)
-				{
-					_queuesManager.WaitShutdown();
-				}
-
-				if (_taskManager != null)
-				{
-					_taskManager.WaitShutdown();
-				}
+			if (_octaneApis != null)
+			{
+				_octaneApis.ShutDown();
+				_octaneApis = null;
 			}
 
 			_octaneInitializationThread = null;
-			_taskManager = null;
-			_queuesManager = null;
 			Status = StatusEnum.Stopped;
+
+			Log.Info("StopPlugin Done");
 		}
 
 		public void StartPlugin()
@@ -163,6 +183,8 @@ namespace MicroFocus.Ci.Tfs.Octane
 				_cancellationTokenSource = new CancellationTokenSource();
 				_octaneInitializationThread = Task.Factory.StartNew(() => StartPluginInternal(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
 			}
+
+			Log.Info("StartPlugin Done");
 		}
 
 		private void StartRestServer()
@@ -197,11 +219,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 				try
 				{
 					TfsApis tfsApis = ConnectionCreator.CreateTfsConnection(_connectionDetails);
-					OctaneApis octaneApis = ConnectionCreator.CreateOctaneConnection(_connectionDetails);
+					_octaneApis = ConnectionCreator.CreateOctaneConnection(_connectionDetails);
 
-					_taskManager = new OctaneTaskManager(tfsApis, octaneApis);
+					_taskManager = new OctaneTaskManager(tfsApis, _octaneApis);
 					_taskManager.Start();
-					_queuesManager = new QueuesManager(tfsApis, octaneApis);
+					_queuesManager = new QueuesManager(tfsApis, _octaneApis);
 					_queuesManager.Start();
 
 					_initFailCounter = 0;
@@ -234,6 +256,11 @@ namespace MicroFocus.Ci.Tfs.Octane
 			}
 		}
 
+		private void OnProxyChanged(object sender, EventArgs e)
+		{
+			ReadProxy();
+		}
+
 		private void OnConfigurationChanged(object sender, EventArgs e)
 		{
 			ReadConfigurationFile();
@@ -244,10 +271,9 @@ namespace MicroFocus.Ci.Tfs.Octane
 		{
 			Log.Info($"Plugin is restarting");
 
-			StopAllThreads();
 			Task.Factory.StartNew(() =>
 			{
-				StopPlugin(true);
+				StopPlugin();
 				StartPlugin();
 			});
 		}
