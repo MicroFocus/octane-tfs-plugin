@@ -29,9 +29,15 @@ namespace MicroFocus.Adm.Octane.CiPlugins.Tfs.Core.Configuration
         {
             get
             {
-                Uri uri = new Uri(ALMOctaneUrl);
-                string host = $"{uri.Scheme}://{uri.Host}:{uri.Port}";
-                return host;
+                int contextPos = ALMOctaneUrl.IndexOf("/ui");
+                if (contextPos == -1)
+                {
+                    throw new Exception("Application context (/ui) not found in URL");
+                }
+                String location = ALMOctaneUrl.Substring(0, contextPos);
+
+                Uri uri = new Uri(location);
+                return location;
             }
         }
 
